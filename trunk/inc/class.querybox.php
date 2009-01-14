@@ -27,6 +27,7 @@ class WPUTK_QueryBox{
 						  ORDER BY post_date DESC
 						  LIMIT {$r['offset']},{$r['limit']}
 						  ";
+		return $wpdb->get_results($query);
 	}
 	
 	function get_random_posts($args = ''){
@@ -46,6 +47,7 @@ class WPUTK_QueryBox{
 				  	  {$posttype}
 				  	  ORDER BY RAND() 
 				  	  LIMIT {$limit}";
+		return $wpdb->get_results($query);
 	}
 	
 	function get_related_posts($args = ''){
@@ -65,9 +67,17 @@ class WPUTK_QueryBox{
 				   		 AND tt.term_id IN ({$tag_ids})
 				   		 GROUP BY tr.object_id
 						   LIMIT {$offset}, {$limit} ";
+		return $wpdb->get_results($query);
 	}
 	function get_same_classified_posts($args = ''){
 		global $wpdb;
+		$default = array(
+			'offset'		=>			0,
+			'limit'			=>			10
+			);
+		
+		$r = wp_parse_args($args, $default);
+		
 				$query  = "SELECT p.ID, p.post_title, p.post_date, p.comment_count, p.post_name
 				   FROM {$wpdb->posts} AS p
 				   INNER JOIN {$wpdb->term_relationships} AS tr ON (p.ID = tr.object_id)
@@ -78,10 +88,17 @@ class WPUTK_QueryBox{
 				   GROUP BY tr.object_id
 				   ORDER BY $orderby
 				   LIMIT $offset, $limit ";
+		return $wpdb->get_results($query);
 	}
 	
 	function get_most_commented_posts($args = ''){
 		global $wpdb;
+		$default = array(
+			'offset'			=>			0,
+			'limit'				=>			10,
+			'type'		=>			'both'
+			);
+		
 			    $query  = "SELECT ID, post_title, post_name, COUNT(comment_post_ID) AS comment_total
 	    		   FROM {$wpdb->posts} 
 	    		   LEFT JOIN {$wpdb->comments} ON ID = comment_post_ID
@@ -92,10 +109,14 @@ class WPUTK_QueryBox{
 	    		   GROUP BY comment_post_ID
 	    		   ORDER BY comment_total DESC
 	    		   LIMIT {$offset},{$limit}";
+		return $wpdb->get_results($query);
 	}
 	
 	function get_recent_comments($args = ''){
 		global $wpdb;
+		$default = array(
+			);
+			
 		$query = "SELECT ID, comment_ID, comment_content, comment_author, comment_author_url, comment_author_email, post_title, comment_count
 		  FROM {$wpdb->posts},{$wpdb->comments}
 		  WHERE ID = comment_post_ID 
@@ -107,9 +128,13 @@ class WPUTK_QueryBox{
 		  AND comment_approved = '1' 
 		  ORDER BY comment_date DESC 
 		  LIMIT {$offset}, {$limit}";
+		return $wpdb->get_results($query);
 	}
 	function get_active_commentators($args = ''){
 		global $wpdb;
+		$default = array(
+			
+			);
 				$query  = "SELECT comment_author, comment_author_url, COUNT(comment_ID) AS 'comment_total' 
 				   FROM {$wpdb->comments}
 				   WHERE comment_approved = '1'
@@ -118,10 +143,14 @@ class WPUTK_QueryBox{
 				   {$days}
 				   GROUP BY comment_author 
 				   ORDER BY comment_total DESC";
+		return $wpdb->get_results($query);
 	}
 	
 	function get_recent_commentators($args = ''){
 		global $wpdb;
+		$default = array(
+			
+			);
 				$query  = "SELECT comment_author, comment_author_url, COUNT(comment_ID) AS 'comment_total' 
 				   FROM {$wpdb->comments}
 				   WHERE comment_approved = '1'
@@ -130,6 +159,7 @@ class WPUTK_QueryBox{
 				   {$type}
 				   GROUP BY comment_author 
 				   ORDER BY comment_total DESC";
+		return $wpdb->get_results($query);
 	}
 	
 	function _post_type_clause($posttype = ''){
