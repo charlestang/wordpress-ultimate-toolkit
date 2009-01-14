@@ -24,6 +24,11 @@ Author URI: http://www.charlestasng.cn
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
+require(dirname(__FILE__) . '/inc/class.querybox.php');
+add_action('plugins_loaded','wputk_init');
+function wputk_init(){
+	global $wputk_querybox;
+	$wputk_querybox = new WPUTK_QueryBox();
+}
 
 ?>
