@@ -10,29 +10,61 @@ class WPUTK_QueryBox{
 
 	function get_recent_posts($args = ''){
 		global $wpdb;
+		$default = array(
+			'offset'			=>			0,
+			'limit'				=>			10,
+			'type'				=>			'both'
+			);
+		
+		$r = wp_parse_args($args, $default);
+		
+		$posttype = $this->_post_type_clause($r['type']);
+		
+		$query = "SELECT ID, post_title, post_date, post_content, post_name
+						  FROM {$wpdb->posts}
+						  WHERE post_status = 'publish'
+						  {$posttype}
+						  ORDER BY post_date DESC
+						  LIMIT {$r['offset']},{$r['limit']}
+						  ";
 	}
+	
 	function get_random_posts($args = ''){
 		global $wpdb;
-				$query = "SELECT ID, post_title, post_date, post_content, post_name 
-				  FROM {$wpdb->posts} 
-				  WHERE post_status = 'publish' 
-				  {$show_pass_post} 
-				  {$ptype}
-				  ORDER BY RAND() 
-				  LIMIT $limit";
+		$default = array(
+			'limit'			=>			10,
+			'type'			=>			'both'
+			);
+		
+		$r = wp_parse_args($args,$default);
+		
+		$posttype = $this->_post_type_clause($r['type']);
+		
+		$query = "SELECT ID, post_title, post_date, post_content, post_name 
+						  FROM {$wpdb->posts} 
+						  WHERE post_status = 'publish'
+				  	  {$posttype}
+				  	  ORDER BY RAND() 
+				  	  LIMIT {$limit}";
 	}
+	
 	function get_related_posts($args = ''){
 		global $wpdb;
-				$query  = "SELECT p.ID, p.post_title, p.post_date, p.comment_count, p.post_name
-				   FROM {$wpdb->posts} AS p 
-				   INNER JOIN {$wpdb->term_relationships} AS tr ON (p.ID = tr.object_id)
-				   INNER JOIN {$wpdb->term_taxonomy} AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
-				   WHERE tt.taxonomy = 'post_tag'
-				   AND p.ID <> {$postid}
-				   AND p.post_status = 'publish'
-				   AND tt.term_id IN ({$tag_ids})
-				   GROUP BY tr.object_id
-				   LIMIT {$offset}, {$limit} ";
+		$default = array(
+			'offset'			=>			0,
+			'limit'				=>			10
+			);
+		
+		$query  = "SELECT p.ID, p.post_title, p.post_date, p.comment_count, p.post_name
+						   FROM {$wpdb->posts} AS p 
+				   		 INNER JOIN {$wpdb->term_relationships} AS tr ON (p.ID = tr.object_id)
+				   		 INNER JOIN {$wpdb->term_taxonomy} AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
+				   		 WHERE tt.taxonomy = 'post_tag'
+				   		 AND p.ID <> {$postid}
+				   		 AND p.post_status = 'publish'
+				   		 AND tt.term_id IN ({$tag_ids})
+				   		 GROUP BY tr.object_id
+						   LIMIT {$offset}, {$limit} ";
 	}
 	function get_same_classified_posts($args = ''){
 		global $wpdb;
@@ -47,6 +79,7 @@ class WPUTK_QueryBox{
 				   ORDER BY $orderby
 				   LIMIT $offset, $limit ";
 	}
+	
 	function get_most_commented_posts($args = ''){
 		global $wpdb;
 			    $query  = "SELECT ID, post_title, post_name, COUNT(comment_post_ID) AS comment_total
@@ -60,6 +93,7 @@ class WPUTK_QueryBox{
 	    		   ORDER BY comment_total DESC
 	    		   LIMIT {$offset},{$limit}";
 	}
+	
 	function get_recent_comments($args = ''){
 		global $wpdb;
 		$query = "SELECT ID, comment_ID, comment_content, comment_author, comment_author_url, comment_author_email, post_title, comment_count
@@ -85,6 +119,7 @@ class WPUTK_QueryBox{
 				   GROUP BY comment_author 
 				   ORDER BY comment_total DESC";
 	}
+	
 	function get_recent_commentators($args = ''){
 		global $wpdb;
 				$query  = "SELECT comment_author, comment_author_url, COUNT(comment_ID) AS 'comment_total' 
@@ -95,6 +130,18 @@ class WPUTK_QueryBox{
 				   {$type}
 				   GROUP BY comment_author 
 				   ORDER BY comment_total DESC";
+	}
+	
+	function _post_type_clause($posttype = ''){
+		if ('both' == $posttype){
+			return '';
+		} else if ('post' == $posttype) {
+			return 'AND post_type = "post"';
+		} else if ('page' == $posttype) {
+			return 'AND post_type = "page"';
+		} else {
+			return '';
+		}
 	}
 }
 ?>
