@@ -50,32 +50,32 @@ table td{
 	border:1px solid #000;
 }
 </style>
-<?php //global $wputk_querybox;?>
+<?php //global $wut_querybox;?>
 <div id="content" class="widecolumn">
 <h2>WPUTK_QueryBox Object Test</h2>
 <h3>function get_recent_posts($args = '')</h3>
-<?php outputdata($wputk_querybox->get_recent_posts());?>
+<?php outputdata($wut_querybox->get_recent_posts());?>
 
 <h3>function get_random_posts($args = '')</h3>
-<?php outputdata($wputk_querybox->get_random_posts());?>
+<?php outputdata($wut_querybox->get_random_posts());?>
 
 <h3>function get_related_posts($args = '')</h3>
-<?php outputdata($wputk_querybox->get_related_posts());?>
+<?php outputdata($wut_querybox->get_related_posts());?>
 
 <h3>function get_same_classified_posts($args = '')</h3>
-<?php outputdata($wputk_querybox->get_same_classified_posts());?>
+<?php outputdata($wut_querybox->get_same_classified_posts());?>
 
 <h3>function get_most_commented_posts($args = '')</h3>
-<?php outputdata($wputk_querybox->get_most_commented_posts());?>
+<?php outputdata($wut_querybox->get_most_commented_posts());?>
 
 <h3>function get_recent_comments($args = '')</h3>
-<?php outputdata($wputk_querybox->get_recent_comments());?>
+<?php outputdata($wut_querybox->get_recent_comments());?>
 
 <h3>function get_active_commentators($args = '')</h3>
-<?php outputdata($wputk_querybox->get_active_commentators());?>
+<?php outputdata($wut_querybox->get_active_commentators());?>
 
 <h3>function get_recent_commentators($args = '')</h3>
-<?php outputdata($wputk_querybox->get_recent_commentators());?>
+<?php outputdata($wut_querybox->get_recent_commentators());?>
 </div>
 
 <?php get_footer(); ?>

@@ -25,10 +25,10 @@ Author URI: http://www.charlestasng.cn
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 require(dirname(__FILE__) . '/inc/class.querybox.php');
-add_action('plugins_loaded','wputk_init');
-function wputk_init(){
-	global $wputk_querybox;
-	$wputk_querybox = new WPUTK_QueryBox();
+add_action('plugins_loaded','wut_init');
+function wut_init(){
+	global $wut_querybox;
+	$wut_querybox = new WUT_QueryBox();
 }
 
 ?>
