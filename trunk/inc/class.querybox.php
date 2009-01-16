@@ -183,8 +183,12 @@ class WUT_QueryBox{
 	function get_active_commentators($args = ''){
 		global $wpdb;
 		$defaults = array(
-			
+			'limit'			=>			10,
+			'offset'		=>			0			
 			);
+		
+		$r = wp_parse_args($args, $defaults);
+		
 		$query  = "SELECT comment_author, comment_author_url, 
 											COUNT(comment_ID) AS 'comment_total' 
 						   FROM {$wpdb->comments}
@@ -192,7 +196,8 @@ class WUT_QueryBox{
 						   {$skips}
 						   AND (comment_author != '') AND (comment_type = '')
 						   GROUP BY comment_author 
-						   ORDER BY comment_total DESC";
+						   ORDER BY comment_total DESC
+						   LIMIT {$r['offset']},{$r['limit']}";
 		
 		return $wpdb->get_results($query);
 	}
@@ -200,6 +205,8 @@ class WUT_QueryBox{
 	function get_recent_commentators($args = ''){
 		global $wpdb;
 		$defaults = array(
+			'limit'			=>			10,
+			'offset'		=>			0,
 			'skips'			=>			'',
 			'type'			=>			'both'
 			);
@@ -216,7 +223,8 @@ class WUT_QueryBox{
 						   AND (comment_author != '') AND (comment_type = '')
 						   {$posttype}
 						   GROUP BY comment_author 
-						   ORDER BY comment_total DESC";
+						   ORDER BY comment_total DESC
+						   LIMIT {$r['offset']},{$r['limit']}";
 		return $wpdb->get_results($query);
 	}
 	

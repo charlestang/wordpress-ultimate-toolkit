@@ -14,6 +14,17 @@ function wut_recent_posts($args = '') {
 		'echo'			=> 1
 	);
 	$r = wp_parse_args($args, $defaults);
+	$items = $wut_querybox->get_recent_posts($r);
+	$html = '';
+	foreach($items as $item){
+		$html .= $r['before'];
+		$html .= strip_tags($item->post_title);
+		$html .= $r['after'];
+	}
+	if ($r['echo'])
+		echo $html;
+	else
+		return $html;
 }
 function wut_random_posts($args = '') {
 	global $wut_querybox;
@@ -26,6 +37,19 @@ function wut_random_posts($args = '') {
 		'echo'				=> 1
 	);
 	$r = wp_parse_args($args, $defaults);
+	
+	$items = $wut_querybox->get_random_posts($r);
+	
+	$html = '';
+	foreach($items as $item){
+		$html .= $r['before'];
+		$html .= strip_tags($item->post_title);
+		$html .= $r['after'];
+	}
+	if ($r['echo'])
+		echo $html;
+	else
+		return $html;
 }
 function wut_related_posts($args = '') {
 	global $wut_querybox;
@@ -39,6 +63,19 @@ function wut_related_posts($args = '') {
 		'echo'					=> 1
 	);	
 	$r = wp_parse_args($args, $defaults);
+	
+	$items = $wut_querybox->get_related_posts($r);
+	
+	$html = '';
+	foreach($items as $item){
+		$html .= $r['before'];
+		$html .= strip_tags($item->post_title);
+		$html .= $r['after'];
+	}
+	if ($r['echo'])
+		echo $html;
+	else
+		return $html;
 }
 function wut_same_classified_posts($args = '') {
 	global $wut_querybox;
@@ -54,6 +91,19 @@ function wut_same_classified_posts($args = '') {
 		'echo'					=> 1
 	);	
 	$r = wp_parse_args($args, $defaults);
+	
+	$items = $wut_querybox->get_same_classified_posts($r);
+	
+	$html = '';
+	foreach($items as $item){
+		$html .= $r['before'];
+		$html .= strip_tags($item->post_title);
+		$html .= $r['after'];
+	}
+	if ($r['echo'])
+		echo $html;
+	else
+		return $html;
 }
 function wut_most_commented_posts($args = '') {
 	global $wut_querybox;
@@ -68,6 +118,19 @@ function wut_most_commented_posts($args = '') {
 		'echo'				=> 1
 	);	
 	$r = wp_parse_args($args, $defaults);
+	
+	$items = $wut_querybox->get_most_commented_posts($r);
+	
+	$html = '';
+	foreach($items as $item){
+		$html .= $r['before'];
+		$html .= strip_tags($item->post_title);
+		$html .= $r['after'];
+	}
+	if ($r['echo'])
+		echo $html;
+	else
+		return $html;
 }
 function wut_recent_comments($args = '') {
 	global $wut_querybox;
@@ -83,8 +146,21 @@ function wut_recent_comments($args = '') {
 		'echo'				=> 1
 	);	
 	$r = wp_parse_args($args, $defaults);
+	
+	$items = $wut_querybox->get_recent_comments($r);
+	
+	$html = '';
+	foreach($items as $item){
+		$html .= $r['before'];
+		$html .= $item->comment_author . ':' . $item->comment_content;
+		$html .= $r['after'];
+	}
+	if ($r['echo'])
+		echo $html;
+	else
+		return $html;
 }
-function wut_active_commentator($args = '') {
+function wut_active_commentators($args = '') {
 	global $wut_querybox;
 	$defaults = array(
 		'limit'				=> 10,
@@ -96,8 +172,21 @@ function wut_active_commentator($args = '') {
 		'echo'				=> 1
 	);	
 	$r = wp_parse_args($args, $defaults);
+	
+	$items = $wut_querybox->get_active_commentators($r);
+	
+	$html = '';
+	foreach($items as $item){
+		$html .= $r['before'];
+		$html .= $item->comment_author;
+		$html .= $r['after'];
+	}
+	if ($r['echo'])
+		echo $html;
+	else
+		return $html;
 }
-function wut_recent_commentator($args = '') {
+function wut_recent_commentators($args = '') {
 	global $wut_querybox;
 	$defaults = array(
 		'limit'				=> 10,
@@ -109,6 +198,19 @@ function wut_recent_commentator($args = '') {
 		'echo'				=> 1
 	);	
 	$r = wp_parse_args($args, $defaults);
+	
+	$items = $wut_querybox->get_recent_commentators($r);
+	
+	$html = '';
+	foreach($items as $item){
+		$html .= $r['before'];
+		$html .= $item->comment_author;
+		$html .= $r['after'];
+	}
+	if ($r['echo'])
+		echo $html;
+	else
+		return $html;
 }
 
 ?>
