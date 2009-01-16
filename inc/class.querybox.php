@@ -6,7 +6,7 @@
  * put here.
  * 
  */
-class WPUTK_QueryBox{
+class WUT_QueryBox{
 
 	function get_recent_posts($args = ''){
 		global $wpdb;
@@ -46,7 +46,7 @@ class WPUTK_QueryBox{
 						  WHERE post_status = 'publish'
 				  	  {$posttype}
 				  	  ORDER BY RAND() 
-				  	  LIMIT {$limit}";
+				  	  LIMIT {$r['limit']}";
 		return $wpdb->get_results($query);
 	}
 	
@@ -96,38 +96,42 @@ class WPUTK_QueryBox{
 		$default = array(
 			'offset'			=>			0,
 			'limit'				=>			10,
-			'type'		=>			'both'
+			'type'				=>			'both'
 			);
-		
-			    $query  = "SELECT ID, post_title, post_name, COUNT(comment_post_ID) AS comment_total
-	    		   FROM {$wpdb->posts} 
-	    		   LEFT JOIN {$wpdb->comments} ON ID = comment_post_ID
-	    		   WHERE comment_approved = 1
-	    		   {$ptype}
-	    		   {$days}
-	    		   AND post_status = 'publish' AND post_password = ''
-	    		   GROUP BY comment_post_ID
-	    		   ORDER BY comment_total DESC
-	    		   LIMIT {$offset},{$limit}";
+		$r = wp_parse_args($args,$default);
+		$posttype = $this->_post_type_clause($r['type']);
+		$query  = "SELECT ID, post_title, post_name, COUNT(comment_post_ID) AS comment_total
+		    		   FROM {$wpdb->posts} 
+		    		   LEFT JOIN {$wpdb->comments} ON ID = comment_post_ID
+		    		   WHERE comment_approved = 1
+		    		   {$posttype}
+		    		   {$days}
+		    		   AND post_status = 'publish' AND post_password = ''
+		    		   GROUP BY comment_post_ID
+		    		   ORDER BY comment_total DESC
+		    		   LIMIT {$r['offset']},{$r['limit']}";
 		return $wpdb->get_results($query);
 	}
 	
 	function get_recent_comments($args = ''){
 		global $wpdb;
 		$default = array(
+			'limit'			=>			10,
+			'offset'		=>			0
 			);
-			
+		$r = wp_parse_args($args,$default);
+		
 		$query = "SELECT ID, comment_ID, comment_content, comment_author, comment_author_url, comment_author_email, post_title, comment_count
-		  FROM {$wpdb->posts},{$wpdb->comments}
-		  WHERE ID = comment_post_ID 
-		  AND (post_status = 'publish' OR post_status = 'static') 
-		  AND comment_type = ''
-		  {$show_pass_post}
-		  {$skips} 
-		  AND (comment_author != '')
-		  AND comment_approved = '1' 
-		  ORDER BY comment_date DESC 
-		  LIMIT {$offset}, {$limit}";
+						  FROM {$wpdb->posts},{$wpdb->comments}
+						  WHERE ID = comment_post_ID 
+						  AND (post_status = 'publish' OR post_status = 'static') 
+						  AND comment_type = ''
+						  {$skips} 
+						  AND (comment_author != '')
+						  AND comment_approved = '1' 
+						  ORDER BY comment_date DESC 
+						  LIMIT {$r['offset']}, {$r['limit']}";
+
 		return $wpdb->get_results($query);
 	}
 	function get_active_commentators($args = ''){
@@ -135,30 +139,36 @@ class WPUTK_QueryBox{
 		$default = array(
 			
 			);
-				$query  = "SELECT comment_author, comment_author_url, COUNT(comment_ID) AS 'comment_total' 
-				   FROM {$wpdb->comments}
-				   WHERE comment_approved = '1'
-				   {$skips}
-				   AND (comment_author != '') AND (comment_type = '')
-				   {$days}
-				   GROUP BY comment_author 
-				   ORDER BY comment_total DESC";
+		$query  = "SELECT comment_author, comment_author_url, COUNT(comment_ID) AS 'comment_total' 
+						   FROM {$wpdb->comments}
+						   WHERE comment_approved = '1'
+						   {$skips}
+						   AND (comment_author != '') AND (comment_type = '')
+						   GROUP BY comment_author 
+						   ORDER BY comment_total DESC";
+		
 		return $wpdb->get_results($query);
 	}
 	
 	function get_recent_commentators($args = ''){
 		global $wpdb;
 		$default = array(
-			
+			'skips'			=>			'',
+			'type'			=>			'both'
 			);
-				$query  = "SELECT comment_author, comment_author_url, COUNT(comment_ID) AS 'comment_total' 
-				   FROM {$wpdb->comments}
-				   WHERE comment_approved = '1'
-				   {$skips}
-				   AND (comment_author != '') AND (comment_type = '')
-				   {$type}
-				   GROUP BY comment_author 
-				   ORDER BY comment_total DESC";
+		
+		$r = wp_parse_args($args,$default);
+		
+		$posttype = $this->_post_type_clause($r['type']);
+		
+		$query  = "SELECT comment_author, comment_author_url, COUNT(comment_ID) AS 'comment_total' 
+						   FROM {$wpdb->comments}
+						   WHERE comment_approved = '1'
+						   {$r['skips']}
+						   AND (comment_author != '') AND (comment_type = '')
+						   {$posttype}
+						   GROUP BY comment_author 
+						   ORDER BY comment_total DESC";
 		return $wpdb->get_results($query);
 	}
 	
@@ -173,5 +183,5 @@ class WPUTK_QueryBox{
 			return '';
 		}
 	}
-}
+}/*End class WUT_QueryBox*/
 ?>
