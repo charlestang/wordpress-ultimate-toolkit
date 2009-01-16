@@ -10,17 +10,18 @@ class WUT_QueryBox{
 
 	function get_recent_posts($args = ''){
 		global $wpdb;
-		$default = array(
+		$defaults = array(
 			'offset'			=>			0,
 			'limit'				=>			10,
 			'type'				=>			'both'
 			);
 		
-		$r = wp_parse_args($args, $default);
+		$r = wp_parse_args($args, $defaults);
 		
 		$posttype = $this->_post_type_clause($r['type']);
 		
-		$query = "SELECT ID, post_title, post_date, post_content, post_name
+		$query = "SELECT ID, post_title, post_date, post_content, post_name, 
+										 comment_count
 						  FROM {$wpdb->posts}
 						  WHERE post_status = 'publish'
 						  {$posttype}
@@ -32,16 +33,17 @@ class WUT_QueryBox{
 	
 	function get_random_posts($args = ''){
 		global $wpdb;
-		$default = array(
+		$defaults = array(
 			'limit'			=>			10,
 			'type'			=>			'both'
 			);
 		
-		$r = wp_parse_args($args,$default);
+		$r = wp_parse_args($args,$defaults);
 		
 		$posttype = $this->_post_type_clause($r['type']);
 		
-		$query = "SELECT ID, post_title, post_date, post_content, post_name 
+		$query = "SELECT ID, post_title, post_date, post_content, post_name, 
+										 comment_count
 						  FROM {$wpdb->posts} 
 						  WHERE post_status = 'publish'
 				  	  {$posttype}
@@ -50,57 +52,98 @@ class WUT_QueryBox{
 		return $wpdb->get_results($query);
 	}
 	
+	//TANGCHAO: this function is not normal, need to fixed
 	function get_related_posts($args = ''){
 		global $wpdb;
-		$default = array(
+		$defaults = array(
 			'offset'			=>			0,
-			'limit'				=>			10
+			'limit'				=>			10,
+			'postid'			=>			false
 			);
+		$r = wp_parse_args($args,$defaults);
 		
-		$query  = "SELECT p.ID, p.post_title, p.post_date, p.comment_count, p.post_name
-						   FROM {$wpdb->posts} AS p 
-				   		 INNER JOIN {$wpdb->term_relationships} AS tr ON (p.ID = tr.object_id)
-				   		 INNER JOIN {$wpdb->term_taxonomy} AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
+		$r['postid'] = (int) $r['postid'];
+		if (!$r['postid']) {
+			global $post;
+			$r['postid'] = $post->ID;
+		}
+		var_dump($r['postid']);
+		$tags = wp_get_object_terms($r['postid'],'post_tag');
+		var_dump($tags);
+		$tag_ids = '';
+		foreach($tags as $tag) {
+			$tag_ids .= '"' . $tag->term_id . '", ';
+		}
+		$tag_ids = substr($tag_ids, 0, strlen($tag_ids) - 2);
+		
+		$query  = "SELECT ID, post_title, post_date, comment_count, post_name
+						   FROM {$wpdb->posts}
+				   		 INNER JOIN {$wpdb->term_relationships} AS tr 
+				   		 						ON (ID = tr.object_id)
+				   		 INNER JOIN {$wpdb->term_taxonomy} AS tt 
+				   		 						ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
 				   		 WHERE tt.taxonomy = 'post_tag'
-				   		 AND p.ID <> {$postid}
-				   		 AND p.post_status = 'publish'
+				   		 AND ID <> {$r['postid']}
+				   		 AND post_status = 'publish'
 				   		 AND tt.term_id IN ({$tag_ids})
 				   		 GROUP BY tr.object_id
-						   LIMIT {$offset}, {$limit} ";
+						   LIMIT {$r['offset']}, {$r['limit']} ";
+		var_dump($query);
 		return $wpdb->get_results($query);
 	}
+	
+	//TANGCHAO: this function is not normal, need to fixed
 	function get_same_classified_posts($args = ''){
 		global $wpdb;
-		$default = array(
+		$defaults = array(
 			'offset'		=>			0,
-			'limit'			=>			10
+			'limit'			=>			10,
+			'postid'		=>			false
 			);
 		
-		$r = wp_parse_args($args, $default);
+		$r = wp_parse_args($args, $defaults);
 		
-				$query  = "SELECT p.ID, p.post_title, p.post_date, p.comment_count, p.post_name
-				   FROM {$wpdb->posts} AS p
-				   INNER JOIN {$wpdb->term_relationships} AS tr ON (p.ID = tr.object_id)
-				   INNER JOIN {$wpdb->term_taxonomy} AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
-				   WHERE tt.taxonomy = 'category'
-				   AND p.ID <> {$postid}
-				   AND tt.term_id IN ({$cat_ids})
-				   GROUP BY tr.object_id
-				   ORDER BY $orderby
-				   LIMIT $offset, $limit ";
+		$r['postid'] = (int) $r['postid'];
+		if (!$r['postid']) {
+			global $post;
+			$r['postid'] = $post->ID;
+		}
+		var_dump($r['postid']);
+		$categories = wp_get_object_terms($r['postid'],'category');
+		//var_dump($categories);
+		$cat_ids = '';
+		foreach($categories as $cat) {
+			$cat_ids .= '"' . $cat->term_id . '", ';
+		}
+		$cat_ids = substr($cat_ids, 0, strlen($cat_ids) - 2);
+		var_dump($cat_ids);
+		$query  = "SELECT ID, post_title, post_date, comment_count, post_name
+						   FROM {$wpdb->posts}
+						   INNER JOIN {$wpdb->term_relationships} AS tr 
+						   						ON (ID = tr.object_id)
+						   INNER JOIN {$wpdb->term_taxonomy} AS tt 
+						   						ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
+						   WHERE tt.taxonomy = 'category'
+						   AND ID <> {$r['postid']}
+						   AND tt.term_id IN ({$cat_ids})
+						   GROUP BY tr.object_id
+						   ORDER BY $orderby
+						   LIMIT {$r['offset']}, {$r['limit']}";
+		var_dump($query);
 		return $wpdb->get_results($query);
 	}
 	
 	function get_most_commented_posts($args = ''){
 		global $wpdb;
-		$default = array(
+		$defaults = array(
 			'offset'			=>			0,
 			'limit'				=>			10,
 			'type'				=>			'both'
 			);
-		$r = wp_parse_args($args,$default);
+		$r = wp_parse_args($args,$defaults);
 		$posttype = $this->_post_type_clause($r['type']);
-		$query  = "SELECT ID, post_title, post_name, COUNT(comment_post_ID) AS comment_total
+		$query  = "SELECT ID, post_title, post_name, 
+											COUNT(comment_post_ID) AS comment_total
 		    		   FROM {$wpdb->posts} 
 		    		   LEFT JOIN {$wpdb->comments} ON ID = comment_post_ID
 		    		   WHERE comment_approved = 1
@@ -115,13 +158,15 @@ class WUT_QueryBox{
 	
 	function get_recent_comments($args = ''){
 		global $wpdb;
-		$default = array(
+		$defaults = array(
 			'limit'			=>			10,
 			'offset'		=>			0
 			);
-		$r = wp_parse_args($args,$default);
+		$r = wp_parse_args($args,$defaults);
 		
-		$query = "SELECT ID, comment_ID, comment_content, comment_author, comment_author_url, comment_author_email, post_title, comment_count
+		$query = "SELECT ID, comment_ID, comment_content, comment_author, 
+										 comment_author_url, comment_author_email, post_title, 
+										 comment_date
 						  FROM {$wpdb->posts},{$wpdb->comments}
 						  WHERE ID = comment_post_ID 
 						  AND (post_status = 'publish' OR post_status = 'static') 
@@ -134,12 +179,14 @@ class WUT_QueryBox{
 
 		return $wpdb->get_results($query);
 	}
+	
 	function get_active_commentators($args = ''){
 		global $wpdb;
-		$default = array(
+		$defaults = array(
 			
 			);
-		$query  = "SELECT comment_author, comment_author_url, COUNT(comment_ID) AS 'comment_total' 
+		$query  = "SELECT comment_author, comment_author_url, 
+											COUNT(comment_ID) AS 'comment_total' 
 						   FROM {$wpdb->comments}
 						   WHERE comment_approved = '1'
 						   {$skips}
@@ -152,16 +199,17 @@ class WUT_QueryBox{
 	
 	function get_recent_commentators($args = ''){
 		global $wpdb;
-		$default = array(
+		$defaults = array(
 			'skips'			=>			'',
 			'type'			=>			'both'
 			);
 		
-		$r = wp_parse_args($args,$default);
+		$r = wp_parse_args($args,$defaults);
 		
 		$posttype = $this->_post_type_clause($r['type']);
 		
-		$query  = "SELECT comment_author, comment_author_url, COUNT(comment_ID) AS 'comment_total' 
+		$query  = "SELECT comment_author, comment_author_url, 
+											COUNT(comment_ID) AS 'comment_total' 
 						   FROM {$wpdb->comments}
 						   WHERE comment_approved = '1'
 						   {$r['skips']}
