@@ -25,6 +25,7 @@ Author URI: http://www.charlestasng.cn
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 require(dirname(__FILE__) . '/inc/class.querybox.php');
+require(dirname(__FILE__) . '/inc/tags.php');
 add_action('plugins_loaded','wut_init');
 function wut_init(){
 	global $wut_querybox;
