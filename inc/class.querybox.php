@@ -85,7 +85,7 @@ class WUT_QueryBox{
 				   		 WHERE tt.taxonomy = 'post_tag'
 				   		 AND ID <> {$r['postid']}
 				   		 AND post_status = 'publish'
-				   		 AND tt.term_id IN ({$tag_ids})
+				   		 
 				   		 GROUP BY tr.object_id
 						   LIMIT {$r['offset']}, {$r['limit']} ";
 		var_dump($query);
@@ -108,15 +108,15 @@ class WUT_QueryBox{
 			global $post;
 			$r['postid'] = $post->ID;
 		}
-		var_dump($r['postid']);
+		
 		$categories = wp_get_object_terms($r['postid'],'category');
-		//var_dump($categories);
+		
 		$cat_ids = '';
 		foreach($categories as $cat) {
 			$cat_ids .= '"' . $cat->term_id . '", ';
 		}
 		$cat_ids = substr($cat_ids, 0, strlen($cat_ids) - 2);
-		var_dump($cat_ids);
+		
 		$query  = "SELECT ID, post_title, post_date, comment_count, post_name
 						   FROM {$wpdb->posts}
 						   INNER JOIN {$wpdb->term_relationships} AS tr 
@@ -127,9 +127,9 @@ class WUT_QueryBox{
 						   AND ID <> {$r['postid']}
 						   AND tt.term_id IN ({$cat_ids})
 						   GROUP BY tr.object_id
-						   ORDER BY $orderby
+						   
 						   LIMIT {$r['offset']}, {$r['limit']}";
-		var_dump($query);
+		
 		return $wpdb->get_results($query);
 	}
 	
