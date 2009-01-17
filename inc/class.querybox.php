@@ -35,18 +35,21 @@ class WUT_QueryBox{
         global $wpdb;
         $defaults = array(
             'limit'    =>   10,
-            'type'     =>   'both'
+            'type'     =>   'both',
+            'skips'    =>   ''
         );
 
         $r = wp_parse_args($args,$defaults);
 
         $posttype = $this->_post_type_clause($r['type']);
+        $skipclause = $this->_skip_clause('ID', $r['skips']);
 
         $query = "SELECT ID, post_title, post_date, post_content, post_name,
                          comment_count
                   FROM {$wpdb->posts}
                   WHERE post_status = 'publish'
                   {$posttype}
+                  {$skipclause}
                   ORDER BY RAND()
                   LIMIT {$r['limit']}";
         return $wpdb->get_results($query);
