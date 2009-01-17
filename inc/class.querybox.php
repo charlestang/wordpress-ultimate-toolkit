@@ -59,9 +59,11 @@ class WUT_QueryBox{
     function get_related_posts($args = ''){
         global $wpdb;
         $defaults = array(
-            'offset'    =>            0,
-            'limit'     =>            10,
-            'postid'    =>            false
+            'offset'    => 0,
+            'limit'     => 10,
+            'postid'    => false,
+            'type'      => 'both',
+            'skips'     => ''
         );
         $r = wp_parse_args($args,$defaults);
 
@@ -100,7 +102,9 @@ class WUT_QueryBox{
         $defaults = array(
             'offset'        =>            0,
             'limit'         =>            10,
-            'postid'        =>            false
+            'postid'        =>            false,
+            'skips'         =>            '',
+            'type'          =>            'both'
         );
 
         $r = wp_parse_args($args, $defaults);
@@ -140,7 +144,8 @@ class WUT_QueryBox{
         $defaults = array(
             'offset'            =>            0,
             'limit'             =>            10,
-            'type'              =>            'both'
+            'type'              =>            'both',
+            'skips'             =>            ''
         );
         $r = wp_parse_args($args,$defaults);
         $posttype = $this->_post_type_clause($r['type']);
@@ -162,10 +167,11 @@ class WUT_QueryBox{
         global $wpdb;
         $defaults = array(
             'limit'         =>            10,
-            'offset'        =>            0
+            'offset'        =>            0,
+            'skipusers'     =>            ''
         );
         $r = wp_parse_args($args,$defaults);
-
+        $skipuserclause = $this->_skip_clause("comment_author", $r['skipusers']);
         $query = "SELECT ID, comment_ID, comment_content, comment_author,
                          comment_author_url, comment_author_email, post_title,
                          comment_date
@@ -173,7 +179,7 @@ class WUT_QueryBox{
                   WHERE ID = comment_post_ID
                   AND (post_status = 'publish' OR post_status = 'static')
                   AND comment_type = ''
-                  {$skips}
+                  {$skipuserclause}
                   AND (comment_author != '')
                   AND comment_approved = '1'
                   ORDER BY comment_date DESC
@@ -185,17 +191,18 @@ class WUT_QueryBox{
     function get_active_commentators($args = ''){
         global $wpdb;
         $defaults = array(
-            'limit'            =>            10,
-            'offset'        =>            0
-            );
+            'limit'         =>            10,
+            'offset'        =>            0,
+            'skipusers'     =>            ''
+        );
 
         $r = wp_parse_args($args, $defaults);
-
+        $skipuserclause = $this->_skip_clause("comment_author", $r['skipusers']);
         $query  = "SELECT comment_author, comment_author_url,
                           COUNT(comment_ID) AS 'comment_total'
                    FROM {$wpdb->comments}
                    WHERE comment_approved = '1'
-                   {$skips}
+                   {$skipuserclause}
                    AND (comment_author != '') AND (comment_type = '')
                    GROUP BY comment_author
                    ORDER BY comment_total DESC
@@ -209,13 +216,14 @@ class WUT_QueryBox{
         $defaults = array(
             'limit'         =>            10,
             'offset'        =>            0,
-            'skips'         =>            '',
+            'skipusers'         =>            '',
             'type'          =>            'both'
         );
 
         $r = wp_parse_args($args,$defaults);
 
         $posttype = $this->_post_type_clause($r['type']);
+        $skipuserclause = $this->_skip_clause("comment_author", $r['skipusers']);
 
         $query  = "SELECT comment_author, comment_author_url,
                           COUNT(comment_ID) AS 'comment_total'
@@ -224,6 +232,7 @@ class WUT_QueryBox{
                    {$r['skips']}
                    AND (comment_author != '') AND (comment_type = '')
                    {$posttype}
+                   {$skipuserclause}
                    GROUP BY comment_author
                    ORDER BY comment_total DESC
                    LIMIT {$r['offset']},{$r['limit']}";

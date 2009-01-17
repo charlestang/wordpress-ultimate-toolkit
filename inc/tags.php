@@ -3,6 +3,13 @@
  * All the template tags user can use are in this 
  * file.
  */
+function _wut_get_permalink($post){
+    if(function_exists('custom_get_permalink')){
+        return custom_get_permalink($post);
+    }else{
+        return get_permalink($post->ID);
+    }
+}
 function wut_recent_posts($args = '') {
     global $wut_querybox;
     $defaults = array(
@@ -21,10 +28,11 @@ function wut_recent_posts($args = '') {
     if (empty($items)){
         $html = $r['before'] . $r['none'] . $r['after'];
     }else{
-        // TODO a lot of things to add here, like permalink, link, etc.
         foreach($items as $item){
+            $permalink = _wut_get_permalink($item);
             $html .= $r['before'];
-            $html .= strip_tags($item->post_title);
+            $html .= "<a href=\"{$permalink}\">" . strip_tags($item->post_title)
+                     . '</a>';
             $html .= $r['after'];
         }
     }
@@ -220,5 +228,4 @@ function wut_recent_commentators($args = '') {
     else
         return $html;
 }
-
 ?>
