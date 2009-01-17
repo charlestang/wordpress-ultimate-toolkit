@@ -25,3 +25,7 @@
 13. 注释一律采用/**作为第一行，可参考WP代买的注释风格。
 
 14. 考虑遵守WP的编码规范。^-^http://codex.wordpress.org/WordPress_Coding_Standards
+
+15. 杜绝使用tab，而是使用空格来代替。因为tab非常ugly，在不同编辑器下宽度不一样。
+
+16. 每行少于80个字符，要照顾低分辨率开发者。
