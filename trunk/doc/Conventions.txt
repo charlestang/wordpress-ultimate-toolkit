@@ -1,31 +1,31 @@
-1. ���ж��������� WUT_ ��ͷ����д�������������ʹ���շ�д������WUT_QueryBox��
+1. 所有对象名称以 WUT_ 开头（大写），后面的名字使用驼峰写法，如WUT_QueryBox。
 
-2. ���е�ȫ�ֺ�����wut_��Сд����ͷ���������ʶ�����»��߷ֿ�����wut_recent_comments()�������Ҫ���� template tags����ģ���ȫ�ֺ�������ʽ���ڡ�
+2. 所有的全局函数以wut_（小写）开头，后面名词短语，用下划线分开，如wut_recent_comments()。这个主要用在 template tags上面的，以全局函数的形式存在。
 
-3. incĿ¼�µ�php�ļ�������������࣬һ����class��ͷ��Ȼ���㣬Ȼ����������ƣ��м䲻�֣�ȫ��Сд����class.querybox.php��
+3. inc目录下的php文件命名，如果是类，一律以class开头，然后句点，然后是类的名称，中间不分，全部小写，如class.querybox.php。
 
-4. �����ļ���������������һ��Сд���磬tags.php��widgets.php������widget.widgetname.php��
+4. 其他文件以其作用命名，一律小写。如，tags.php，widgets.php，或者widget.widgetname.php。
 
-5. id �� class �������ܹ���Ϊ�� �������ȣ�����Ϊ�������ȸ���������ȡ�������� main-nav, ������������Ҳ������ʵ������������ٽ�ϱ������������� skin-blue, present-tab, col-main.
+5. id 和 class 的命名总规则为： 内容优先，表现为辅。首先根据内容来取名，比如 main-nav, 如果根据内容找不到合适的命名，可以再结合表现来定，比如 skin-blue, present-tab, col-main.
 
-6. id �� class ����һ��Сд��������������ַ����ӣ����� recommend-presents
+6. id 和 class 名称一律小写，多个单词用连字符连接，比如 recommend-presents
 
-7. id �� class ������ֻ�ܳ���Сд��26��Ӣ����ĸ�����ֺ����ַ���-�����κ������ַ����Ͻ�����
+7. id 和 class 名称中只能出现小写的26个英文字母、数字和连字符（-），任何其它字符都严禁出现
 
-8. id �� class ������Ӣ�ĵ���������ȷʵ�Ҳ������ʵĵ���ʱ�����Կ���ʹ�ò�Ʒ������ƴ�������� wangwang, dating. �����й��Լ��Ա���ɫ�ʻ㣬Ҳ����ʹ��ƴ�������� xiaobao, daigou. ���˲�Ʒ���ƺ���ɫ�ʻ㣬�����κ�����¶��Ͻ�ʹ��ƴ��
+8. id 和 class 尽量用英文单词命名，确实找不到合适的单词时，可以考虑使用产品的中文拼音，比如 wangwang, dating. 对于中国以及淘宝特色词汇，也可以使用拼音，比如 xiaobao, daigou. 除了产品名称和特色词汇，其它任何情况下都严禁使用拼音
 
-9. �ڲ�Ӱ�����������£�id �� class �����п����ʵ�����Ӣ�ĵ�����д������ col, nav, hd, bd, ft �ȣ����м�������д
+9. 在不影响语义的情况下，id 和 class 名称中可以适当采用英文单词缩写，比如 col, nav, hd, bd, ft 等，但切忌自造缩写
 
-10. id �� class �����еĵ�һ���ʱ����ǵ���ȫƴ������ǳ������ĵ�����д������ present, col
+10. id 和 class 名称中的第一个词必须是单词全拼或语义非常清晰的单词缩写，比如 present, col
 
-11. �����˽�к���һ�����»��߿�ͷ��
+11. 对象的私有函数一律以下划线开头。
 
-12. ��������һ��ʹ�����ʣ����߶����������֮���»��߷ֿ�����������Ӧ�ö��书�ܽ��и������粻���ر���Ȼ��Ҫдע�͡�
+12. 函数命名一般使用名词，或者动宾短语，单词之间下划线分开。函数名称应该对其功能进行概括，如不是特别显然，要写注释。
 
-13. ע��һ�ɲ���/**��Ϊ��һ�У��ɲο�WP�����ע�ͷ��
+13. 注释一律采用/**作为第一行，可参考WP代买的注释风格。
 
-14. ��������WP�ı���淶��^-^http://codex.wordpress.org/WordPress_Coding_Standards
+14. 考虑遵守WP的编码规范。^-^http://codex.wordpress.org/WordPress_Coding_Standards
 
-15. �ž�ʹ��tab������ʹ�ÿո������档��Ϊtab�ǳ�ugly���ڲ�ͬ�༭���¿��Ȳ�һ����
+15. 杜绝使用tab，而是使用空格来代替。因为tab非常ugly，在不同编辑器下宽度不一样。
 
-16. ÿ������80���ַ���Ҫ�չ˵ͷֱ��ʿ����ߡ�
+16. 每行少于80个字符，要照顾低分辨率开发者。

@@ -33,7 +33,7 @@ function wut_recent_posts($args = '') {
             $html .= $r['before'];
             $html .= "<a href=\"{$permalink}\">" . strip_tags($item->post_title)
                      . '</a>';
-            $html .= $r['after'];
+            $html .= $r['after'] . "\n";
         }
     }
     if ($r['echo'])
@@ -60,7 +60,7 @@ function wut_random_posts($args = '') {
     foreach($items as $item){
         $html .= $r['before'];
         $html .= strip_tags($item->post_title);
-        $html .= $r['after'];
+        $html .= $r['after'] . "\n";
     }
     if ($r['echo'])
         echo $html;
@@ -86,7 +86,7 @@ function wut_related_posts($args = '') {
     foreach($items as $item){
         $html .= $r['before'];
         $html .= strip_tags($item->post_title);
-        $html .= $r['after'];
+        $html .= $r['after'] . "\n";
     }
     if ($r['echo'])
         echo $html;
@@ -114,7 +114,7 @@ function wut_same_classified_posts($args = '') {
     foreach($items as $item){
         $html .= $r['before'];
         $html .= strip_tags($item->post_title);
-        $html .= $r['after'];
+        $html .= $r['after'] . "\n";
     }
     if ($r['echo'])
         echo $html;
@@ -141,7 +141,7 @@ function wut_most_commented_posts($args = '') {
     foreach($items as $item){
         $html .= $r['before'];
         $html .= strip_tags($item->post_title);
-        $html .= $r['after'];
+        $html .= $r['after'] . "\n";
     }
     if ($r['echo'])
         echo $html;
@@ -169,7 +169,7 @@ function wut_recent_comments($args = '') {
     foreach($items as $item){
         $html .= $r['before'];
         $html .= $item->comment_author . ':' . $item->comment_content;
-        $html .= $r['after'];
+        $html .= $r['after'] . "\n";
     }
     if ($r['echo'])
         echo $html;
@@ -195,7 +195,7 @@ function wut_active_commentators($args = '') {
     foreach($items as $item){
         $html .= $r['before'];
         $html .= $item->comment_author;
-        $html .= $r['after'];
+        $html .= $r['after'] . "\n";
     }
     if ($r['echo'])
         echo $html;

@@ -13,19 +13,44 @@ function wut_widget_recent_posts_init(){
     }
     function wut_widget_recent_posts_control(){
         $defaults = array(
-            'title'     => 'WUT Recent Posts'
+            'title'     => 'WUT Recent Posts',
+            'limit'     => 10,
+            'offset'    => 0,
+            'before'    => '<li>',
+            'after'     => '</li>'
         );
         $options = get_option('wut-widget-recent-posts');
         $options = wp_parse_args($options, $defaults);
         if ($_POST['wut-recent-posts-submit']){
-            $options['title'] = $_POST['wut-recent-posts-title'];
+            $options['title'] = strip_tags($_POST['wut-recent-posts-title']);
+            $options['limit'] = intval($_POST['wut-recent-posts-limit']);
+            $options['offset'] = intval($_POST['wut-recent-posts-offset']);
             update_option('wut-widget-recent-posts',$options);
         }
+        ?>
+        <table>
+            <tr>
+                <td class="alignright"><?php _e('Widget Title:', 'wut');?></td>
+                <td><input id="wut-recent-posts-title" name="wut-recent-posts-title" type="text" size="30" value="<?php echo htmlspecialchars(stripslashes($options['title']));?>"/></td>
+            </tr>
+            <tr>
+                <td class="alignright"><?php _e('Number of Posts:', 'wut');?></td>
+                <td><input id="wut-recent-posts-limit" name="wut-recent-posts-limit" type="text" value="<?php echo $options['limit'];?>" /></td>
+            </tr>
+            <tr>
+                <td class="alignright"><?php _e('Offset:', 'wut');?></td>
+                <td><input id="wut-recent-posts-offset" name="wut-recent-posts-offset" type="text" value="<?php echo $options['offset'];?>" /></td>
+            </tr>
+            <tr>
+                <td><input id="wut-recent-posts-submit" name="wut-recent-posts-submit" type="hidden" value="1"/></td>
+            </tr>
+        </table>
+        <?php
     }
     
     $widget_ops =  array(
         'classname'     => 'wut-widget-recent-posts',
-        'description'   => __( 'List the recent posts and provide some advanced options', 'wut')
+        'description'   => __('List the recent posts and provide some advanced options', 'wut')
     );
     $control_ops = array(
         'width'     => 400,
@@ -37,38 +62,134 @@ function wut_widget_recent_posts_init(){
     $control_cb = 'wut_widget_recent_posts_control';
 	// Register Widgets
 	wp_register_sidebar_widget($id, $name, $widget_cb, $widget_ops);
-	wp_register_widget_control($id,$name, $control_cb, $control_ops);
+	wp_register_widget_control($id, $name, $control_cb, $control_ops);
 }
 
 function wut_widget_random_posts_init(){
+    function wut_widget_random_posts_body(){
+        extract($args);
+        $options = get_option('wut-widget-random-posts');
+        echo $before_widget, $before_title, $options['title'], $after_title;
+        echo '<ul>', wut_random_posts(), '</ul>';
+        echo $after_widget;
+    }
+    function wut_widget_random_posts_control(){
+        $defaults = array(
+            'title'     => 'WUT Random Posts'
+        );
+        $options = get_option('wut-widget-random-posts');
+        $options = wp_parse_args($options, $defaults);
+        if ($_POST['wut-random-posts-submit']){
+            $options['title'] = $_POST['wut-random-posts-title'];
+            update_option('wut-widget-random-posts',$options);
+        }
+    }
 
+    $widget_ops =  array(
+        'classname'     => 'wut-widget-random-posts',
+        'description'   => __( 'List the random posts', 'wut')
+    );
+    $control_ops = array(
+        'width'     => 400,
+        'height'    => 200
+    );
+    $id     = 'wut-widget-random-posts';
+    $name   = __('WUT Random Posts','wut');
+    $widget_cb  = 'wut_widget_random_posts_body';
+    $control_cb = 'wut_widget_random_posts_control';
+	// Register Widgets
+	wp_register_sidebar_widget($id, $name, $widget_cb, $widget_ops);
+	wp_register_widget_control($id, $name, $control_cb, $control_ops);
 }
 
 function wut_widget_related_posts_init(){
-
+    function wut_widget_related_posts_body(){
+        extract($args);
+        $options = get_option('wut-widget-related-posts');
+        echo $before_widget, $before_title, $options['title'], $after_title;
+        echo '<ul>', wut_relateds_posts(), '</ul>';
+        echo $after_widget;
+    }
+    function wut_widget_related_posts_control(){
+        
+    }
 }
 
 function wut_widget_same_classified_posts_init(){
+    function wut_widget_same_classified_posts_body(){
+        extract($args);
+        $options = get_option('wut-widget-recent-posts');
+        echo $before_widget, $before_title, $options['title'], $after_title;
+        echo '<ul>', wut_recent_posts(), '</ul>';
+        echo $after_widget;
+    }
+    function wut_widget_same_classified_posts_control(){
 
+    }
 }
 
 function wut_widget_most_commented_posts_init(){
+    function wut_widget_most_commented_posts_body(){
+        extract($args);
+        $options = get_option('wut-widget-recent-posts');
+        echo $before_widget, $before_title, $options['title'], $after_title;
+        echo '<ul>', wut_recent_posts(), '</ul>';
+        echo $after_widget;
+    }
+    function wut_widget_most_commented_posts_control(){
 
+    }
 }
 
 function wut_widget_recent_comments_init(){
+    function wut_widget_recent_comments_body(){
+        extract($args);
+        $options = get_option('wut-widget-recent-posts');
+        echo $before_widget, $before_title, $options['title'], $after_title;
+        echo '<ul>', wut_recent_posts(), '</ul>';
+        echo $after_widget;
+    }
+    function wut_widget_recent_comments_control(){
 
+    }
 }
 
 function wut_widget_active_commentators_init(){
+    function wut_widget_active_commentators_body(){
+        extract($args);
+        $options = get_option('wut-widget-recent-posts');
+        echo $before_widget, $before_title, $options['title'], $after_title;
+        echo '<ul>', wut_recent_posts(), '</ul>';
+        echo $after_widget;
+    }
+    function wut_widget_active_commentators_control(){
 
+    }
 }
 
 function wut_widget_recent_commentators_init(){
+    function wut_widget_recent_commentators_body(){
+        extract($args);
+        $options = get_option('wut-widget-recent-posts');
+        echo $before_widget, $before_title, $options['title'], $after_title;
+        echo '<ul>', wut_recent_posts(), '</ul>';
+        echo $after_widget;
+    }
+    function wut_widget_recent_commentators_control(){
 
+    }
 }
 
 function wut_widget_advanced_blogroll_init(){
+    function wut_widget_advanced_blogroll_body(){
+        extract($args);
+        $options = get_option('wut-widget-recent-posts');
+        echo $before_widget, $before_title, $options['title'], $after_title;
+        echo '<ul>', wut_recent_posts(), '</ul>';
+        echo $after_widget;
+    }
+    function wut_widget_advanced_blogroll_control(){
 
+    }
 }
 ?>
