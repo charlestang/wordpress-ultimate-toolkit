@@ -24,12 +24,16 @@ Author URI: http://www.charlestasng.cn
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-require(dirname(__FILE__) . '/inc/class.querybox.php');
-require(dirname(__FILE__) . '/inc/tags.php');
+$wut_base_name = dirname(__FILE__);
+require($wut_base_name . '/inc/class.querybox.php');
+require($wut_base_name . '/inc/tags.php');
+require($wut_base_name . '/inc/widgets.php');
+
 add_action('plugins_loaded','wut_init');
 function wut_init(){
 	global $wut_querybox;
 	$wut_querybox = new WUT_QueryBox();
-}
 
+    add_action('widgets_init', 'wut_widget_recent_posts_init');
+}
 ?>
