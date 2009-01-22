@@ -58,8 +58,9 @@ function wut_random_posts($args = '') {
 
     $html = '';
     foreach($items as $item){
+        $permalink = _wut_get_permalink($item);
         $html .= $r['before'];
-        $html .= strip_tags($item->post_title);
+        $html .= '<a href="' . $permalink . '">' . strip_tags($item->post_title) . '</a>';
         $html .= $r['after'] . "\n";
     }
     if ($r['echo'])

@@ -35,5 +35,6 @@ function wut_init(){
 	$wut_querybox = new WUT_QueryBox();
 
     add_action('widgets_init', 'wut_widget_recent_posts_init');
+    add_action('widgets_init', 'wut_widget_random_posts_init');
 }
 ?>
