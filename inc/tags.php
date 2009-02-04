@@ -10,6 +10,10 @@ function _wut_get_permalink($post){
         return get_permalink($post->ID);
     }
 }
+/**
+ * @version 1.0
+ * @author Charles
+ */
 function wut_recent_posts($args = '') {
     global $wut_querybox;
     $defaults = array(
@@ -19,55 +23,85 @@ function wut_recent_posts($args = '') {
         'after'         => '</li>',
         'type'          => 'both',      //'post' or 'page' or 'both'
         'skips'         => '',          //comma seperated post_ID list
-        'none'          => '',          //tips to show when results is empty
+        'none'          => 'No Posts.', //tips to show when results is empty
+        'password'      => 'hide',      //show password protected post or not
+        'orderby'       => 'post_date', //'post_modified' is alternative
+        'xformat'       => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
         'echo'          => 1
     );
     $r = wp_parse_args($args, $defaults);
-    $items = $wut_querybox->get_recent_posts($r);
+    extract($r, EXTR_SKIP);
+
+    $password = $password == 'hide' ? 0 : 1;
+    $query_args = compact("limit", "offset", "type", "skips", "password", "orderby");
+    $items = $wut_querybox->get_recent_posts($query_args);
+
     $html = '';
     if (empty($items)){
-        $html = $r['before'] . $r['none'] . $r['after'];
+        $html = $before . $none . $after;
     }else{
         foreach($items as $item){
             $permalink = _wut_get_permalink($item);
-            $html .= $r['before'];
-            $html .= "<a href=\"{$permalink}\">" . strip_tags($item->post_title)
-                     . '</a>';
-            $html .= $r['after'] . "\n";
+            $html .= $before . $xformat;
+            $html = str_replace('%permalink%', $permalink, $html);
+            $html = str_replace('%title%', $item->post_title, $html);
+            $html = str_replace('%postdate%', $item->post_date, $html);
+            $html = str_replace('%commentcount%', $item->comment_count, $html);
+            $html = apply_filters('wut_recent_post_item', $html, $item);
+            $html .= $after . "\n";
         }
     }
-    if ($r['echo'])
+    if ($echo)
         echo $html;
     else
         return $html;
 }
+
+/**
+ * @version 1.0
+ * @author Charles
+ */
 function wut_random_posts($args = '') {
     global $wut_querybox;
     $defaults = array(
         'limit'         => 5,
-        'length'        => 400,
         'before'        => '<li>',
         'after'         => '</li>',
-        'showexcerpt'   => 1,
+        'type'          => 'post',
         'skips'         => '',
+        'none'          => 'No Posts.',
+        'password'      => 'hide',
+        'xformat'       => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
         'echo'          => 1
     );
     $r = wp_parse_args($args, $defaults);
+    extract($r, EXTR_SKIP);
 
-    $items = $wut_querybox->get_random_posts($r);
+    $password = $password == 'hide' ? 0 : 1;
+    $query_args = compact("limit", "type", "skips", "password");
+    $items = $wut_querybox->get_random_posts($query_args);
 
     $html = '';
-    foreach($items as $item){
-        $permalink = _wut_get_permalink($item);
-        $html .= $r['before'];
-        $html .= '<a href="' . $permalink . '">' . strip_tags($item->post_title) . '</a>';
-        $html .= $r['after'] . "\n";
+    if (empty($items)){
+        $html .= $before . $none . $after;
+    }else{
+        foreach($items as $item){
+            $permalink = _wut_get_permalink($item);
+            $html .= $before . $xformat;
+            $html = str_replace('%permalink%', $permalink, $html);
+            $html = str_replace('%title%', $item->post_title, $html);
+            $html = str_replace('%postdate%', $item->post_date, $html);
+            $html = str_replace('%commentcount%', $item->comment_count, $html);
+            $html = apply_filters('wut_random_post_item', $html, $item);
+            $html .= $after . "\n";
+        }
     }
-    if ($r['echo'])
+    if ($echo)
         echo $html;
     else
         return $html;
 }
+
 function wut_related_posts($args = '') {
     global $wut_querybox;
     $defaults = array(
