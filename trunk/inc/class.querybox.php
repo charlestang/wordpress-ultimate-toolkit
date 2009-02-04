@@ -7,47 +7,64 @@
  * 
  */
 class WUT_QueryBox{
+    /**
+     * @version 1.0
+     * @author Charles
+     */
     function get_recent_posts($args = ''){
         global $wpdb;
         $defaults = array(
             'offset'    =>    0,
             'limit'     =>    10,
             'type'      =>    'both',
-            'skips'     =>    ''
+            'skips'     =>    '',
+            'password'  =>    0, //show password protected post or not
+            'orderby'   =>    'post_date'  //or 'post_modified'
         );
 
         $r = wp_parse_args($args, $defaults);
+
         $posttype = $this->_post_type_clause($r['type']);
         $skipclause = $this->_skip_clause('ID', $r['skips']);
+        $password = $this->_password_clause($r['password']);
+        $orderby = $this->_orderby_clause($r['orderby'], 'DESC');
         
-        $query = "SELECT ID, post_title, post_date, post_content, post_name,
-                         comment_count
+        $query = "SELECT ID, post_author, post_title, post_date, post_content,
+                        post_name, post_excerpt, post_modified, comment_count
                   FROM {$wpdb->posts}
                   WHERE post_status = 'publish'
+                  {$password}
                   {$posttype}
                   {$skipclause}
-                  ORDER BY post_date DESC
+                  {$orderby}
                   LIMIT {$r['offset']},{$r['limit']}";
         return $wpdb->get_results($query);
     }
 
+    /**
+     * @version 1.0
+     * @author Charles
+     */
     function get_random_posts($args = ''){
         global $wpdb;
         $defaults = array(
             'limit'    =>   10,
             'type'     =>   'both',
-            'skips'    =>   ''
+            'skips'    =>   '',
+            'password' =>   0
         );
 
         $r = wp_parse_args($args,$defaults);
 
         $posttype = $this->_post_type_clause($r['type']);
         $skipclause = $this->_skip_clause('ID', $r['skips']);
-
-        $query = "SELECT ID, post_title, post_date, post_content, post_name,
-                         comment_count
+        $password = $this->_password_clause($r['password']);
+        
+        $query = "SELECT ID, post_author, post_title, post_date, post_content,
+                        post_name, post_excerpt, post_modified, comment_count
                   FROM {$wpdb->posts}
                   WHERE post_status = 'publish'
+                  {$password}
                   {$posttype}
                   {$skipclause}
                   ORDER BY RAND()
@@ -243,9 +260,9 @@ class WUT_QueryBox{
         if ('both' == $posttype){
             return '';
         } else if ('post' == $posttype) {
-            return 'AND post_type = "post"';
+            return 'AND post_type = \'post\'';
         } else if ('page' == $posttype) {
-            return 'AND post_type = "page"';
+            return 'AND post_type = \'page\'';
         } else {
             return '';
         }
@@ -256,6 +273,19 @@ class WUT_QueryBox{
         $skips = explode(',', $skipstr);
         $skips = implode('\',\'', $skips);
         return "AND {$filedtoskip} NOT IN('{$skips}')";
+    }
+
+    function _password_clause($show){
+        if(!$show){
+            return "AND post_password = '' ";
+        }else{
+            return " ";
+        }
+    }
+
+    function _orderby_clause($field, $order){
+        //TODO: validate the $field name
+        return "ORDER BY {$field} {$order}";
     }
 }/*End class WUT_QueryBox*/
 ?>
