@@ -102,6 +102,10 @@ function wut_random_posts($args = '') {
         return $html;
 }
 
+/**
+ * @version 1.0
+ * @author Charles
+ */
 function wut_related_posts($args = '') {
     global $wut_querybox;
     $defaults = array(
@@ -110,20 +114,41 @@ function wut_related_posts($args = '') {
         'offset'            => 0,
         'before'            => '<li>',
         'after'             => '</li>',
-        'commentcount'      => 1,
+        'type'              => 'both',
+        'skips'             => '',
+        'leastshare'        => 1,
+        'password'          => 'hide',
+        'orderby'           => 'post_date',
+        'order'             => 'DESC',
+        'xformat'           => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
+        'none'              => 'No Related Posts.',
         'echo'              => 1
     );
     $r = wp_parse_args($args, $defaults);
+    extract($r, EXTR_SKIP);
 
-    $items = $wut_querybox->get_related_posts($r);
+    $password = $password == 'hide' ? 0 : 1;
+    $query_args = compact('offset','limit','postid','skips','password',
+        'orderby','order','leastshare','type'
+    );
+    $items = $wut_querybox->get_related_posts($query_args);
 
     $html = '';
-    foreach($items as $item){
-        $html .= $r['before'];
-        $html .= strip_tags($item->post_title);
-        $html .= $r['after'] . "\n";
+    if(empty($items)){
+        $html = $before . $none . $after;
+    }else{
+        foreach($items as $item){
+            $permalink = _wut_get_permalink($item);
+            $html .= $before . $xformat;
+            $html = str_replace('%permalink%', $permalink, $html);
+            $html = str_replace('%title%', $item->post_title, $html);
+            $html = str_replace('%postdate%', $item->post_date, $html);
+            $html = str_replace('%commentcount%', $item->comment_count, $html);
+            $html = apply_filters('wut_related_post_item', $html, $item);
+            $html .= $after . "\n";
+        }
     }
-    if ($r['echo'])
+    if ($echo)
         echo $html;
     else
         return $html;
@@ -183,6 +208,10 @@ function wut_most_commented_posts($args = '') {
     else
         return $html;
 }
+/**
+ * @version 1.0
+ * @author Charles
+ */
 function wut_recent_comments($args = '') {
     global $wut_querybox;
     $defaults = array(
@@ -193,20 +222,35 @@ function wut_recent_comments($args = '') {
         'length'        => 50,
         'skipusers'     => 'admin', //comma seperated name list
         'avatarsize'    => 16,
-        'xformat'       => '<a class="commentor" href="%comment_author_url%" >%comment_author%</a> : <a class="comment_content" href="%permalink%" title="View the entire comment by %comment_author%" >%comment_excerpt%</a>',
+        'password'      => 'hide',
+        'posttype'      => 'post',
+        'commenttype'   => 'comment',
+        'xformat'       => '%gravatar%<a class="commentator" href="%permalink%" >%commentauthor%</a> : %commentexcerpt%',
         'echo'          => 1
     );
     $r = wp_parse_args($args, $defaults);
+    extract($r, EXTR_SKIP);
 
-    $items = $wut_querybox->get_recent_comments($r);
+    $password = $password == 'hide' ? 0 : 1;
+    $query_args = compact('limit','offset','skipusers','password','posttype','commenttype');
+    $items = $wut_querybox->get_recent_comments($query_args);
 
     $html = '';
-    foreach($items as $item){
-        $html .= $r['before'];
-        $html .= $item->comment_author . ':' . $item->comment_content;
-        $html .= $r['after'] . "\n";
+    if (empty($items)){
+        if($echo) echo ''; else return '';
+    }else{
+        foreach($items as $item){
+            $permalink = _wut_get_permalink($item) . "#comment-" . $item->comment_ID;
+            $html .= $before . $xformat;
+            $html = str_replace('%gravatar%', get_avatar($item->comment_author_email, $avatarsize), $html);
+            $html = str_replace('%permalink%', $permalink, $html);
+            $html = str_replace('%commentauthor%', $item->comment_author, $html);
+            $html = str_replace('%commentexcerpt%', $item->comment_content, $html);
+            $html = apply_filters('wut_recent_comment_item', $html, $item);
+            $html .= $after . "\n";
+        }
     }
-    if ($r['echo'])
+    if ($echo)
         echo $html;
     else
         return $html;

@@ -72,7 +72,11 @@ class WUT_QueryBox{
         return $wpdb->get_results($query);
     }
 
-    //TANGCHAO: this function is not normal, need to fixed
+    /**
+     *
+     * @version 1.0
+     * @author Charles
+     */
     function get_related_posts($args = ''){
         global $wpdb;
         $defaults = array(
@@ -80,7 +84,11 @@ class WUT_QueryBox{
             'limit'     => 10,
             'postid'    => false,
             'type'      => 'both',
-            'skips'     => ''
+            'skips'     => '',
+            'leastshare'=> 1,
+            'password'  => 0,
+            'orderby'   => 'post_date',
+            'order'     => 'DESC'
         );
         $r = wp_parse_args($args,$defaults);
 
@@ -89,16 +97,22 @@ class WUT_QueryBox{
             global $post;
             $r['postid'] = $post->ID;
         }
-        var_dump($r['postid']);
+
         $tags = wp_get_object_terms($r['postid'],'post_tag');
-        var_dump($tags);
+
         $tag_ids = '';
         foreach($tags as $tag) {
             $tag_ids .= '"' . $tag->term_id . '", ';
         }
         $tag_ids = substr($tag_ids, 0, strlen($tag_ids) - 2);
 
-        $query  = "SELECT ID, post_title, post_date, comment_count, post_name
+        $posttype = $this->_post_type_clause($r['type']);
+        $skipclause = $this->_skip_clause('ID', $r['skips']);
+        $password = $this->_password_clause($r['password']);
+
+        $query  = "SELECT ID, post_author, post_title, post_date, post_content,
+                        post_name, post_excerpt, post_modified, comment_count,
+                       COUNT(tr.object_id) as max_share
                    FROM {$wpdb->posts}
                    INNER JOIN {$wpdb->term_relationships} AS tr
                               ON (ID = tr.object_id)
@@ -106,10 +120,15 @@ class WUT_QueryBox{
                               ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
                    WHERE tt.taxonomy = 'post_tag'
                    AND ID <> {$r['postid']}
+                   {$password}
+                   {$posttype}
+                   {$skipclause}
                    AND post_status = 'publish'
-                   GROUP BY tr.object_id
+                   AND tt.term_id IN ({$tag_ids})
+                   GROUP BY tr.object_id 
+                   ORDER BY max_share DESC, {$r['orderby']} {$r['order']}
                    LIMIT {$r['offset']}, {$r['limit']}";
-        var_dump($query);
+
         return $wpdb->get_results($query);
     }
 
@@ -156,46 +175,97 @@ class WUT_QueryBox{
         return $wpdb->get_results($query);
     }
 
+    /**
+     * @version 1.0
+     * @author Charles
+     */
     function get_most_commented_posts($args = ''){
         global $wpdb;
         $defaults = array(
-            'offset'            =>            0,
-            'limit'             =>            10,
-            'type'              =>            'both',
-            'skips'             =>            ''
+            'offset'            => 0,
+            'limit'             => 10,
+            'type'              => 'both',
+            'skips'             => '',
+            'password'          => 0,
+            'days'              => 30 //use -1 to disable the time limit
         );
         $r = wp_parse_args($args,$defaults);
+
         $posttype = $this->_post_type_clause($r['type']);
-        $query  = "SELECT ID, post_title, post_name,
-                          COUNT(comment_post_ID) AS comment_total
+        $skipclause = $this->_skip_clause('ID', $r['skips']);
+        $password = $this->_password_clause($r['password']);
+
+	    $days = intval($r['days']);
+		if ($days > 0){
+			$limit_date = current_time('timestamp') - ($days*86400);
+			$limit_date = date('Y-m-d H:i:s', $limit_date);
+			$days = "AND post_date < '" . current_time('mysql')
+                ."' AND post_date > '" . $limit_date."'";
+		}else{
+			$days = '';
+		}
+        $query  = "SELECT ID, post_author, post_title, post_date, post_content,
+                        post_name, post_excerpt, post_modified, comment_count
                    FROM {$wpdb->posts}
-                   LEFT JOIN {$wpdb->comments} ON ID = comment_post_ID
-                   WHERE comment_approved = 1
+                   WHERE post_status='publish'
+                   {$password}
                    {$posttype}
+                   {$skipclause}
                    {$days}
-                   AND post_status = 'publish' AND post_password = ''
-                   GROUP BY comment_post_ID
-                   ORDER BY comment_total DESC
+                   ORDER BY comment_count DESC
                    LIMIT {$r['offset']},{$r['limit']}";
         return $wpdb->get_results($query);
     }
 
+    /**
+     * @version 1.0
+     * @author Charles
+     */
     function get_recent_comments($args = ''){
         global $wpdb;
         $defaults = array(
-            'limit'         =>            10,
-            'offset'        =>            0,
-            'skipusers'     =>            ''
+            'limit'         => 10,
+            'offset'        => 0,
+            'skipusers'     => '',     //comma seperated name list
+            'password'      => 0,
+            'postid'        => false,
+            'posttype'      => 'both', //'page' or 'post'
+            'commenttype'   => 'comment'      //'pingback' or 'trackback'
         );
         $r = wp_parse_args($args,$defaults);
         $skipuserclause = $this->_skip_clause("comment_author", $r['skipusers']);
+        $posttype = $this->_post_type_clause($r['posttype']);
+        $password = $this->_password_clause($r['password']);
+        switch($r['commenttype']){
+            case 'comment':
+                $commenttype = "AND comment_type=''";
+                break;
+            case 'pingback':
+                $commenttype = "AND comment_type='pingback'";
+                break;
+            case 'trackback':
+                $commenttype = "AND comment_type='trackback'";
+                break;
+            default:
+                $commenttype = "";
+        }
+        if($r['postid']){
+            $r['postid'] = (int) $r['postid'];
+            $belongpost = "AND ID='{$r['postid']}'";
+        }else{
+            $belongpost = "";
+        }
+
         $query = "SELECT ID, comment_ID, comment_content, comment_author,
                          comment_author_url, comment_author_email, post_title,
-                         comment_date
+                         comment_date, post_name, comment_type
                   FROM {$wpdb->posts},{$wpdb->comments}
                   WHERE ID = comment_post_ID
                   AND (post_status = 'publish' OR post_status = 'static')
-                  AND comment_type = ''
+                  {$belongpost}
+                  {$password}
+                  {$posttype}
+                  {$commenttype}
                   {$skipuserclause}
                   AND (comment_author != '')
                   AND comment_approved = '1'
