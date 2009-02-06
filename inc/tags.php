@@ -153,34 +153,61 @@ function wut_related_posts($args = '') {
     else
         return $html;
 }
+
+/**
+ * @version 1.0
+ * @author Charles
+ */
 function wut_same_classified_posts($args = '') {
     global $wut_querybox;
     $defaults = array(
         'postid'            => false,
-        'orderby'           => 'rand', //'date', 'comment_count'
+        'orderby'           => 'rand', //'post_date', 'comment_count', 'post_modified'
         'order'             => 'asc', //'desc'
         'before'            => '<li>',
         'after'             => '</li>',
         'limit'             => 5,
         'offset'            => 0,
-        'commentcount'      => 1,
+        'type'              => 'post', //@deprecated
+        'skips'             => '',
+        'password'          => 'hide',
+        'none'              => 'No Posts.',
+        'xformat'           => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
         'echo'              => 1
     );
-    $r = wp_parse_args($args, $defaults);
 
-    $items = $wut_querybox->get_same_classified_posts($r);
+    $r = wp_parse_args($args, $defaults);
+    extract($r, EXTR_SKIP);
+
+    $password = $password == 'hide' ? 0 : 1;
+    $query_args = compact('offset','limit','postid','skips','type','orderby','order','password');
+    $items = $wut_querybox->get_same_classified_posts($query_args);
 
     $html = '';
-    foreach($items as $item){
-        $html .= $r['before'];
-        $html .= strip_tags($item->post_title);
-        $html .= $r['after'] . "\n";
+    if (empty($items)){
+        $html = $before . $none . $after;
+    }else{
+        foreach($items as $item){
+            $permalink = _wut_get_permalink($item);
+            $html .= $before . $xformat;
+            $html = str_replace('%permalink%', $permalink, $html);
+            $html = str_replace('%title%', $item->post_title, $html);
+            $html = str_replace('%postdate%', $item->post_date, $html);
+            $html = str_replace('%commentcount%', $item->comment_count, $html);
+            $html = apply_filters('wut_same_classified_post_item', $html, $item);
+            $html .= $after . "\n";
+        }
     }
-    if ($r['echo'])
+    if ($echo)
         echo $html;
     else
         return $html;
 }
+
+/**
+ * @version 1.0
+ * @author Charles
+ */
 function wut_most_commented_posts($args = '') {
     global $wut_querybox;
     $defaults = array(
@@ -190,18 +217,34 @@ function wut_most_commented_posts($args = '') {
         'before'        => '<li>',
         'after'         => '</li>',
         'type'          => 'post', //'page', 'both'
-        'commentcount'  => 1,
+        'skips'         => '',
+        'days'          => 30, //use -1 to disable the time limit
+        'password'      => 'hide',
+        'none'          => 'No Posts.',
+        'xformat'       => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
         'echo'          => 1
     );
-    $r = wp_parse_args($args, $defaults);
 
-    $items = $wut_querybox->get_most_commented_posts($r);
+    $r = wp_parse_args($args, $defaults);
+    extract($r, EXTR_SKIP);
+
+    $password = $password == 'hide' ? 0 : 1;
+    $query_args = compact('offset','limit','type','skips','password','days');
+    $items = $wut_querybox->get_most_commented_posts($query_args);
 
     $html = '';
+    if (empty($items)){
+        $html = $before . $none . $after;
+    }
     foreach($items as $item){
-        $html .= $r['before'];
-        $html .= strip_tags($item->post_title);
-        $html .= $r['after'] . "\n";
+            $permalink = _wut_get_permalink($item);
+            $html .= $before . $xformat;
+            $html = str_replace('%permalink%', $permalink, $html);
+            $html = str_replace('%title%', $item->post_title, $html);
+            $html = str_replace('%postdate%', $item->post_date, $html);
+            $html = str_replace('%commentcount%', $item->comment_count, $html);
+            $html = apply_filters('wut_most_commented_post_item', $html, $item);
+            $html .= $after . "\n";
     }
     if ($r['echo'])
         echo $html;
@@ -255,54 +298,98 @@ function wut_recent_comments($args = '') {
     else
         return $html;
 }
+/**
+ * @version 1.0
+ * @author Charles
+ */
 function wut_active_commentators($args = '') {
     global $wut_querybox;
     $defaults = array(
-        'limit'         => 10,
-        'threshhold'    => 5,
-        'days'          => 7,
+        'limit'         => 10, //-1 to disable the limit
+        'threshhold'    => 2,
+        'avatarsize'    => 16,
+        'days'          => -1,
         'skipusers'     => 'admin',//comma seperated name list
         'before'        => '<li class="wkc_most_active">',
         'after'         => '</li>',
+        'none'          => 'No Results.',
+        'xformat'       => '%avatar%<a href="%url%" rel="nofollow">%author%</a>',
         'echo'          => 1
     );
-    $r = wp_parse_args($args, $defaults);
 
-    $items = $wut_querybox->get_active_commentators($r);
+    $r = wp_parse_args($args, $defaults);
+    extract($r, EXTR_SKIP);
+
+    $query_args = compact('limit','offset','skipusers','days');
+    $items = $wut_querybox->get_active_commentators($query_args);
 
     $html = '';
-    foreach($items as $item){
-        $html .= $r['before'];
-        $html .= $item->comment_author;
-        $html .= $r['after'] . "\n";
+    if (empty($items)){
+        $html = $before . $none . $after;
+    }else{
+        foreach($items as $item){
+            if ($item->comment_total < $threshhold){
+                if(empty($html)) $html = $before . $none . $after;
+                break;
+            }
+            $html .= $before . $xformat;
+            $html = str_replace('%author%',$item->comment_author, $html);
+            $html = str_replace('%url%',$item->comment_author_url, $html);
+            $html = str_replace('%avatar%',get_avatar($item->comment_author_email,$avatarsize), $html);
+            $html = apply_filters('wut_active_commentator_item',$html, $item);
+            $html .= $after;
+        }
     }
-    if ($r['echo'])
+    
+    if ($echo)
         echo $html;
     else
         return $html;
 }
+
+/**
+ * @version 1.0
+ * @author Charles
+ */
 function wut_recent_commentators($args = '') {
     global $wut_querybox;
     $defaults = array(
-        'limit'         => 10,
+        'limit'         => 10, //-1 to disable
+        'offset'        => 0,
         'threshhold'    => -1, //minus one to disable this functionality
-        'type'          => 'week',
+        'type'          => 'month', // 'month' is the alternative
         'skipusers'     => 'admin',
-        'before'        => '<li class="wkc_recent_commentors">',
+        'before'        => '<li>',
         'after'         => '</li>',
+        'none'          => 'No Results.',
+        'avatarsize'    => 16,
+        'xformat'       => '%avatar%<a href="%url%" rel="nofollow">%author%</a>',
         'echo'          => 1
     );
     $r = wp_parse_args($args, $defaults);
+    extract($r, EXTR_SKIP);
 
-    $items = $wut_querybox->get_recent_commentators($r);
+    $query_args = compact('limit','offset','skipusers','type');
+    $items = $wut_querybox->get_recent_commentators($query_args);
 
     $html = '';
-    foreach($items as $item){
-        $html .= $r['before'];
-        $html .= $item->comment_author;
-        $html .= $r['after'];
+    if (empty($items)){
+        $html = $before . $none . $after;
+    }else{
+        foreach($items as $item){
+            if ($item->comment_total < $threshhold){
+                if(empty($html)) $html = $before . $none . $after;
+                break;
+            }
+            $html .= $before . $xformat;
+            $html = str_replace('%author%',$item->comment_author, $html);
+            $html = str_replace('%url%',$item->comment_author_url, $html);
+            $html = str_replace('%avatar%',get_avatar($item->comment_author_email,$avatarsize), $html);
+            $html = apply_filters('wut_active_commentator_item',$html, $item);
+            $html .= $after;
+        }
     }
-    if ($r['echo'])
+    if ($echo)
         echo $html;
     else
         return $html;

@@ -366,7 +366,7 @@ class WUT_QueryBox{
         }else{
             $limit = "LIMIT {$r['offset']},{$r['limit']}";
         }
-        $query  = "SELECT comment_author, comment_author_url,
+        $query  = "SELECT comment_author, comment_author_url, comment_author_email,
                           COUNT(comment_ID) AS 'comment_total'
                    FROM {$wpdb->comments}
                    WHERE comment_approved = '1'
