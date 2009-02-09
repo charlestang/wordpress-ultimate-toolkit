@@ -16,22 +16,21 @@ function wut_widget_recent_posts_init(){
         if(!isset($options[$number]))
             return;
         $title = $options[$number]['title'];
-        $limit = $options[$number]['limit'];
-        $offset = $options[$number]['offset'];
-        $before = $options[$number]['before'];
-        $after = $options[$number]['after'];
-        $type = $options[$number]['type'];
 
         $tag_args = array(
-            'limit'         => $limit,           //how many items should be show
-            'offset'        => $offset,
-            'before'        => $before,
-            'after'         => $after,
-            'type'          => $type,      //'post' or 'page' or 'both'
-            'skips'         => '',          //comma seperated post_ID list
-            'none'          => '',          //tips to show when results is empty
+            'limit'         => $options[$number]['limit'],
+            'offset'        => $options[$number]['offset'],
+            'before'        => $options[$number]['before'],
+            'after'         => $options[$number]['after'],
+            'type'          => $options[$number]['type'],
+            'skips'         => $options[$number]['skips'],
+            'none'          => $options[$number]['none'],
+            'password'      => $options[$number]['password'],
+            'orderby'       => $options[$number]['orderby'],
+            'xformat'       => $options[$number]['xformat'],
             'echo'          => 1
         );
+
         echo $before_widget, $before_title, $title, $after_title;
         echo '<ul>', wut_recent_posts($tag_args), '</ul>';
         echo $after_widget;
@@ -60,9 +59,9 @@ function wut_widget_recent_posts_init(){
                 $this_sidebar = array();
             }
             foreach ($this_sidebar as $_widget_id){
-                if ('wut_get_recent_posts_body' == $wp_registered_widgets[$_widget_id]['callback'] && isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])){
+                if ('wut_widget_recent_posts_body' == $wp_registered_widgets[$_widget_id]['callback'] && isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])){
                     $widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
-                    if (!in_array("wut-widget-recent-posts-$widget_number")){
+                    if (!in_array("wut-widget-recent-posts-$widget_number",$_POST['widget-id'])){
                         unset($options[$widget_number]);
                     }
                 }
@@ -74,6 +73,11 @@ function wut_widget_recent_posts_init(){
                 $options_this['before'] = stripslashes($posted['before']);
                 $options_this['after'] = stripslashes($posted['after']);
                 $options_this['type'] = $posted['type'];
+                $options_this['skips'] = $posted['skips'];
+                $options_this['none'] = strip_tags(stripslashes($posted['none']));
+                $options_this['password'] = $posted['password'];
+                $options_this['orderby'] = $posted['orderby'];
+                $options_this['xformat'] = stripcslashes($posted['xformat']);
                 $options[$widget_number] = $options_this;
             }
             update_option('wut-widget-recent-posts',$options);
@@ -86,6 +90,11 @@ function wut_widget_recent_posts_init(){
             $before = '<li>';
             $after = '</li>';
             $type = 'both';
+            $skips = '';
+            $none = 'No Posts.';
+            $password = 'hide';
+            $orderby = 'post_date';
+            $xfomat = '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)';
             $number = '%i%';
         }else{
             $title = attribute_escape($options[$number]['title']);
@@ -94,6 +103,11 @@ function wut_widget_recent_posts_init(){
             $before = attribute_escape($options[$number]['before']);
             $after = attribute_escape($options[$number]['after']);
             $type = $options[$number]['type'];
+            $skips = $options[$number]['skips'];
+            $none = attribute_escape($options[$number]['none']);
+            $password = $options[$number]['password'];
+            $orderby = $options[$number]['orderby'];
+            $xformat = attribute_escape($options[$number]['xformat']);
         }
         ?>
         <table>
@@ -133,12 +147,30 @@ function wut_widget_recent_posts_init(){
                 <td class="alignright"><?php _e('If the list is empty, show:','wut');?></td>
                 <td><input type="text" id="wut-recent-posts-none-<?php echo $number;?>" name="wut-recent-posts[<?php echo $number;?>][none]" value="No recent posts" /></td>
             </tr>
+            <tr>
+                <td class="alignright"><?php _e('Show password protected post?','wut');?></td>
+                <td>
+                    <p><input type="radio" id="wut-recent-posts-password-<?php echo $number;?>" name="wut-recent-posts[<?php echo $number;?>][password]" value="show" <?php if($password == 'show') echo 'checked="checked"';?> />Show.</p>
+                    <p><input type="radio" id="wut-recent-posts-password-<?php echo $number;?>" name="wut-recent-posts[<?php echo $number;?>][password]" value="hide" <?php if($password == 'hide') echo 'checked="checked"';?> />Hide.</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="alignright"><?php _e('Order by:','wut');?></td>
+                <td>
+                    <p><input type="radio" id="wut-recent-posts-orderby-<?php echo $number;?>" name="wut-recent-posts[<?php echo $number;?>][orderby]" value="post_date" <?php if($orderby == 'post_date') echo 'checked="checked"';?> />Post date.</p>
+                    <p><input type="radio" id="wut-recent-posts-orderby-<?php echo $number;?>" name="wut-recent-posts[<?php echo $number;?>][orderby]" value="post_modified" <?php if($orderby == 'post_modified') echo 'checked="checked"';?> />Post modified date.</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="alignright"><?php _e('The list item format:', 'wut');?></td>
+                <td><input id="wut-recent-posts-xformat-<?php echo $number;?>" name="wut-recent-posts[<?php echo $number;?>][xformat]" type="text" value="<?php echo $xformat;?>" /></td>
+            </tr>
         </table>
         <input id="wut-recent-posts-submit-<?php echo $number;?>" name="wut-recent-posts-submit-<?php echo $number;?>" type="hidden" value="1"/>
         <?php
     }
-
-    if (!$options = get_option('wut-widget-recent-posts')){
+    $options = get_option('wut-widget-recent-posts');
+    if (!$options){
         $options = array();
     }
     $widget_ops =  array(
@@ -172,65 +204,154 @@ function wut_widget_recent_posts_init(){
 }
 
 function wut_widget_random_posts_init(){
-    function wut_widget_random_posts_body($args){
-        extract($args);
+    function wut_widget_random_posts_body($args,$widget_args){
+        extract($args, EXTR_SKIP);
+        if (is_numeric($widget_args)){
+            $widget_args = array('number'=>$widget_args);
+        }
+        $widget_args = wp_parse_args($widget_args, array('number' => -1));
+        extract($widget_args,EXTR_SKIP);
+        
         $options = get_option('wut-widget-random-posts');
-        echo $before_widget, $before_title, $options['title'], $after_title;
-        echo '<ul>', wut_random_posts(), '</ul>';
+
+        if(!isset($options[$number])){
+            return;
+        }
+        $tag_args = array(
+            'limit'         => $options[$number]['limit'],
+            'before'        => $options[$number]['before'],
+            'after'         => $options[$number]['after'],
+            'type'          => $options[$number]['type'],
+            'skips'         => $options[$number]['skips'],
+            'none'          => $options[$number]['none'],
+            'password'      => $options[$number]['password'],
+            'xformat'       => $options[$number]['xformat'],
+            'echo'          => 1
+        );
+        echo $before_widget, $before_title, $options[$number]['title'], $after_title;
+        echo '<ul>', wut_random_posts($tag_args), '</ul>';
         echo $after_widget;
     }
-    function wut_widget_random_posts_control(){
-        $defaults = array(
-            'title'     => 'WUT Random Posts',
-            'limit'     => 10,
-            'before'    => '<li>',
-            'after'     => '</li>',
-            'showexcerpt'   => '1'
-        );
+    function wut_widget_random_posts_control($widget_args){
+        global $wp_registered_widgets;
+        static $update = false;
+        if(is_numeric($widget_args))
+            $widget_args = array('number' => $widget_args);
+        $widget_args = wp_parse_args($widget_args, array('number' => -1));
+        extract($widget_args, EXTR_SKIP);
+
         $options = get_option('wut-widget-random-posts');
-        $options = wp_parse_args($options, $defaults);
-        if ($_POST['wut-random-posts-submit']){
-            $options['title'] = $_POST['wut-random-posts-title'];
-            $options['limit'] = intval($_POST['wut-random-posts-limit']);
-            $options['before'] = stripslashes($_POST['wut-random-posts-before']);
-            $options['after'] = stripslashes($_POST['wut-random-posts-after']);
-            $options['showexcerpt'] = $_POST['wut-random-posts-showexcerpt'];
+        if(!is_array($options))
+            $options = array();
+
+        if(!$update && !empty($_POST['sidebar'])){
+            $sidebar = (string) $_POST['sidebar'];
+            $sidebars_widgets = wp_get_sidebars_widgets();
+            if(isset($sidebars_widgets[$sidebar])){
+                $this_sidebar =& $sidebars_widgets[$sidebar];
+            }else{
+                $this_sidebar = array();
+            }
+            foreach ($this_sidebar as $_widget_id){
+                if ('wut_get_random_posts_body' == $wp_registered_widgets[$_widget_id]['callback'] && isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])){
+                    $widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
+                    if (!in_array("wut-widget-random-posts-$widget_number", $_POST['widget-id'])){
+                        unset($options[$widget_number]);
+                    }
+                }
+            }
+            foreach((array)$_POST['wut-random-posts'] as $widget_number => $posted){
+                $options_this['title'] = strip_tags(stripslashes($posted['title']));
+                $options_this['limit'] = intval($posted['limit']);
+                $options_this['offset'] = intval($posted['offset']);
+                $options_this['before'] = stripslashes($posted['before']);
+                $options_this['after'] = stripslashes($posted['after']);
+                $options_this['type'] = $posted['type'];
+                $options_this['skips'] = $posted['skips'];
+                $options_this['password'] = $posted['password'];
+                $options_this['xformat'] = stripslashes($posted['xformat']);
+                $options[$widget_number] = $options_this;
+            }
             update_option('wut-widget-random-posts',$options);
+            $update = true;
         }
+        if ($number == -1){
+            $title = 'WUT Random Posts';
+            $limit = 10;
+            $before = '<li>';
+            $after = '</li>';
+            $type = 'both';
+            $skips = '';
+            $none = 'No Posts.';
+            $password = 'hide';
+            $xformat = '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)';
+            $number = '%i%';
+        }else{
+            $title = attribute_escape($options[$number]['title']);
+            $limit = $options[$number]['limit'];
+            $before = attribute_escape($options[$number]['before']);
+            $after = attribute_escape($options[$number]['after']);
+            $none = attribute_escape($options[$number]['none']);
+            $password = $options[$number]['password'];
+            $xformat = attribute_escape($options[$number]['xformat']);
+            $type = $options[$number]['type'];
+            $skips = $options[$number]['skips'];
+        }
+
         ?>
         <table>
             <tbody>
                 <tr>
                     <td class="alignright"><?php _e('Widget title:', 'wut');?></td>
-                    <td><input type="text" id="wut-random-posts-title" name="wut-random-posts-title" value="<?php echo $options['title'];?>" /></td>
+                    <td><input type="text" id="wut-random-posts-title-<?php echo $number;?>" name="wut-random-posts[<?php echo $number;?>][title]" value="<?php echo $title;?>" /></td>
                 </tr>
                 <tr>
                     <td class="alignright"><?php _e('Number of posts:', 'wut');?></td>
-                    <td><input type="text" id="wut-random-posts-limit" name="wut-random-posts-limit" value="<?php echo $options['limit'];?>" /></td>
+                    <td><input type="text" id="wut-random-posts-limit-<?php echo $number;?>" name="wut-random-posts[<?php echo $number;?>][limit]" value="<?php echo $options['limit'];?>" /></td>
                 </tr>
                 <tr>
                     <td class="alignright"><?php _e('HTML tags before a item:', 'wut');?></td>
-                    <td><input type="text" id="wut-random-posts-before" name="wut-random-posts-before" value="<?php echo htmlspecialchars($options['before']);?>" /></td>
+                    <td><input type="text" id="wut-random-posts-before-<?php echo $number;?>" name="wut-random-posts[<?php echo $number;?>][before]" value="<?php echo htmlspecialchars($options['before']);?>" /></td>
                 </tr>
                 <tr>
                     <td class="alignright"><?php _e('HTML tags after a item:', 'wut');?></td>
-                    <td><input type="text" id="wut-random-posts-after" name="wut-random-posts-after" value="<?php echo htmlspecialchars($options['after']);?>" /></td>
-                </tr>
-                <tr>
-                    <td class="alignright"><?php _e('Show excerpt in link\'s title:', 'wut');?></td>
-                    <td>
-                        <input type="hidden" id="wut-random-posts-showexcerpt" name="wut-random-posts-showexcerpt" value="0" />
-                        <input type="checkbox" id="wut-random-posts-showexcerpt" name="wut-random-posts-showexcerpt" value="1" <?php if($options['showexcerpt']) echo 'checked="checked"';?> /><?php _e('Check to enable.','wut');?>
-                    </td>
+                    <td><input type="text" id="wut-random-posts-after-<?php echo $number;?>" name="wut-random-posts[<?php echo $number;?>][after]" value="<?php echo htmlspecialchars($options['after']);?>" /></td>
                 </tr>
                 <tr>
                     <td class="alignright"><?php _e('Posts to exclude:', 'wut');?></td>
-                    <td><input type="text" id="wut-random-posts-skips" name="wut-random-posts-skips" value="" /></td>
+                    <td><input type="text" id="wut-random-posts-skips-<?php echo $number;?>" name="wut-random-posts[<?php echo $number;?>][skips]" value="" /></td>
                 </tr>
             </tbody>
+            <tr>
+                <td class="alignright"><?php _e('Post type to show:', 'wut');?></td>
+                <td>
+                    <p><input type="radio" id="wut-random-posts-type-<?php echo $number;?>" name="wut-random-posts[<?php echo $number;?>][type]" value="both" <?php if($type == 'both') echo 'checked="checked"';?>/>both</p>
+                    <p><input type="radio" id="wut-random-posts-type-<?php echo $number;?>" name="wut-random-posts[<?php echo $number;?>][type]" value="page" <?php if($type == 'page') echo 'checked="checked"';?>/>page only</p>
+                    <p><input type="radio" id="wut-random-posts-type-<?php echo $number;?>" name="wut-random-posts[<?php echo $number;?>][type]" value="post" <?php if($type == 'post') echo 'checked="checked"';?>/>post only</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="alignright"><?php _e('If the list is empty, show:','wut');?></td>
+                <td><input type="text" id="wut-random-posts-none-<?php echo $number;?>" name="wut-random-posts[<?php echo $number;?>][none]" value="No recent posts" /></td>
+            </tr>
+            <tr>
+                <td class="alignright"><?php _e('Show password protected post?','wut');?></td>
+                <td>
+                    <p><input type="radio" id="wut-random-posts-password-<?php echo $number;?>" name="wut-random-posts[<?php echo $number;?>][password]" value="show" <?php if($password == 'show') echo 'checked="checked"';?> />Show.</p>
+                    <p><input type="radio" id="wut-random-posts-password-<?php echo $number;?>" name="wut-random-posts[<?php echo $number;?>][password]" value="hide" <?php if($password == 'hide') echo 'checked="checked"';?> />Hide.</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="alignright"><?php _e('The list item format:', 'wut');?></td>
+                <td><input type="text" id="wut-random-posts-xformat-<?php echo $number;?>" name="wut-random-posts[<?php echo $number;?>][xformat]" value="<?php echo $xformat;?>" /></td>
+            </tr>
         </table>
-        <input id="wut-random-posts-submit" name="wut-random-posts-submit" type="hidden" value="1"/>
+        <input id="wut-random-posts-submit-<?php echo $number;?>" name="wut-random-posts-submit-<?php echo $number;?>" type="hidden" value="1"/>
         <?php
+    }
+    $options = get_option('wut-widget-random-posts');
+    if(!$options){
+        $options = array();
     }
 
     $widget_ops =  array(
@@ -239,15 +360,27 @@ function wut_widget_random_posts_init(){
     );
     $control_ops = array(
         'width'     => 400,
-        'height'    => 200
+        'height'    => 200,
+        'id_base'   => 'wut-widget-random-posts'
     );
-    $id     = 'wut-widget-random-posts';
     $name   = __('WUT Random Posts','wut');
     $widget_cb  = 'wut_widget_random_posts_body';
     $control_cb = 'wut_widget_random_posts_control';
-	// Register Widgets
-	wp_register_sidebar_widget($id, $name, $widget_cb, $widget_ops);
-	wp_register_widget_control($id, $name, $control_cb, $control_ops);
+    // Register Widgets
+    $registered = false;
+    foreach(array_keys($options) as $o){
+        if(!isset($options[$o]['title'])){
+            continue;
+        }
+        $id = "wut-widget-random-posts-$o";
+        $registered = true;
+        wp_register_sidebar_widget($id, $name, $widget_cb, $widget_ops, array('number'=>$o));
+        wp_register_widget_control($id, $name, $control_cb, $control_ops, array('number'=>$o));
+    }
+    if (!$registered){
+        wp_register_sidebar_widget("wut-widget-random-posts-1", $name, $widget_cb, $widget_ops, array('number'=>-1));
+        wp_register_widget_control("wut-widget-random-posts-1", $name, $control_cb, $control_ops,array('number'=>-1));
+    }
 }
 
 function wut_widget_related_posts_init(){
