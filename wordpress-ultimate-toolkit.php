@@ -36,5 +36,6 @@ function wut_init(){
 
     add_action('widgets_init', 'wut_widget_recent_posts_init');
     add_action('widgets_init', 'wut_widget_random_posts_init');
+    add_action('widgets_init', 'wut_widget_related_posts_init');
 }
 ?>
