@@ -105,6 +105,9 @@ class WUT_QueryBox{
             $tag_ids .= '"' . $tag->term_id . '", ';
         }
         $tag_ids = substr($tag_ids, 0, strlen($tag_ids) - 2);
+        if(empty($tag_ids)){
+            return '';
+        }
 
         $posttype = $this->_post_type_clause($r['type']);
         $skipclause = $this->_skip_clause('ID', $r['skips']);
@@ -136,7 +139,7 @@ class WUT_QueryBox{
      * @version 1.0
      * @author Charles
      */
-    function get_same_classified_posts($args = ''){
+    function get_posts_by_category($args = ''){
         global $wpdb;
         $defaults = array(
             'offset'        => 0,

@@ -26,16 +26,21 @@ Author URI: http://www.charlestasng.cn
 */
 $wut_base_name = dirname(__FILE__);
 require($wut_base_name . '/inc/class.querybox.php');
+require($wut_base_name . '/inc/class.utils.php');
 require($wut_base_name . '/inc/tags.php');
 require($wut_base_name . '/inc/widgets.php');
 
 add_action('plugins_loaded','wut_init');
 function wut_init(){
-	global $wut_querybox;
+	global $wut_querybox, $wut_utils;
 	$wut_querybox = new WUT_QueryBox();
+    $wut_utils = new WUT_Utils();
 
     add_action('widgets_init', 'wut_widget_recent_posts_init');
     add_action('widgets_init', 'wut_widget_random_posts_init');
     add_action('widgets_init', 'wut_widget_related_posts_init');
+    add_action('widgets_init', 'wut_widget_posts_by_category_init');
+
+    add_filter('get_the_excerpt', array(&$wut_utils,'excerpt'), 9);
 }
 ?>

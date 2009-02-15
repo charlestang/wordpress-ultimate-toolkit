@@ -158,7 +158,7 @@ function wut_related_posts($args = '') {
  * @version 1.0
  * @author Charles
  */
-function wut_same_classified_posts($args = '') {
+function wut_posts_by_category($args = '') {
     global $wut_querybox;
     $defaults = array(
         'postid'            => false,
@@ -181,7 +181,7 @@ function wut_same_classified_posts($args = '') {
 
     $password = $password == 'hide' ? 0 : 1;
     $query_args = compact('offset','limit','postid','skips','type','orderby','order','password');
-    $items = $wut_querybox->get_same_classified_posts($query_args);
+    $items = $wut_querybox->get_posts_by_category($query_args);
 
     $html = '';
     if (empty($items)){
