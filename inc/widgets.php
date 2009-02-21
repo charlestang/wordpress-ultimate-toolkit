@@ -869,7 +869,7 @@ function wut_widget_most_commented_posts_init(){
             $days = 30;
             $none = 'No Posts.';
             $password = 'hide';
-            $xfomat = '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)';
+            $xformat = attribute_escape('<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)');
             $number = '%i%';
         }else{
             $title = attribute_escape($options[$number]['title']);
@@ -920,7 +920,7 @@ function wut_widget_most_commented_posts_init(){
                 </tr>
                 <tr>
                     <td class="alignright"><?php _e('If the list is empty, show:','wut');?></td>
-                    <td><input type="text" id="wut-most-commented-posts-none-<?php echo $number;?>" name="wut-most-commented-posts[<?php echo $number;?>][none]" value="No recent posts" /></td>
+                    <td><input type="text" id="wut-most-commented-posts-none-<?php echo $number;?>" name="wut-most-commented-posts[<?php echo $number;?>][none]" value="<?php echo $none;?>" /></td>
                 </tr>
                 <tr>
                     <td class="alignright"><?php _e('Show password protected post?','wut');?></td>
@@ -974,14 +974,214 @@ function wut_widget_most_commented_posts_init(){
 
 function wut_widget_recent_comments_init(){
     function wut_widget_recent_comments_body($args, $widget_args){
-        extract($args);
-        $options = get_option('wut-widget-recent-posts');
-        echo $before_widget, $before_title, $options['title'], $after_title;
-        echo '<ul>', wut_recent_posts(), '</ul>';
+        extract($args, EXTR_SKIP);
+        if (is_numeric($widget_args))
+            $widget_args = array('number' => $widget_args);
+        $widget_args = wp_parse_args($widget_args, array('number' => -1));
+        extract($widget_args, EXTR_SKIP);
+
+        $options = get_option('wut-widget-recent-comments');
+
+        if(!isset($options[$number]))
+            return;
+        $title = $options[$number]['title'];
+
+        $tag_args = array(
+            'limit'         => $options[$number]['limit'],
+            'before'        => $options[$number]['before'],
+            'after'         => $options[$number]['after'],
+            'length'        => $options[$number]['length'],
+            'posttype'      => $options[$number]['posttype'],
+            'commenttype'   => $options[$nubmer]['commenttype'],
+            'skipusers'     => $options[$number]['skipusers'],
+            'avatarsize'    => $options[$number]['avatarsize'],
+            'none'          => $options[$number]['none'],
+            'password'      => $options[$number]['password'],
+            'xformat'       => $options[$number]['xformat']
+        );
+
+        echo $before_widget, $before_title, $title, $after_title;
+        echo '<ul>', wut_recent_comments($tag_args), '</ul>';
         echo $after_widget;
     }
     function wut_widget_recent_comments_control($widget_args){
+        global $wp_registered_widgets;
+        static $update = false;
+        if(is_numeric($widget_args))
+            $widget_args = array('number' => $widget_args);
 
+        $widget_args = wp_parse_args($widget_args, array('number' => -1));
+
+        extract($widget_args, EXTR_SKIP);
+
+        $options = get_option('wut-widget-recent-comments');
+
+        if(!is_array($options))
+            $options = array();
+
+        if(!$update && !empty($_POST['sidebar'])){
+            $sidebar = (string) $_POST['sidebar'];
+            $sidebars_widgets = wp_get_sidebars_widgets();
+            if(isset($sidebars_widgets[$sidebar])){
+                $this_sidebar =& $sidebars_widgets[$sidebar];
+            }else{
+                $this_sidebar = array();
+            }
+            foreach ($this_sidebar as $_widget_id){
+                if ('wut_widget_recent_comments_body' == $wp_registered_widgets[$_widget_id]['callback'] && isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])){
+                    $widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
+                    if (!in_array("wut-widget-recent-comments-$widget_number",$_POST['widget-id'])){
+                        unset($options[$widget_number]);
+                    }
+                }
+            }
+
+            foreach((array)$_POST['wut-recent-comments'] as $widget_number => $posted){
+                $options_this['title'] = strip_tags(stripslashes($posted['title']));
+                $options_this['limit'] = intval($posted['limit']);
+                $options_this['before'] = stripslashes($posted['before']);
+                $options_this['after'] = stripslashes($posted['after']);
+                $options_this['length'] = intval($posted['length']);
+                $options_this['posttype'] = $posted['posttype'];
+                $options_this['commenttype'] = $posted['commenttype'];
+                $options_this['skipusers'] = $posted['skipusers'];
+                $options_this['avatarsize'] = intval($posted['avatarsize']);
+                $options_this['none'] = strip_tags(stripslashes($posted['none']));
+                $options_this['password'] = $posted['password'];
+                $options_this['xformat'] = stripcslashes($posted['xformat']);
+                $options[$widget_number] = $options_this;
+            }
+            update_option('wut-widget-recent-comments',$options);
+            $update = true;
+        }
+
+        if ($number == -1){
+            $title = 'WUT Recent Comments';
+            $limit = 10;
+            $before = '<li>';
+            $after = '</li>';
+            $length = 50;
+            $posttype = 'post';
+            $commenttype = 'comment';
+            $skipusers = '';
+            $avatarsize = 16;
+            $none = 'No Posts.';
+            $password = 'hide';
+            $xformat = attribute_escape('%gravatar%<a class="commentator" href="%permalink%" >%commentauthor%</a> : %commentexcerpt%');
+            $number = '%i%';
+        }else{
+            $title = attribute_escape($options[$number]['title']);
+            $limit = $options[$number]['limit'];
+            $before = attribute_escape($options[$number]['before']);
+            $after = attribute_escape($options[$number]['after']);
+            $length = $options[$number]['length'];
+            $posttype = $options[$number]['posttype'];
+            $commenttype = $options[$number]['commenttype'];
+            $skipusers = $options[$number]['skipusers'];
+            $avatarsize = $options[$number]['avatarsize'];
+            $none = attribute_escape($options[$number]['none']);
+            $password = $options[$number]['password'];
+            $xformat = attribute_escape($options[$number]['xformat']);
+        }
+        ?>
+        <table>
+            <tbody>
+                <tr>
+                    <td class="alignright"><?php _e('Widget title:', 'wut');?></td>
+                    <td><input id="wut-recent-comments-title-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][title]" type="text" value="<?php echo $title;?>"/></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('Number of posts:', 'wut');?></td>
+                    <td><input id="wut-recent-comments-limit-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][limit]" type="text" value="<?php echo $limit;?>" /></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('HTML tags before a item:', 'wut');?></td>
+                    <td><input id="wut-recent-comments-before-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][before]" type="text" value="<?php echo $before;?>" /></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('HTML tags after a item:', 'wut');?></td>
+                    <td><input type="text" id="wut-recent-comments-after-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][after]" value="<?php echo $after;?>" /></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('Comment\'s excerpt length:', 'wut');?></td>
+                    <td><input id="wut-recent-comments-length-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][length]" type="text" value="<?php echo $length;?>" size="9"/><?php _e('words.','wut');?></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('Post type to show:', 'wut');?></td>
+                    <td>
+                        <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="both" <?php if($posttype == 'both') echo 'checked="checked"';?>/>both</p>
+                        <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="page" <?php if($psottype == 'page') echo 'checked="checked"';?>/>page only</p>
+                        <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="post" <?php if($posttype == 'post') echo 'checked="checked"';?>/>post only</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('Comments type to show:', 'wut');?></td>
+                    <td>
+                        <p><input type="radio" id="wut-recent-comments-commenttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][commenttype]" value="both" <?php if($commenttype == 'both') echo 'checked="checked"';?>/>both</p>
+                        <p><input type="radio" id="wut-recent-comments-commenttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][commenttype]" value="comment" <?php if($commenttype == 'comment') echo 'checked="checked"';?>/>comments only</p>
+                        <p><input type="radio" id="wut-recent-comments-commenttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][commenttype]" value="pingback" <?php if($commenttype == 'pingback') echo 'checked="checked"';?>/>pingback only</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('Users to exclude:', 'wut');?></td>
+                    <td><input type="text" id="wut-recent-comments-skipusers-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][skipusers]" value="<?php echo $skipusers;?>" /></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('Avatar Size:', 'wut');?></td>
+                    <td><input id="wut-recent-comments-avatarsize-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][avatarsize]" type="text" value="<?php echo $avatarsize;?>" size="9"/><?php _e('pixels','wut');?></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('If the list is empty, show:','wut');?></td>
+                    <td><input type="text" id="wut-recent-comments-none-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][none]" value="<?php echo $none;?>" /></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('Show password protected post?','wut');?></td>
+                    <td>
+                        <p><input type="radio" id="wut-recent-comments-password-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][password]" value="show" <?php if($password == 'show') echo 'checked="checked"';?> />Show.</p>
+                        <p><input type="radio" id="wut-recent-comments-password-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][password]" value="hide" <?php if($password == 'hide') echo 'checked="checked"';?> />Hide.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('The list item format:', 'wut');?></td>
+                    <td><input id="wut-recent-comments-xformat-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][xformat]" type="text" value="<?php echo $xformat;?>" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <input id="wut-recent-comments-submit-<?php echo $number;?>" name="wut-recent-comments-submit-<?php echo $number;?>" type="hidden" value="1"/>
+        <?php
+    }
+
+    $options = get_option('wut-widget-recent-comments');
+    if(!$options){
+        $options = array();
+    }
+
+    $widget_ops =  array(
+        'classname'     => 'wut-widget-recent-comments',
+        'description'   => __( 'List recent comments.', 'wut')
+    );
+    $control_ops = array(
+        'width'     => 400,
+        'height'    => 200,
+        'id_base'   => 'wut-widget-recent-comments'
+    );
+    $name   = __('WUT Recent Comments','wut');
+    $widget_cb  = 'wut_widget_recent_comments_body';
+    $control_cb = 'wut_widget_recent_comments_control';
+    // Register Widgets
+    $registered = false;
+    foreach(array_keys($options) as $o){
+        if(!isset($options[$o]['title'])){
+            continue;
+        }
+        $id = "wut-widget-recent-comments-$o";
+        $registered = true;
+        wp_register_sidebar_widget($id, $name, $widget_cb, $widget_ops, array('number'=>$o));
+        wp_register_widget_control($id, $name, $control_cb, $control_ops, array('number'=>$o));
+    }
+    if (!$registered){
+        wp_register_sidebar_widget("wut-widget-recent-comments-1", $name, $widget_cb, $widget_ops, array('number'=>-1));
+        wp_register_widget_control("wut-widget-recent-comments-1", $name, $control_cb, $control_ops,array('number'=>-1));
     }
 }
 

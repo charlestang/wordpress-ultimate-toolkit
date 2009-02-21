@@ -41,6 +41,7 @@ function wut_init(){
     add_action('widgets_init', 'wut_widget_related_posts_init');
     add_action('widgets_init', 'wut_widget_posts_by_category_init');
     add_action('widgets_init', 'wut_widget_most_commented_posts_init');
+    add_action('widgets_init', 'wut_widget_recent_comments_init');
 
     add_filter('get_the_excerpt', array(&$wut_utils,'excerpt'), 9);
 }
