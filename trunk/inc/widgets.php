@@ -1255,6 +1255,7 @@ function wut_widget_active_commentators_init(){
                 $options_this['length'] = intval($posted['length']);
                 $options_this['skipusers'] = $posted['skipusers'];
                 $options_this['avatarsize'] = intval($posted['avatarsize']);
+                $options_this['threshhold'] = intval($posted['threshhold']);
                 $options_this['days'] = intval($posted['days']);
                 $options_this['none'] = strip_tags(stripslashes($posted['none']));
                 $options_this['xformat'] = stripcslashes($posted['xformat']);
@@ -1373,14 +1374,199 @@ function wut_widget_active_commentators_init(){
 
 function wut_widget_recent_commentators_init(){
     function wut_widget_recent_commentators_body($args, $widget_args){
-        extract($args);
-        $options = get_option('wut-widget-recent-posts');
-        echo $before_widget, $before_title, $options['title'], $after_title;
-        echo '<ul>', wut_recent_posts(), '</ul>';
+        extract($args, EXTR_SKIP);
+        if (is_numeric($widget_args))
+            $widget_args = array('number' => $widget_args);
+        $widget_args = wp_parse_args($widget_args, array('number' => -1));
+        extract($widget_args, EXTR_SKIP);
+
+        $options = get_option('wut-widget-recent-commentators');
+
+        if(!isset($options[$number]))
+            return;
+        $title = $options[$number]['title'];
+
+        $tag_args = array(
+            'limit'         => $options[$number]['limit'],
+            'before'        => $options[$number]['before'],
+            'after'         => $options[$number]['after'],
+            'skipusers'     => $options[$number]['skipusers'],
+            'avatarsize'    => $options[$number]['avatarsize'],
+            'threshhold'    => $options[$number]['threshhold'],
+            'type'          => $options[$number]['type'],
+            'days'          => $options[$number]['days'],
+            'none'          => $options[$number]['none'],
+            'xformat'       => $options[$number]['xformat']
+        );
+
+        echo $before_widget, $before_title, $title, $after_title;
+        echo '<ul>', wut_recent_commentators($tag_args), '</ul>';
         echo $after_widget;
     }
     function wut_widget_recent_commentators_control($widget_args){
+        global $wp_registered_widgets;
+        static $update = false;
+        if(is_numeric($widget_args))
+            $widget_args = array('number' => $widget_args);
 
+        $widget_args = wp_parse_args($widget_args, array('number' => -1));
+
+        extract($widget_args, EXTR_SKIP);
+
+        $options = get_option('wut-widget-recent-commentators');
+
+        if(!is_array($options))
+            $options = array();
+
+        if(!$update && !empty($_POST['sidebar'])){
+            $sidebar = (string) $_POST['sidebar'];
+            $sidebars_widgets = wp_get_sidebars_widgets();
+            if(isset($sidebars_widgets[$sidebar])){
+                $this_sidebar =& $sidebars_widgets[$sidebar];
+            }else{
+                $this_sidebar = array();
+            }
+            foreach ($this_sidebar as $_widget_id){
+                if ('wut_widget_recent_commentators_body' == $wp_registered_widgets[$_widget_id]['callback'] && isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])){
+                    $widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
+                    if (!in_array("wut-widget-recent-commentators-$widget_number",$_POST['widget-id'])){
+                        unset($options[$widget_number]);
+                    }
+                }
+            }
+
+            foreach((array)$_POST['wut-recent-commentators'] as $widget_number => $posted){
+                $options_this['title'] = strip_tags(stripslashes($posted['title']));
+                $options_this['limit'] = intval($posted['limit']);
+                $options_this['before'] = stripslashes($posted['before']);
+                $options_this['after'] = stripslashes($posted['after']);
+                $options_this['length'] = intval($posted['length']);
+                $options_this['skipusers'] = $posted['skipusers'];
+                $options_this['avatarsize'] = intval($posted['avatarsize']);
+                $options_this['threshhold'] = intval($posted['threshhold']);
+                $options_this['type'] = $posted['type'];
+                $options_this['days'] = intval($posted['days']);
+                $options_this['none'] = strip_tags(stripslashes($posted['none']));
+                $options_this['xformat'] = stripcslashes($posted['xformat']);
+                $options[$widget_number] = $options_this;
+            }
+            update_option('wut-widget-recent-commentators',$options);
+            $update = true;
+        }
+
+        if ($number == -1){
+            $title = 'WUT Recent Commentators';
+            $limit = 10;
+            $before = '<li>';
+            $after = '</li>';
+            $skipusers = '';
+            $avatarsize = 16;
+            $threshhold = 2;
+            $type = 'month';
+            $days = -1;
+            $none = 'Anybody.';
+            $xformat = attribute_escape('%avatar%<a href="%url%" rel="nofollow">%author%</a>');
+            $number = '%i%';
+        }else{
+            $title = attribute_escape($options[$number]['title']);
+            $limit = $options[$number]['limit'];
+            $before = attribute_escape($options[$number]['before']);
+            $after = attribute_escape($options[$number]['after']);
+            $skipusers = $options[$number]['skipusers'];
+            $avatarsize = $options[$number]['avatarsize'];
+            $threshhold = $options[$number]['threshhold'];
+            $type = $options[$number]['type'];
+            $days = $options[$number]['days'];
+            $none = attribute_escape($options[$number]['none']);
+            $xformat = attribute_escape($options[$number]['xformat']);
+        }
+        ?>
+        <table>
+            <tbody>
+                <tr>
+                    <td class="alignright"><?php _e('Widget title:', 'wut');?></td>
+                    <td><input id="wut-recent-commentators-title-<?php echo $number;?>" name="wut-recent-commentators[<?php echo $number;?>][title]" type="text" value="<?php echo $title;?>"/></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('Number of posts:', 'wut');?></td>
+                    <td><input id="wut-recent-commentators-limit-<?php echo $number;?>" name="wut-recent-commentators[<?php echo $number;?>][limit]" type="text" value="<?php echo $limit;?>" /></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('HTML tags before a item:', 'wut');?></td>
+                    <td><input id="wut-recent-commentators-before-<?php echo $number;?>" name="wut-recent-commentators[<?php echo $number;?>][before]" type="text" value="<?php echo $before;?>" /></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('HTML tags after a item:', 'wut');?></td>
+                    <td><input type="text" id="wut-recent-commentators-after-<?php echo $number;?>" name="wut-recent-commentators[<?php echo $number;?>][after]" value="<?php echo $after;?>" /></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('Users to exclude:', 'wut');?></td>
+                    <td><input type="text" id="wut-recent-commentators-skipusers-<?php echo $number;?>" name="wut-recent-commentators[<?php echo $number;?>][skipusers]" value="<?php echo $skipusers;?>" /></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('Avatar Size:', 'wut');?></td>
+                    <td><input id="wut-recent-commentators-avatarsize-<?php echo $number;?>" name="wut-recent-commentators[<?php echo $number;?>][avatarsize]" type="text" value="<?php echo $avatarsize;?>" size="9"/><?php _e('pixels','wut');?></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('Threshhold:', 'wut');?></td>
+                    <td><input id="wut-recent-commentators-threshhold-<?php echo $number;?>" name="wut-recent-commentators[<?php echo $number;?>][threshhold]" type="text" value="<?php echo $threshhold;?>" /></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('Choose the time limit:','wut');?></td>
+                    <td>
+                        <p><input type="radio" id="wut-recent-commentators-type-<?php echo $number;?>" name="wut-recent-commentators[<?php echo $number;?>][type]" value="month" <?php if($type == 'month') echo 'checked="checked"';?> />In this Month.</p>
+                        <p><input type="radio" id="wut-recent-commentators-type-<?php echo $number;?>" name="wut-recent-commentators[<?php echo $number;?>][type]" value="week" <?php if($type == 'week') echo 'checked="checked"';?> />In this Week.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('Time limit:', 'wut');?></td>
+                    <td><input id="wut-recent-commentators-days-<?php echo $number;?>" name="wut-recent-commentators[<?php echo $number;?>][days]" type="text" value="<?php echo $days;?>" /></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('If the list is empty, show:','wut');?></td>
+                    <td><input type="text" id="wut-recent-commentators-none-<?php echo $number;?>" name="wut-recent-commentators[<?php echo $number;?>][none]" value="<?php echo $none;?>" /></td>
+                </tr>
+                <tr>
+                    <td class="alignright"><?php _e('The list item format:', 'wut');?></td>
+                    <td><input id="wut-recent-commentators-xformat-<?php echo $number;?>" name="wut-recent-commentators[<?php echo $number;?>][xformat]" type="text" value="<?php echo $xformat;?>" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <input id="wut-recent-commentators-submit-<?php echo $number;?>" name="wut-recent-commentators-submit-<?php echo $number;?>" type="hidden" value="1"/>
+        <?php
+    }
+
+    $options = get_option('wut-widget-recent-commentators');
+    if(!$options){
+        $options = array();
+    }
+
+    $widget_ops =  array(
+        'classname'     => 'wut-widget-recent-commentators',
+        'description'   => __( 'List Recent Commentators\' Names.', 'wut')
+    );
+    $control_ops = array(
+        'width'     => 400,
+        'height'    => 200,
+        'id_base'   => 'wut-widget-recent-commentators'
+    );
+    $name   = __('WUT Recent Commentators','wut');
+    $widget_cb  = 'wut_widget_recent_commentators_body';
+    $control_cb = 'wut_widget_recent_commentators_control';
+    // Register Widgets
+    $registered = false;
+    foreach(array_keys($options) as $o){
+        if(!isset($options[$o]['title'])){
+            continue;
+        }
+        $id = "wut-widget-recent-commentators-$o";
+        $registered = true;
+        wp_register_sidebar_widget($id, $name, $widget_cb, $widget_ops, array('number'=>$o));
+        wp_register_widget_control($id, $name, $control_cb, $control_ops, array('number'=>$o));
+    }
+    if (!$registered){
+        wp_register_sidebar_widget("wut-widget-recent-commentators-1", $name, $widget_cb, $widget_ops, array('number'=>-1));
+        wp_register_widget_control("wut-widget-recent-commentators-1", $name, $control_cb, $control_ops,array('number'=>-1));
     }
 }
 
