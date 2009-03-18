@@ -27,6 +27,7 @@ Author URI: http://www.charlestasng.cn
 $wut_base_name = dirname(__FILE__);
 require($wut_base_name . '/inc/class.querybox.php');
 require($wut_base_name . '/inc/class.utils.php');
+require($wut_base_name . '/inc/class.admin.php');
 require($wut_base_name . '/inc/tags.php');
 require($wut_base_name . '/inc/widgets.php');
 
@@ -46,5 +47,10 @@ function wut_init(){
     add_action('widgets_init', 'wut_widget_recent_commentators_init');
 
     add_filter('get_the_excerpt', array(&$wut_utils,'excerpt'), 9);
+
+    if (is_admin()){
+        $wut_admin = new WUT_Admin();
+        add_action('admin_menu',array(&$wut_admin, 'add_menu_items'));
+    }
 }
 ?>
