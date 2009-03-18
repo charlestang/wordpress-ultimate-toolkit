@@ -284,7 +284,7 @@ function wut_recent_comments($args = '') {
     }else{
         foreach($items as $item){
             $permalink = _wut_get_permalink($item) . "#comment-" . $item->comment_ID;
-            $comment_content = mb_substr(strip_tags($item->comment_content));
+            $comment_content = mb_substr(strip_tags($item->comment_content), 0, $length);
             $html .= $before . $xformat;
             $html = str_replace('%gravatar%', get_avatar($item->comment_author_email, $avatarsize), $html);
             $html = str_replace('%permalink%', $permalink, $html);

@@ -1,5 +1,5 @@
 <?php
-require_once('../libs/multibyte.php');
+require_once(dirname(dirname(__FILE__)) . '/libs/multibyte.php');
 
 class WUT_Utils{
     function excerpt($text)
