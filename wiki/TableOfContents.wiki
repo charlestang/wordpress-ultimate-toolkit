@@ -1,3 +1,4 @@
 #summary Table fo contents for all wiki pages
 
  * [DevelopersGuide Developers' Guide]
+  * [DevelopersGuide Directory Hierarachy]
