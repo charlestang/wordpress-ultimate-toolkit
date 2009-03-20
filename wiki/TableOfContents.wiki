@@ -1,5 +1,5 @@
 #summary Table fo contents for all wiki pages
 
- * [DevelopersGuide Developers' Guide]
-  * [DevelopersGuide#Directory_Hierarchy Directory Hierarachy]
+ * [DeveloperGuide Developer Guide]
+  * [DeveloperGuide#Directory_Hierarchy Directory Hierarachy]
  * [UserGuide User Guide]
