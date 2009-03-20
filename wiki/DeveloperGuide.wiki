@@ -17,7 +17,7 @@ of these directories are:
 The plugin is constructed in hierarchical structure. Basically, the plugin can be devided into
  three layer.
 
-[http://lh5.ggpht.com/_QYicOeu89Bk/ScN3s0rG1dI/AAAAAAAABMQ/us9wed4WRQk/s144/screenshot-1.png]
+[http://lh5.ggpht.com/_QYicOeu89Bk/ScN3s0rG1dI/AAAAAAAABMQ/us9wed4WRQk/s400/screenshot-1.png]
 
 === Query Box ===
 The base layer is the query box. Currently, the query box object consist of 8 parameterized 
