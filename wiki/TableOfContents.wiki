@@ -2,4 +2,5 @@
 
  * [DeveloperGuide Developer Guide]
   * [DeveloperGuide#Directory_Hierarchy Directory Hierarachy]
+  * [DeveloperGuide#Plugin_Architecture Plugin Architecture]
  * [UserGuide User Guide]
