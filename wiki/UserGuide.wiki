@@ -2,12 +2,31 @@
 #labels Featured
 
 = User Guide =
-
+<wiki:toc max_depth="5" />
 Under construction...
 
-
-== Installation ==
+== Basic Topics ==
+=== Installation ===
 The installation of this !WordPress plugin is simply easy. Follow these steps and you can make it work immediately:
  # Download the latest version of this plugin in [http://code.google.com/p/wordpress-ultimate-toolkit/downloads/list Download Page].
  # Unzip the archive, and upload the directory `wordpress-ultimate-toolkit` to `wp-content`
  # Activate the plugin in your !WordPress administration page. e.g. `http://yourdomain.com/wordpress/wp-admin/plugins.php`
+
+=== Options ===
+
+=== Widgets ===
+
+== Advanced Topics ==
+
+=== XFormat ===
+
+=== Template Tags ===
+
+==== wut_recent_posts ====
+==== wut_random_posts ====
+==== wut_related_posts ====
+==== wut_posts_in_same_categories ====
+==== wut_most_commented_posts ====
+==== wut_recent_comments ====
+==== wut_active_commentators ====
+==== wut_recent_commentators ====
