@@ -1,3 +1,4 @@
+#summary The guide for member developers of this plugin
 #labels Featured
 = Developers' Guide =
 
