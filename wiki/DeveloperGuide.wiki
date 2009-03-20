@@ -1,6 +1,6 @@
 #summary The guide for member developers of this plugin
 #labels Featured
-= Developers' Guide =
+= Developer Guide =
 
 == Directory Hierarchy ==
 There are a lot of sub directories in the root directory of this plugin. The functions
