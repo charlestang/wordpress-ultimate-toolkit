@@ -4,3 +4,5 @@
   * [DeveloperGuide#Directory_Hierarchy Directory Hierarachy]
   * [DeveloperGuide#Plugin_Architecture Plugin Architecture]
  * [UserGuide User Guide]
+  * [UserGuide#Basic_Topics Basic Topics]
+  * [UserGuide#Advaced_Topics Advanced Topics]
