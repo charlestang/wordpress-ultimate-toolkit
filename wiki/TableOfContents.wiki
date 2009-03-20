@@ -5,4 +5,24 @@
   * [DeveloperGuide#Plugin_Architecture Plugin Architecture]
  * [UserGuide User Guide]
   * [UserGuide#Basic_Topics Basic Topics]
-  * [UserGuide#Advaced_Topics Advanced Topics]
+  * [UserGuide#Advanced_Topics Advanced Topics]
+
+----
+
+[http://code.google.com/p/wordpress-ultimate-toolkit/issues/list Bug Report]
+
+If you need further help. You could join our [http://groups.google.com/group/wordpress-ultimate-toolkit group].
+
+----
+
+Useful Links
+ * [http://wordpress.org WordPress]
+ * [http://codex.wordpress.org WordPress Documents]
+ * [http://codex.wordpress.org/Template_Tags Template Tags in WP]
+ * [http://codex.wordpress.org/Function_Reference Function Reference]
+ * [http://codex.wordpress.org/Plugin_API Plugin API]
+
+----
+
+Authors' Blog
+ * Charles - [http://sexywp.com Becomin' Charles]
