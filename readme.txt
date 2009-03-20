@@ -1,12 +1,12 @@
 === WordPress Ultimate Toolkit ===
-Contributors: Charles, Leo
-Donate link: http://sexywp.com/wordpress-ultimate-toolkit/
+Contributors: Charles, Leo, Snowblink
+Donate link: http://wordpress-ultimate-toolkit.googlecode.com
 Tags: comments, posts, widgets, template tags, sidebar, toolkit
 Requires at least: 2.5
 Tested up to: 2.7
 Stable tag: 1.0
 
-Here is a short description of the plugin.  This should be no more than 150 chars.  No markup here.
+This plugin extends functionalities of WordPress by many sidebar widgets and template tags. Recent comments, random posts, most commented posts, etc.
 
 == Description ==
 
@@ -91,3 +91,15 @@ Markdown uses email style notation for blockquotes and I've been told:
 > Asterisks for *emphasis*. Double it up  for **strong**.
 
 `<?php code(); // goes in backticks ?>`
+
+== Directory Hierarchy ==
+
+There are a lot of sub directories in the root directory of this plugin. The functions
+of these directories are:
+
+* "dev" for test files or other files used in the development
+* "doc" for documents of this plugin include developer documents and user documents
+* "i10n" for multilanguage support
+* "inc" all the code of this plugin include php, js and css
+* "libs" libraries
+* "media" binary files include images, logos, etc.
