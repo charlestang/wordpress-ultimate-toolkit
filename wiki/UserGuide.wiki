@@ -1,12 +1,12 @@
 #summary One-sentence summary of this page.
 #labels Featured
 
-= Introduction =
+= User Guide =
 
-Add your content here.
+Under construction...
 
 
-= Details =
+== Installation ==
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
