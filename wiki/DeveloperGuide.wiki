@@ -1,0 +1,14 @@
+#summary The guide for member developers of this plugin
+#labels Featured
+= Developers' Guide =
+
+== Directory Hierarchy ==
+There are a lot of sub directories in the root directory of this plugin. The functions
+of these directories are:
+
+  * *dev* for test files or other files used in the development
+  * *doc* for documents of this plugin include developer documents and user documents
+  * *i10n* for multilanguage support
+  * *inc* all the code of this plugin include php, js and css
+  * *libs* libraries
+  * *media* binary files include images, logos, etc.
