@@ -2,6 +2,8 @@
 #labels Featured
 = Developer Guide =
 
+<wiki:toc max_depth="3" />
+
 == Directory Hierarchy ==
 There are a lot of sub directories in the root directory of this plugin. The functions
 of these directories are:
