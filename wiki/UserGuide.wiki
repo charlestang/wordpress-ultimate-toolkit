@@ -7,8 +7,7 @@ Under construction...
 
 
 == Installation ==
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+The installation of this !WordPress plugin is simply easy. Follow these steps and you can make it work immediately:
+ # Download the latest version of this plugin in [http://code.google.com/p/wordpress-ultimate-toolkit/downloads/list Download Page].
+ # Unzip the archive, and upload the directory `wordpress-ultimate-toolkit` to `wp-content`
+ # Activate the plugin in your !WordPress administration page. e.g. !http://yourdomain.com/wordpress/wp-admin/plugins.php
