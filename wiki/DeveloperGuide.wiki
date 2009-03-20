@@ -12,3 +12,30 @@ of these directories are:
   * *inc* all the code of this plugin include php, js and css
   * *libs* libraries
   * *media* binary files include images, logos, etc.
+
+== Plugin Architecture ==
+The plugin is constructed in hierarchical structure. Basically, the plugin can be devided into
+ three layer.
+
+[http://lh5.ggpht.com/_QYicOeu89Bk/ScN3s0rG1dI/AAAAAAAABMQ/us9wed4WRQk/s144/screenshot-1.png]
+
+=== Query Box ===
+The base layer is the query box. Currently, the query box object consist of 8 parameterized 
+database query. These queries are the core of this plugin. The query box object can be used 
+independently if you think the whole plugin is verbose.
+
+Each function in query box is a simple encapsulation of a sql statement. A return of this 
+kind of function is a database record, which is a object whose data members corespond to 
+fields of a table in database.
+
+=== Template Tags ===
+The second layer is a set of [http://codex.wordpress.org/Template_Tags template tags]. These 
+tags call functions in the query box, process the result and print out well formated html. 
+Template tags don't work without the query box.
+
+Template tags are encapsulations of querys in the query box. They are designed for theme 
+and plugin developers.
+
+=== Widgets ===
+The third layer of this plugin is a set of widgets. They are designed for end users. All of 
+them have a control panel, which can be used by end users to custom behaviors of the widget.
