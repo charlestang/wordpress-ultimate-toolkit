@@ -1,0 +1,12 @@
+#summary What is WordPress? Simple introduction.
+
+WordPress is a state-of-the-art publishing platform 
+with a focus on aesthetics, web standards, and usability. 
+WordPress is both free and priceless at the same time.
+
+More simply, WordPress is what you use when you want to 
+work with your blogging software, not fight it.
+
+New to blogging? [http://wordpress.org/about/ Learn more about WordPress], then 
+follow the three easy steps below to start blogging 
+in minutes. Or, for the ultimate in ease of use, [http://wordpress.com/signup/?ref=wordpress.org get a free blog on WordPress.com].
