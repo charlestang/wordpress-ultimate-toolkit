@@ -2,8 +2,11 @@
 require_once(dirname(dirname(__FILE__)) . '/libs/multibyte.php');
 
 class WUT_Utils{
-    function excerpt($text)
-    {
+    var $options;
+    function WUT_Utils($opt){
+        $this->options = $opt;
+    }
+    function excerpt($text){
         global $post;
 
         remove_filter('the_excerpt', 'mul_excerpt');
@@ -36,5 +39,12 @@ class WUT_Utils{
             return $output;
         }
         return $text;
+    }
+
+    function exclude_pages($excludes){
+        $hidepages = $this->options['hide-pages'];
+        $custom_excludes = explode(',',$hidepages);
+        $excludes = array_unique(array_merge($excludes,$custom_excludes));
+        return $excludes;
     }
 }
