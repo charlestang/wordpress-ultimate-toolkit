@@ -10,7 +10,28 @@ This plugin extends functionalities of WordPress by many sidebar widgets and tem
 
 == Description ==
 
-This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
+This project is a plugin for WordPress, which is a famous blogging platform. It extends output contents of WordPress by a set of database queries. It also provides a series of corresponding sidebar widgets for end users, template tags for theme designers, and filters and actions for secondary development.
+
+Reasons to use it:
+* Sidebar widgets supported, so you can make use of all its functionalities without code work
+* Template tags supported, so you can also customize it as what you want it to be
+* Three layers architecture, you can get rid of verbose parts of it
+* Easily install and completely uninstall, leave nothing in your database
+* Actions and Filters supported, you can extend it with plugin for plugin 
+
+Features:
+* Output recent posts
+* Output random posts
+* Output related posts
+* Output posts in a certain category
+* Output most commented posts
+* Output recent comments with comment contents
+* Output active commentators
+* Output recent commentators
+* Automatic excerpt post content
+* Hide pages which you don¡¯t want them to be shown on your front page
+* Feed enhancement (in the development plan)
+* Content enhancement (in the development plan) 
 
 For backwards compatibility, if this section is missing, the full length of the short description will be used, and
 Markdown parsed.
