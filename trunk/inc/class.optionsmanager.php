@@ -3,6 +3,7 @@ class WUT_OptionsManager{
     var $version = 1.0;
     var $options;
     function WUT_OptionsManager(){
+        //update_option('wordpress-ultimate-toolkit-options','');
         $this->options = get_option('wordpress-ultimate-toolkit-options');
 
         //when the plugin updated, this will be true
@@ -13,9 +14,9 @@ class WUT_OptionsManager{
 
     function set_defaults(){
         $defaults = array(
-            'hide-pages'       => '',
-            'widgets-control'  => array(
-                'show' => array(
+            'hide-pages'        => '',
+            'widgets'           => array(
+                'load'          => array(
                     'wut_widget_recent_posts_init',
                     'wut_widget_random_posts_init',
                     'wut_widget_related_posts_init',
@@ -25,7 +26,49 @@ class WUT_OptionsManager{
                     'wut_widget_active_commentators_init',
                     'wut_widget_recent_commentators_init'
                 ),
-                'hide' => array()
+                'all'           => array(
+                    array(
+                    'name'      => __('Recent Posts', 'wut'),
+                    'descript'  => __('Display a list of recent posts.', 'wut'),
+                    'callback'  => 'wut_widget_recent_posts_init'
+                    ),
+                    array(
+                   'name'      => __('Random Posts', 'wut'),
+                   'descript'  => __('Display a list of random posts.', 'wut'),
+                   'callback'  => 'wut_widget_random_posts_init'
+                    ),
+                    array(
+                   'name'      => __('Related Posts', 'wut'),
+                   'descript'  => __('Display a list of related posts of a certain post.', 'wut'),
+                   'callback'  => 'wut_widget_related_posts_init'
+                    ),
+                    array(
+                   'name'      => __('In Category Posts Widget', 'wut'),
+                   'descript'  => __('Display a list of posts in a certain category.', 'wuts'),
+                   'callback'  => 'wut_widget_posts_by_category_init'
+                    ),
+                    array(
+                   'name'      => __('Most Commented Posts', 'wut'),
+                   'descript'  => __('Display a list of most commented posts.', 'wut'),
+                   'callback'  => 'wut_widget_most_commented_posts_init'
+                    ),
+                    array(
+                   'name'      => __('Recent Comments', 'wut'),
+                   'descript'  => __('Display recent comments.', 'wut'),
+                   'callback'  => 'wut_widget_recent_comments_init'
+                    ),
+                    array(
+                   'name'      => __('Active Commentators', 'wut'),
+                   'descript'  => __('Display active commentators in a certain days limit.', 'wut'),
+                   'callback'  => 'wut_widget_active_commentators_init'
+                    ),
+                    array(
+                   'name'      => __('Recent Commentators', 'wut'),
+                   'descript'  => __('Display this week or this month\'s commentators.', 'wut'),
+                   'callback'  => 'wut_widget_recent_commentators_init'
+                    )
+                ),
+                    
             ),
             'excerpt'          => array()
         );

@@ -9,11 +9,11 @@ class WUT_Admin{
     }
 
     function add_menu_items(){
-        add_menu_page(__("WordPress Ultimate Toolkit Options"), __("WUT Options"),8,__FILE__, array(&$this, "hide_widgets"));
-        add_submenu_page(__FILE__, __("Hide Widgets"), __("Hide Widgets"), 8, __FILE__, array(&$this, "hide_widgets"));
-        add_submenu_page(__FILE__, __("Excerpt Options"),__("Excerpt Options"), 8, "wut_admin_excerpt_options", array(&$this, "excerpt_options"));
-        add_submenu_page(__FILE__, __("Hide Pages"), __("Hide Pages"), 8, "wut_admin_hide_pages", array(&$this, "hide_pages"));
-        add_submenu_page(__FILE__, __("Uninstall"), __("Uninstall"), 8, "wut_admin_uninstall", array(&$this, "uninstall"));
+        add_menu_page(__("WordPress Ultimate Toolkit Options"), __("WUT Options"), 8, "wut_admin_default_page", array(&$this, "load_widgets"));
+        add_submenu_page("wut_admin_default_page", __("Load Widgets"), __("Load Widgets"), 8, "wut_admin_default_page", array(&$this, "load_widgets"));
+        add_submenu_page("wut_admin_default_page", __("Excerpt Options"),__("Excerpt Options"), 8, "wut_admin_excerpt_options", array(&$this, "excerpt_options"));
+        add_submenu_page("wut_admin_default_page", __("Hide Pages"), __("Hide Pages"), 8, "wut_admin_hide_pages", array(&$this, "hide_pages"));
+        add_submenu_page("wut_admin_default_page", __("Uninstall"), __("Uninstall"), 8, "wut_admin_uninstall", array(&$this, "uninstall"));
     }
 
     function hide_pages(){
@@ -82,15 +82,67 @@ class WUT_Admin{
                     </tbody>
                 </table>
                 <input type="hidden" value="save" name="action" />
-                <input type="submit" class="button" value="Submit" />
+                <input type="submit" class="button" value="Hide checked pages" />
             </form>
         </div>
         <?php
     }
 
-    function hide_widgets(){
+    function load_widgets(){
+        global $wut_optionsmanager;
+        //Get options
+        $options =& $this->options['widgets'];
+        $all = $options['all'];
+        $load =& $options['load'];
+
+        if (isset($_GET['page']) && $_GET['page'] == 'wut_admin_default_page'){
+            if (isset($_REQUEST['action']) && 'save' == $_REQUEST['action']){
+                $load = array();
+                foreach($all as $widget){
+                    if (isset($_REQUEST[$widget['callback']])
+                        && $_REQUEST[$widget['callback']] == 1
+                    ){
+                        $load[] = $widget['callback'];
+                    }
+                }
+                $wut_optionsmanager->save_options();
+            }
+        }
         ?>
-        <div class="wrap"><h2><?php _e('Hide Widgets','wut');?></h2>
+        <div class="wrap"><h2><?php _e('Load Widgets','wut');?></h2>
+            <form method="post">
+                <table class="widefat">
+                    <thead>
+                        <tr>
+                            <th id="cb" class="manage-column column-cb check-column" scope="col"><input type="checkbox" /></th>
+                            <th id="widgetname" class="manage-column column-widgetname" scope="col"><?php _e('Widget Name','wut');?></th>
+                            <th id="decript" class="manage-column column-descript" scope="col"><?php _e('Description','wut');?></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th class="manage-column column-cb check-column" scope="col"><input type="checkbox" /></th>
+                            <th class="manage-column column-widgetname" scope="col"><?php _e('Widget Name','wut');?></th>
+                            <th class="manage-column column-descript" scope="col"><?php _e('Description','wut');?></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                    <?php
+                        foreach($all as $widget){
+                            echo '<tr><td>';
+                            echo '<input type="checkbox" id="', $widget['callback'], '" name="', $widget['callback'], '" value="1" ';
+                            if (in_array($widget['callback'],$load)) echo 'checked="checked"';
+                            echo ' /></td>';
+                            echo '<td>', $widget['name'], '</td>';
+                            echo '<td>', $widget['descript'], '</td>';
+                            echo '</tr>';
+                        }
+                    ?>
+                    </tbody>
+                </table>
+                <input type="hidden" value="save" name="action" />
+                <input type="submit" class="button" value="Load checked Widgets" />
+            </form>
         </div>
         <?php
     }
