@@ -1,0 +1,30 @@
+<font size="3">This project is a plugin for [http://wordpress.org WordPress], which is a 
+famous blogging platform. It extends output contents of WordPress by a set of 
+database queries. It also provides a series of corresponding sidebar widgets 
+for end users, template tags for theme designers, and filters and actions for 
+secondary development.</font>
+
+<font size="4">[http://code.google.com/p/wordpress-ultimate-toolkit/downloads/list Download WordPress Ultimate Toolkit]</font>
+
+*the plugin now is under heavily development, only test version provided without any support*
+
+==== Reasons to use it: ====
+ * Sidebar widgets supported, so you can make use of all its functionalities without code work
+ * Template tags supported, so you can also customize it as what you want it to be
+ * Three layers architecture, you can get rid of verbose parts of it
+ * Easily install and completely uninstall, leave nothing in your database
+ * Actions and Filters supported, you can extend it with _plugin for plugin_
+
+==== Features: ====
+ * Output recent posts
+ * Output random posts
+ * Output related posts
+ * Output posts in a certain category
+ * Output most commented posts
+ * Output recent comments with comment contents
+ * Output active commentators
+ * Output recent commentators
+ * Automatic excerpt post content
+ * Hide pages which you don¡¯t want them to be shown on your front page
+ * Feed enhancement (_in the development plan_)
+ * Content enhancement (_in the development plan_)

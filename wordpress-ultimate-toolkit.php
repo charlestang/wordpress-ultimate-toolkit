@@ -39,14 +39,10 @@ function wut_init(){
 	$wut_querybox = new WUT_QueryBox();
     $wut_utils = new WUT_Utils($wut_optionsmanager->get_options());
 
-    add_action('widgets_init', 'wut_widget_recent_posts_init');
-    add_action('widgets_init', 'wut_widget_random_posts_init');
-    add_action('widgets_init', 'wut_widget_related_posts_init');
-    add_action('widgets_init', 'wut_widget_posts_by_category_init');
-    add_action('widgets_init', 'wut_widget_most_commented_posts_init');
-    add_action('widgets_init', 'wut_widget_recent_comments_init');
-    add_action('widgets_init', 'wut_widget_active_commentators_init');
-    add_action('widgets_init', 'wut_widget_recent_commentators_init');
+    $widgets = $wut_optionsmanager->get_options("widgets");
+    foreach($widgets['load'] as $callback){
+        add_action('widgets_init', $callback);
+    }
 
     add_filter('get_the_excerpt', array(&$wut_utils,'excerpt'), 9);
     add_filter('wp_list_pages_excludes', array(&$wut_utils, 'exclude_pages'), 9);
