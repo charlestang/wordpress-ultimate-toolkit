@@ -39,7 +39,7 @@ function wut_init(){
 	$wut_querybox = new WUT_QueryBox();
     $wut_utils = new WUT_Utils($wut_optionsmanager->get_options());
 
-    $widgets = $wut_optionsmanager->get_options("widgets");
+    $widgets =& $wut_optionsmanager->get_options("widgets");
     foreach($widgets['load'] as $callback){
         add_action('widgets_init', $callback);
     }

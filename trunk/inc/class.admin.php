@@ -154,8 +154,21 @@ class WUT_Admin{
     }
 
     function uninstall(){
+        global $wut_optionsmanager;
+        if (isset($_GET['page']) && $_GET['page'] == 'wut_admin_uninstall'){
+            if (isset($_REQUEST['action']) && 'save' == $_REQUEST['action']){
+                $wut_optionsmanager->delete_options();
+                deactivate_plugins('wordpress-ultimate-toolkit/wordpress-ultimate-toolkit.php');
+            }
+        }
         ?>
-        <div class="wrap">Do you really want to uninstall?</div>
+        <div class="wrap">
+            <h2><?php _e('Uninstall', 'wut');?></h2>
+            <form method="post">
+                <input type="hidden" value="save" name="action" />
+                <input type="submit" class="button" value="Uninstall and Delete ALL Options" />
+            </form>
+        </div>
         <?php
     }
 }
