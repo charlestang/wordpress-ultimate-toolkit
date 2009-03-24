@@ -88,6 +88,18 @@ class WUT_OptionsManager{
     function save_options(){
         update_option('wordpress-ultimate-toolkit-options',$this->options);
     }
+
+    function delete_options(){
+        delete_option('wordpress-ultimate-toolkit-options');
+        delete_option('wut-widget-recent-posts');
+        delete_option('wut-widget-random-posts');
+        delete_option('wut-widget-related-posts');
+        delete_option('wut-widget-posts-by-category');
+        delete_option('wut-widget-most-commented-posts');
+        delete_option('wut-widget-recent-comments');
+        delete_option('wut-widget-active-commentators');
+        delete_option('wut-widget-recent-commentators');
+    }
 }
 
 ?>
