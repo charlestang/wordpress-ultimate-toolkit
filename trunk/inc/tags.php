@@ -3,7 +3,53 @@
  * All the template tags user can use are in this 
  * file.
  */
+
+
 function _wut_get_permalink($post){
+    global $wut_optionsmanager;
+    if (isset($wut_optionsmanager)){
+        $options =& $wut_optionsmanager->get_options('other');
+        if ($options['enabled']){
+            if ($options['perma_struct']) : //if the user enabled the permalink feature in wp
+            $permalink = $options['perma_struct'];
+            $rewritecode = array(
+                '%year%',
+                '%monthnum%',
+                '%day%',
+                '%hour%',
+                '%minute%',
+                '%second%',
+                '%postname%',
+                '%post_id%',
+                '%category%',
+                '%author%',
+                '%pagename%'
+            );
+            $unixtime = strtotime($post->post_date);
+            $date = explode(" ",date('Y m d H i s', $unixtime));
+            $rewritereplace = array(
+                $date[0],
+                $date[1],
+                $date[2],
+                $date[3],
+                $date[4],
+                $date[5],
+                $post->post_name,
+                $post->ID,
+                '%error%',                     //cannot fetch category info
+                '%error%',                     //cannot fetch author info
+                $post->post_name,
+            );
+            $permalink = $options['wphome'] . str_replace($rewritecode, $rewritereplace, $permalink);
+            $permalink = user_trailingslashit($permalink, 'single');
+            else :                          //if user use default link structure
+            $permalink = $options['wphome'] . '/?p=' . $post->ID;
+            endif;
+            if (strpos($permalink, '%error%') == false){
+                return $permalink;
+            }
+        }
+    }
     if(function_exists('custom_get_permalink')){
         return custom_get_permalink($post);
     }else{
@@ -42,6 +88,7 @@ function wut_recent_posts($args = '') {
     }else{
         foreach($items as $item){
             $permalink = _wut_get_permalink($item);
+            global $wut_optionsmanager;
             $html .= $before . $xformat;
             $html = str_replace('%permalink%', $permalink, $html);
             $html = str_replace('%title%', $item->post_title, $html);

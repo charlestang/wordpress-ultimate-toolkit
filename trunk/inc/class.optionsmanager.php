@@ -70,7 +70,12 @@ class WUT_OptionsManager{
                 ),
                     
             ),
-            'excerpt'          => array()
+            'excerpt'          => array(),
+            'other'            => array(
+                'enabled'        => 1,
+                'wphome'         => get_option('home'),
+                'perma_struct'   => get_option('permalink_structure')
+            )
         );
         $defaults['version'] = $this->version;
         if (empty($this->options)) {

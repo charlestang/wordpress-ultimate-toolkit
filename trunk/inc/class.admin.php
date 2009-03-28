@@ -13,6 +13,7 @@ class WUT_Admin{
         add_submenu_page("wut_admin_default_page", __("Load Widgets"), __("Load Widgets"), 8, "wut_admin_default_page", array(&$this, "load_widgets"));
         add_submenu_page("wut_admin_default_page", __("Excerpt Options"),__("Excerpt Options"), 8, "wut_admin_excerpt_options", array(&$this, "excerpt_options"));
         add_submenu_page("wut_admin_default_page", __("Hide Pages"), __("Hide Pages"), 8, "wut_admin_hide_pages", array(&$this, "hide_pages"));
+        add_submenu_page("wut_admin_default_page", __('Other Options','wut'), __('Other Options'), 8, 'wut_admin_other_options', array(&$this, 'other_options'));
         add_submenu_page("wut_admin_default_page", __("Uninstall"), __("Uninstall"), 8, "wut_admin_uninstall", array(&$this, "uninstall"));
     }
 
@@ -153,6 +154,63 @@ class WUT_Admin{
         <?php
     }
 
+    function other_options(){
+        global $wut_optionsmanager;
+        //Get options
+        $options =& $this->options['other'];
+
+        if (isset($_GET['page']) && $_GET['page'] == 'wut_admin_other_options'){
+            if (isset($_REQUEST['action']) && 'enable' == $_REQUEST['action']){
+                $options['enabled'] = 1;
+            }
+            if (isset($_REQUEST['synchronize'])){
+                $options['wphome'] = get_option('home');
+                $options['perma_struct'] = get_option('permalink_structure');
+            }
+            if (isset($_REQUEST['disable'])){
+                $options['enabled'] = 0;
+            }
+            $wut_optionsmanager->save_options();
+        }
+        ?>
+        <div class="wrap"><h2><?php _e('Advanced Options','wut');?></h2>
+            <form method="post">
+                <table class="form-table">
+                    <tbody>
+                    <?php if ($options['enabled']) : ?>
+                        <tr valign="top">
+                        <th scope="row"><label for="wphome"><?php _e('Blog address (URL)') ?></label></th>
+                        <td><span style="color:red;font-weight:bold"><?php echo $options['wphome']; ?></span><br />
+                        <span class="setting-description"><?php _e('Enter the address here if you want your blog homepage <a href="http://codex.wordpress.org/Giving_WordPress_Its_Own_Directory">to be different from the directory</a> you installed WordPress.'); ?></span></td>
+                        </tr>
+                        <tr valign="top">
+                        <th scope="row"><label for="perma_struct"><?php _e('Permalink Structure','wut'); ?></label></th>
+                        <td><span style="color:red;font-weight:bold"><?php echo $options['perma_struct'];?></span><br />
+                        <span class="setting-description"><?php _e('If you change you permalink structure, please change this.','wut');?></span></td>
+                        </tr>
+                        <tr valign="top">
+                        <th scope="row"><label for=""></label></th>
+                        <td>
+                            <input type="submit" class="button" name="synchronize" value="<?php _e('Synchronize the Info with WordPress Settings.','wut');?>" />
+                            <input type="submit" class="button" name="disable" value="<?php _e('Disable the Andvanced.','wut');?>" />
+                        </td>
+                        </tr>
+                    <?php else : ?>
+                        <tr valign="top">
+                        <th scope="row"><label for=""></label></th>
+                        <td>
+                            <input type="hidden" value="enable" name="action" />
+                            <input type="submit" class="button" value="<?php _e('Enable the Andvanced.','wut');?>" />
+                        </td>
+                        </tr>
+                    <?php endif;?>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <?php
+    }
+    
     function uninstall(){
         global $wut_optionsmanager;
         if (isset($_GET['page']) && $_GET['page'] == 'wut_admin_uninstall'){
