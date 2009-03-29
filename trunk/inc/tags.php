@@ -287,7 +287,7 @@ function wut_most_commented_posts($args = '') {
             $permalink = _wut_get_permalink($item);
             $html .= $before . $xformat;
             $html = str_replace('%permalink%', $permalink, $html);
-            $html = str_replace('%title%', $item->post_title, $html);
+            $html = str_replace('%title%', htmlspecialchars($item->post_title), $html);
             $html = str_replace('%postdate%', $item->post_date, $html);
             $html = str_replace('%commentcount%', $item->comment_count, $html);
             $html = apply_filters('wut_most_commented_post_item', $html, $item);
@@ -331,7 +331,7 @@ function wut_recent_comments($args = '') {
     }else{
         foreach($items as $item){
             $permalink = _wut_get_permalink($item) . "#comment-" . $item->comment_ID;
-            $comment_content = mb_substr(strip_tags($item->comment_content), 0, $length);
+            $comment_content = mb_substr(strip_tags($item->comment_content), 0, $length) . "...";
             $html .= $before . $xformat;
             $html = str_replace('%gravatar%', get_avatar($item->comment_author_email, $avatarsize), $html);
             $html = str_replace('%permalink%', $permalink, $html);
