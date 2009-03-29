@@ -47,4 +47,37 @@ class WUT_Utils{
         $excludes = array_unique(array_merge($excludes,$custom_excludes));
         return $excludes;
     }
+
+    function _select_code_snippets($hook){
+        $codesnippets = $this->options['customcode'];
+        if(!is_array($codesnippets) || empty($codesnippets)) return '';
+        $codetoprint = '';
+        
+        if ( $hook == 'wp_head'):
+            foreach ($codesnippets as $codesnippet){
+                if ($codesnippet['hookto'] == 'wp_head'){
+                    $codetoprint .= $codesnippet['source'];
+                }
+            }
+        elseif ($hook == 'wp_footer') :
+            foreach ($codesnippets as $codesnippet){
+                if ($codesnippet['hookto'] == 'wp_footer'){
+                    $codetoprint .= $codesnippet['source'];
+                }
+            }
+        endif;
+        return $codetoprint;
+    }
+
+    function inject_to_head(){
+        echo "\n\n <!--This Piece of Code is Injected by WUT Custom Code-->\n";
+        echo $this->_select_code_snippets('wp_head');
+        echo "\n<!--The End of WUT Custom Code-->\n";
+    }
+
+    function inject_to_footer(){
+        echo "\n\n <!--This Piece of Code is Injected by WUT Custom Code-->\n";
+        echo $this->_select_code_snippets('wp_footer');
+        echo "\n<!--The End of WUT Custom Code-->\n";
+    }
 }

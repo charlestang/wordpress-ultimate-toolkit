@@ -13,6 +13,7 @@ class WUT_Admin{
         add_submenu_page("wut_admin_default_page", __("Load Widgets"), __("Load Widgets"), 8, "wut_admin_default_page", array(&$this, "load_widgets"));
         add_submenu_page("wut_admin_default_page", __("Excerpt Options"),__("Excerpt Options"), 8, "wut_admin_excerpt_options", array(&$this, "excerpt_options"));
         add_submenu_page("wut_admin_default_page", __("Hide Pages"), __("Hide Pages"), 8, "wut_admin_hide_pages", array(&$this, "hide_pages"));
+        add_submenu_page('wut_admin_default_page', __('Custom Code','wut'), __('Custom Code','wut'), 8, 'wut_admin_custom_code', array(&$this, 'custom_code_snippets'));
         add_submenu_page("wut_admin_default_page", __('Other Options','wut'), __('Other Options'), 8, 'wut_admin_other_options', array(&$this, 'other_options'));
         add_submenu_page("wut_admin_default_page", __("Uninstall"), __("Uninstall"), 8, "wut_admin_uninstall", array(&$this, "uninstall"));
     }
@@ -151,6 +152,126 @@ class WUT_Admin{
     function excerpt_options(){
         ?>
         <div class="wrap">This is Excerpt Options</div>
+        <?php
+    }
+
+    function custom_code_snippets(){
+        global $wut_optionsmanager;
+        $options =& $this->options['customcode'];
+        if (!is_array($options)){
+            $options = array();
+        }
+        unset($new_code);
+        if (isset($_GET['page']) && $_GET['page'] == 'wut_admin_custom_code'){
+            if (isset($_REQUEST['add-new-snippet'])){
+                $new_code = array(
+                    'id'      => '%id%',
+                    'name'    => 'New Code Snippet',
+                    'source'  => '',
+                    'hookto'  => '',
+                    'priority'=> 9,
+                    'display' => ''
+                );
+            }
+            if (isset($_REQUEST['save-codes'])){
+                foreach($options as $id => $snippet){
+                    $snippet['name'] = $_REQUEST["$id-name"];
+                    $snippet['source'] = stripslashes($_REQUEST["$id-source"]);
+                    $snippet['hookto'] = $_REQUEST["$id-hookto"];
+                    $snippet['priority'] = $_REQUEST["$id-priority"];
+                    $snippet['display'] = $_REQUEST["$id-display"];
+                    $options[$id] = $snippet;
+                }
+                if(isset($_REQUEST['%id%-name']) && !empty($_REQUEST['%id%-name'])){
+                    $new_snippet = array(
+                        'id'        => sanitize_title_with_dashes($_REQUEST['%id%-name']),
+                        'name'      => $_REQUEST['%id%-name'],
+                        'source'    => stripslashes($_REQUEST['%id%-source']),
+                        'hookto'    => $_REQUEST['%id%-hookto'],
+                        'priority'  => $_REQUEST['%id%-priority'],
+                        'display'   => $_REQUEST['%id%-display']
+                    );
+                    $options[$new_snippet['id']] = $new_snippet;
+                }
+                $wut_optionsmanager->save_options();
+            }
+            if (isset($_REQUEST['delete-checked'])){
+                $temp = array();
+                $item = array_shift($options);
+                while($item != null){
+                    if (isset($_REQUEST[$item['id']]) && $_REQUEST[$item['id']] == 1){
+                        unset($item);
+                    }else{
+                        array_push($temp, $item);
+                    }
+                    $item = array_shift($options);
+                }
+                $options = $temp;
+                $wut_optionsmanager->save_options();
+            }
+        }
+        ?>
+        <div class="wrap"><h2><?php _e('Add Custom Code','wut');?></h2>
+        <form method="post">
+            <input type="submit" class="button" name="add-new-snippet" value="<?php _e('Add New','wut');?>" />
+            <input type="submit" class="button" name="save-codes" value="<?php _e('Save All','wut');?>" />
+            <input type="submit" class="button" name="delete-checked" value="<?php _e('Delete All Checked','wut');?>" />
+            <table class="widefat">
+                <thead>
+                    <tr>
+                        <th id="cb" class="manage-column column-cb check-column" scope="col"><input type="checkbox" /></th>
+                        <th id="itemname" class="manage-column column-itemname" scope="col"><?php _e('Item Name','wut');?></th>
+                        <th id="itemcontent" class="manage-column column-itemcontent" scope="col"><?php _e('Item Content','wut');?></th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th class="manage-column column-cb check-column" scope="col"><input type="checkbox" /></th>
+                        <th class="manage-column column-itemname" scope="col"><?php _e('Item Name','wut');?></th>
+                        <th class="manage-column column-itemcontent" scope="col"><?php _e('Item Content','wut');?></th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                <?php function print_code_item($codesnippet){?>
+                    <tr>
+                        <td rowspan="5"><input type="checkbox" id="<?php echo $codesnippet['id'];?>" name="<?php echo $codesnippet['id'];?>" value="1" /></td>
+                        <td><label for="<?php echo $codesnippet['id'];?>-name"><?php _e('Code Name:','wut');?></label></td>
+                        <td><input type="text" id="<?php echo $codesnippet['id'];?>-name" name="<?php echo $codesnippet['id'];?>-name" value="<?php echo $codesnippet['name'];?>" size="15" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="<?php echo $codesnippet['id'];?>-source"><?php _e('Source Code:','wut');?></label></td>
+                        <td>
+                            <textarea id="<?php echo $codesnippet['id'];?>-source" name="<?php echo $codesnippet['id'];?>-source" cols="80" rows="15"><?php echo attribute_escape($codesnippet['source']);?></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="<?php echo $codesnippet['id'];?>-hookto"><?php _e('Hook to Action:','wut');?></label></td>
+                        <td><input type="text" id="<?php echo $codesnippet['id'];?>-hookto" name="<?php echo $codesnippet['id'];?>-hookto" value="<?php echo $codesnippet['hookto'];?>" size="40" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="<?php echo $codesnippet['id'];?>-priority"><?php _e('Priority:','wut');?></label></td>
+                        <td><input type="text" id="<?php echo $codesnippet['id'];?>-priority" name="<?php echo $codesnippet['id'];?>-priority" value="<?php echo $codesnippet['priority'];?>" size="15" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="<?php echo $codesnippet['id'];?>-display"><?php _e('Display on:','wut');?></label></td>
+                        <td><input type="text" id="<?php echo $codesnippet['id'];?>-display" name="<?php echo $codesnippet['id'];?>-display" value="<?php echo $codesnippet['display'];?>" size="40" /></td>
+                    </tr>
+                <?php } ?>
+                <?php 
+                if(!empty($options)) : foreach($options as $codesnippet) :
+                    print_code_item($codesnippet);
+                endforeach;endif;
+                if (isset($new_code)){
+                    print_code_item($new_code);
+                }
+                ?>
+                </tbody>
+            </table>
+            <input type="submit" class="button" name="add-new-snippet" value="<?php _e('Add New','wut');?>" />
+            <input type="submit" class="button" name="save-codes" value="<?php _e('Save All','wut');?>" />
+            <input type="submit" class="button" name="delete-checked" value="<?php _e('Delete All Checked','wut');?>" />
+        </form>
+        </div>
         <?php
     }
 

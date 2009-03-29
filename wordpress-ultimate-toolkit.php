@@ -46,6 +46,8 @@ function wut_init(){
 
     add_filter('get_the_excerpt', array(&$wut_utils,'excerpt'), 9);
     add_filter('wp_list_pages_excludes', array(&$wut_utils, 'exclude_pages'), 9);
+    add_action('wp_head', array(&$wut_utils, 'inject_to_head'));
+    add_action('wp_footer', array(&$wut_utils, 'inject_to_footer'));
 
     if (is_admin()){
         $wut_admin = new WUT_Admin($wut_optionsmanager->get_options());

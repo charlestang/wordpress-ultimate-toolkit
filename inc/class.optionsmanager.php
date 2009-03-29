@@ -75,7 +75,8 @@ class WUT_OptionsManager{
                 'enabled'        => 1,
                 'wphome'         => get_option('home'),
                 'perma_struct'   => get_option('permalink_structure')
-            )
+            ),
+            'customcode'    => array()
         );
         $defaults['version'] = $this->version;
         if (empty($this->options)) {
