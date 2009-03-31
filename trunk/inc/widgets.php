@@ -992,7 +992,7 @@ function wut_widget_recent_comments_init(){
             'after'         => $options[$number]['after'],
             'length'        => $options[$number]['length'],
             'posttype'      => $options[$number]['posttype'],
-            'commenttype'   => $options[$nubmer]['commenttype'],
+            'commenttype'   => $options[$number]['commenttype'],
             'skipusers'     => $options[$number]['skipusers'],
             'avatarsize'    => $options[$number]['avatarsize'],
             'none'          => $options[$number]['none'],
