@@ -3,9 +3,9 @@
 Plugin Name: WordPress Ultimate Toolkit
 Plugin URI: http://wordpress-ultimate-toolkit.googlecode.com
 Description: To be Added!
-Author: Charles & Leo
+Author: Charles
 Version: 1.00
-Author URI: http://www.charlestasng.cn
+Author URI: http://sexywp.com
 */
 /*  
 	Copyright 2008  Charles (email : charlestang@foxmail.com)
