@@ -80,4 +80,29 @@ class WUT_Utils{
         echo $this->_select_code_snippets('wp_footer');
         echo "\n<!--The End of WUT Custom Code-->\n";
     }
+
+    function add_wordcount_manage_columns($post_columns){
+        $post_columns['wordcount'] = __('Words','wut');
+        return $post_columns;
+    }
+
+    function display_wordcount($column_name){
+        global $post;
+        if($column_name == 'wordcount'){
+            $content = strip_tags($post->post_content);
+            $len = mb_strlen($content);
+            $style = '';
+            if ($len > 1000) $style = 'color:#00f;font-weight:bold';
+            if ($len > 2000) $style = 'color:#f00;font-weight:bold';
+            echo "<span style=\"$style\">",$len,'</span>';
+        }
+    }
+
+    function set_column_width(){
+    ?>
+        <style type="text/css">
+        .column-wordcount {width:5%;}
+        </style>
+    <?php
+    }
 }
