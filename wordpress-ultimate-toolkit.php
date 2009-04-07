@@ -39,19 +39,33 @@ function wut_init(){
 	$wut_querybox = new WUT_QueryBox();
     $wut_utils = new WUT_Utils($wut_optionsmanager->get_options());
 
+    //the following lines add all the Widgets
     $widgets =& $wut_optionsmanager->get_options("widgets");
     foreach($widgets['load'] as $callback){
         add_action('widgets_init', $callback);
     }
 
+    //add automatic post excerpt
     add_filter('get_the_excerpt', array(&$wut_utils,'excerpt'), 9);
+
+    //add exclude pages
     add_filter('wp_list_pages_excludes', array(&$wut_utils, 'exclude_pages'), 9);
+
+    //add custom code
     add_action('wp_head', array(&$wut_utils, 'inject_to_head'));
     add_action('wp_footer', array(&$wut_utils, 'inject_to_footer'));
 
     if (is_admin()){
+        //add admin menus
         $wut_admin = new WUT_Admin($wut_optionsmanager->get_options());
         add_action('admin_menu',array(&$wut_admin, 'add_menu_items'));
+
+        //add word count
+        add_filter('manage_posts_columns', array(&$wut_utils, 'add_wordcount_manage_columns'));
+        add_filter('manage_pages_columns', array(&$wut_utils, 'add_wordcount_manage_columns'));
+        add_action('manage_posts_custom_column', array(&$wut_utils, 'display_wordcount'));
+        add_action('manage_pages_custom_column', array(&$wut_utils, 'display_wordcount'));
+        add_action('admin_head', array(&$wut_utils, 'set_column_width'));
     }
 }
 ?>
