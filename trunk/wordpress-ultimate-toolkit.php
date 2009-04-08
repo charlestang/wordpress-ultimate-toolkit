@@ -34,6 +34,7 @@ require($wut_base_name . '/inc/widgets.php');
 
 add_action('plugins_loaded','wut_init');
 function wut_init(){
+    //initialize the three global objects
 	global $wut_querybox, $wut_utils,$wut_optionsmanager;
     $wut_optionsmanager = new WUT_OptionsManager();
 	$wut_querybox = new WUT_QueryBox();

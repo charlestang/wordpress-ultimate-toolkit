@@ -1,28 +1,91 @@
 <?php
 /**
  * Admin pages of the WordPress Ultimate Toolkit.
+ *
+ * WordPress Ultimate Toolkit has its own top level menu, because of its huge
+ * amount of functionalities.
+ *
+ * The top level menu called WUT Opitons, and other submenu items are all under
+ * this menu.
  */
 class WUT_Admin{
+
+    /**
+     * Hold the options. This the reference of the options, not the copy of it.
+     *
+     * @since 1.0.0
+     * @access private
+     * @var array
+     */
     var $options;
+
+    /**
+     * The Constructor.
+     * 
+     * @param array $opt
+     */
     function WUT_Admin(&$opt){
         $this->options = &$opt;
     }
 
+    /**
+     * Assist function, used for saving options.
+     *
+     * @since 1.0.0
+     * @global object $wut_optionsmanager
+     * @access private
+     */
+    function _save_option(){
+        global $wut_optionsmanager;
+        $wut_optionsmanager->save_options();
+    }
+    
+    /**
+     * Create the menu and its items.
+     *
+     * Note: 8 in the parameters list means the access level is admin.
+     */
     function add_menu_items(){
-        add_menu_page(__("WordPress Ultimate Toolkit Options"), __("WUT Options"), 8, "wut_admin_default_page", array(&$this, "load_widgets"));
-        add_submenu_page("wut_admin_default_page", __("Load Widgets"), __("Load Widgets"), 8, "wut_admin_default_page", array(&$this, "load_widgets"));
-        add_submenu_page("wut_admin_default_page", __("Excerpt Options"),__("Excerpt Options"), 8, "wut_admin_excerpt_options", array(&$this, "excerpt_options"));
-        add_submenu_page("wut_admin_default_page", __("Hide Pages"), __("Hide Pages"), 8, "wut_admin_hide_pages", array(&$this, "hide_pages"));
-        add_submenu_page('wut_admin_default_page', __('Custom Code','wut'), __('Custom Code','wut'), 8, 'wut_admin_custom_code', array(&$this, 'custom_code_snippets'));
-        add_submenu_page("wut_admin_default_page", __('Other Options','wut'), __('Other Options'), 8, 'wut_admin_other_options', array(&$this, 'other_options'));
-        add_submenu_page("wut_admin_default_page", __("Uninstall"), __("Uninstall"), 8, "wut_admin_uninstall", array(&$this, "uninstall"));
+        add_menu_page(__('WordPress Ultimate Toolkit Options', 'wut'),
+                      __('WUT Options', 'wut'), 8, 'wut_admin_default_page',
+                      array(&$this, 'load_widgets'));
+        add_submenu_page('wut_admin_default_page', __('Load Widgets', 'wut'),
+                         __('Load Widgets', 'wut'), 8, 'wut_admin_default_page',
+                         array(&$this, 'load_widgets'));
+        add_submenu_page('wut_admin_default_page', __('Excerpt Options', 'wut'),
+                         __('Excerpt Options', 'wut'), 8,
+                         'wut_admin_excerpt_options',
+                         array(&$this, 'excerpt_options'));
+        add_submenu_page('wut_admin_default_page', __('Hide Pages', 'wut'),
+                         __('Hide Pages', 'wut'), 8, 'wut_admin_hide_pages',
+                         array(&$this, 'hide_pages'));
+        add_submenu_page('wut_admin_default_page', __('Custom Code','wut'), 
+                         __('Custom Code','wut'), 8, 'wut_admin_custom_code',
+                         array(&$this, 'custom_code_snippets'));
+        add_submenu_page('wut_admin_default_page', __('Other Options','wut'), 
+                         __('Other Options'), 8, 'wut_admin_other_options',
+                         array(&$this, 'other_options'));
+        add_submenu_page('wut_admin_default_page', __('Uninstall', 'wut'),
+                         __('Uninstall', 'wut'), 8, 'wut_admin_uninstall',
+                         array(&$this, 'uninstall'));
     }
 
+    /**
+     * Hide Page admin panel.
+     *
+     * Here you can choose the pages you don't want to be shown on your blog,
+     * except you giving out direct links.
+     *
+     * Use function wp_list_pages() and wp_page_menu() cannot show the hided
+     * pages.
+     *
+     * @since 1.0.0
+     */
     function hide_pages(){
-        global $wut_optionsmanager;
         //Get options
         $options =& $this->options['hide-pages'];
-        
+
+        //Fetch all the pages.
         $para_args = array(
             'numberposts' 		=> -1,
             'orderby'			=> 'menu_order',
@@ -40,7 +103,7 @@ class WUT_Admin{
                     }
                 }
                 $options = substr($excludes,0,- 1);
-                $wut_optionsmanager->save_options();
+                $this->_save_option();
             }
         }
 
@@ -91,7 +154,6 @@ class WUT_Admin{
     }
 
     function load_widgets(){
-        global $wut_optionsmanager;
         //Get options
         $options =& $this->options['widgets'];
         $all = $options['all'];
@@ -107,7 +169,7 @@ class WUT_Admin{
                         $load[] = $widget['callback'];
                     }
                 }
-                $wut_optionsmanager->save_options();
+                $this->_save_option();
             }
         }
         ?>
