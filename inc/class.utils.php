@@ -90,7 +90,7 @@ class WUT_Utils{
         global $post;
         if($column_name == 'wordcount'){
             $content = strip_tags($post->post_content);
-            $len = mb_strlen($content);
+            $len = $this->words_count($content);
             $style = '';
             if ($len > 1000) $style = 'color:#00f;font-weight:bold';
             if ($len > 2000) $style = 'color:#f00;font-weight:bold';
@@ -104,5 +104,33 @@ class WUT_Utils{
         .column-wordcount {width:5%;}
         </style>
     <?php
+    }
+
+    /**
+     * Count the words in a string.
+     *
+     * This function treat a multibyte charactor as 1, and a English like
+     * language WORD as 1.
+     *
+     * So, this function can count mixed Chinese and English relatively exactly.
+     *
+     * @since 1.0.0
+     * @param string $content
+     * @return int the number of words in this string
+     */
+    function words_count($content){
+        $matches = array();
+        preg_match_all('~[-a-z0-9,.!?\'":;@/ ()]+~im', $content, $matches);
+        $content = preg_replace('~[-a-z0-9,.!?\'":;@/ ()]+~im', '', $content);
+        $ch_char_count = mb_strlen(trim($content));
+        $en_word_count = 0;
+        foreach($matches[0] as $str){
+            $str = trim($str, ',.!?;:@ \'"/()');
+            if(!empty($str)) {
+                $temp = explode(' ', $str);
+                $en_word_count += count($temp);
+            }
+        }
+        return $ch_char_count + $en_word_count;
     }
 }
