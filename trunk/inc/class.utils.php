@@ -21,20 +21,62 @@ class WUT_Utils{
             $text = trim($text);
 
             //段落数
-            $fragmentnum = 3;//$this->options['excerpt_paragraphs_number'];
+            //modified temporarily
+            $this->options['excerpt_paragraphs_number']=3;
+            $fragmentnum=$this->options['excerpt_paragraphs_number'];
             //文字数
-            $wordnum = 250; //$this->options['excerpt_words_number'];
-            $words = explode("\n", $text, $fragmentnum+1);
+            $this->options['excerpt_words_number']=250;
+            $wordnum = $this->options['excerpt_words_number'];
+            //$words = explode("\n", $text, $fragmentnum+7);
+            //avoid blank line
+            $words = explode("\n", $text);
+            
+            
             $num = 0;
+            $word_count = 0;
             $output = '';
-            do {
-                $output = $output . $words[$num] . "\n" . "\n";
-                $num++;
-            } while ( (mb_strlen($output, 'UTF-8') < $wordnum) and ($num < min(count($words), $fragmentnum)) );
+            //for test
+          /* $test_str = '';
+            $testnum = 0;
+            while($testnum < count($words))
+            {
+            	$test_str .='The ' . $testnum . ' paragraph has ' . $this->words_count($words[$testnum]) . 'words' . "\n" ;
+            	$testnum++;
+            } 
+            $output .=$test_str;*/
+            while(($word_count < $wordnum) and ($num < min(count($words), $fragmentnum)) )
+            {
+            	 $cur_wordnum=$this->words_count($words[$num]);
+            	 if($cur_wordnum == 0)
+            	     continue;
+            	 
+            	 if($word_count + $cur_wordnum > $wordnum)
+            	 {
+            	 	  //$output = $output . 'Word count ' . ($wordnum - $word_count) . 'words' . "\n";
+            	 	  $output = $output . $this->get_num_of_words(strip_tags($words[$num]), ($wordnum - $word_count));
+            	 	  $output = $output . "\n" . "\n";
+            	 	  $word_count = $wordnum;
+            	 	            	 	            	 	   
+            	 	  
+            	 }
+            	 else
+            	 {
+            	 	  $output = $output . $words[$num] . "\n" . "\n";
+            	    $word_count = $word_count + $cur_wordnum;
+            	 }
+            	 $num++;
+            	           	       	 
+            	 
+            	
+            }
+          //  do {
+            //    $output = $output . $words[$num] . "\n" . "\n";
+             //   $num++;
+            //} while ( (mb_strlen($output, 'UTF-8') < $wordnum) and ($num < min(count($words), $fragmentnum)) );
 
             if (mb_strlen($output, 'UTF-8') < mb_strlen($text, 'UTF-8')) {
                 $output .= '<span class="readmore"><a href="' . get_permalink() . '" title="' . strip_tags(get_the_title()) . '">';
-                $output .= __('Read More: ','wut') . mb_strlen(preg_replace('/\s/','',html_entity_decode(strip_tags($post->post_content))),'UTF-8') . __(' Words Totally','wut') . '</a></span>';
+                $output .= __('Read More: ','wut') . $this->words_count(preg_replace('/\s/','',html_entity_decode(strip_tags($post->post_content)))) . __(' Words Totally','wut') . '</a></span>';
             }
             return $output;
         }
@@ -120,8 +162,8 @@ class WUT_Utils{
      */
     function words_count($content){
         $matches = array();
-        preg_match_all('~[-a-z0-9,.!?\'":;@/ ()]+~im', $content, $matches);
-        $content = preg_replace('~[-a-z0-9,.!?\'":;@/ ()]+~im', '', $content);
+        preg_match_all('~[-a-z0-9,.!?\'":;@/ ()\+\_]+~im', $content, $matches);
+        $content = preg_replace('~[-a-z0-9,.!?\'":;@/ ()\+\_]+~im', '', $content);
         $ch_char_count = mb_strlen(trim($content));
         $en_word_count = 0;
         foreach($matches[0] as $str){
@@ -133,4 +175,27 @@ class WUT_Utils{
         }
         return $ch_char_count + $en_word_count;
     }
+    
+     /**
+    * Get the specified number of words in a string.
+    *
+    * This function tries to get an indicated number of words from a string, treating a 
+    * multibyte character as 1 word, and an English word or a consecutive number sequence as 1 word.etc
+    *
+    *
+    * @since 1.0.0
+    * @param string $content, int $number
+    * @return string the words we should get
+    */
+    function get_num_of_words($content, $number){
+    	
+    	return mb_substr($content,0,$number);
+    	//return $content;
+    	
+    	
+    	
+    }
 }
+
+  
+    
