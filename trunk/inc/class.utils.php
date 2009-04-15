@@ -159,6 +159,7 @@ class WUT_Utils{
      * @since 1.0.0
      * @param string $content
      * @return int the number of words in this string
+     * @access private
      */
     function words_count($content){
         $matches = array();
