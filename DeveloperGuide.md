@@ -1,0 +1,41 @@
+# Developer Guide #
+
+
+
+## Directory Hierarchy ##
+There are a lot of sub directories in the root directory of this plugin. The functions
+of these directories are:
+
+  * **dev** for test files or other files used in the development
+  * **doc** for documents of this plugin include developer documents and user documents
+  * **i10n** for multilanguage support
+  * **inc** all the code of this plugin include php, js and css
+  * **libs** libraries
+  * **media** binary files include images, logos, etc.
+
+## Plugin Architecture ##
+The plugin is constructed in hierarchical structure. Basically, the plugin can be devided into
+> three layer.
+
+![http://lh5.ggpht.com/_QYicOeu89Bk/ScN3s0rG1dI/AAAAAAAABMQ/us9wed4WRQk/s400/screenshot-1.png](http://lh5.ggpht.com/_QYicOeu89Bk/ScN3s0rG1dI/AAAAAAAABMQ/us9wed4WRQk/s400/screenshot-1.png)
+
+### Query Box ###
+The base layer is the query box. Currently, the query box object consist of 8 parameterized
+database query. These queries are the core of this plugin. The query box object can be used
+independently if you think the whole plugin is verbose.
+
+Each function in query box is a simple encapsulation of a sql statement. A return of this
+kind of function is a database record, which is a object whose data members corespond to
+fields of a table in database.
+
+### Template Tags ###
+The second layer is a set of [template tags](http://codex.wordpress.org/Template_Tags). These
+tags call functions in the query box, process the result and print out well formated html.
+Template tags don't work without the query box.
+
+Template tags are encapsulations of querys in the query box. They are designed for theme
+and plugin developers.
+
+### Widgets ###
+The third layer of this plugin is a set of widgets. They are designed for end users. All of
+them have a control panel, which can be used by end users to custom behaviors of the widget.
