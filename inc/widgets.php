@@ -100,17 +100,17 @@ function wut_widget_recent_posts_init(){
             $xfomat = '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)';
             $number = '%i%';
         }else{
-            $title = attribute_escape($options[$number]['title']);
+            $title = esc_attr($options[$number]['title']);
             $limit = $options[$number]['limit'];
             $offset = $options[$number]['offset'];
-            $before = attribute_escape($options[$number]['before']);
-            $after = attribute_escape($options[$number]['after']);
+            $before = esc_attr($options[$number]['before']);
+            $after = esc_attr($options[$number]['after']);
             $type = $options[$number]['type'];
             $skips = $options[$number]['skips'];
-            $none = attribute_escape($options[$number]['none']);
+            $none = esc_attr($options[$number]['none']);
             $password = $options[$number]['password'];
             $orderby = $options[$number]['orderby'];
-            $xformat = attribute_escape($options[$number]['xformat']);
+            $xformat = esc_attr($options[$number]['xformat']);
         }
         ?>
         <table>
@@ -192,13 +192,13 @@ function wut_widget_recent_posts_init(){
     $widget_cb  = 'wut_widget_recent_posts_body';
     $control_cb = 'wut_widget_recent_posts_control';
 	// Register Widgets
-    $registerd = false;
+    $registered = false;
     foreach(array_keys($options) as $o){
         if(!isset($options[$o]['title'])){
             continue;
         }
         $id = "wut-widget-recent-posts-$o";
-        $registerd = true;
+        $registered = true;
         wp_register_sidebar_widget($id, $name, $widget_cb, $widget_ops, array('number'=>$o));
         wp_register_widget_control($id, $name, $control_cb, $control_ops, array('number'=>$o));
     }
@@ -282,22 +282,22 @@ function wut_widget_random_posts_init(){
         if ($number == -1){
             $title = 'WUT Random Posts';
             $limit = 10;
-            $before = attribute_escape('<li>');
-            $after = attribute_escape('</li>');
+            $before = esc_attr('<li>');
+            $after = esc_attr('</li>');
             $type = 'both';
             $skips = '';
             $none = 'No Posts.';
             $password = 'hide';
-            $xformat = attribute_escape('<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)');
+            $xformat = esc_attr('<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)');
             $number = '%i%';
         }else{
-            $title = attribute_escape($options[$number]['title']);
+            $title = esc_attr($options[$number]['title']);
             $limit = $options[$number]['limit'];
-            $before = attribute_escape($options[$number]['before']);
-            $after = attribute_escape($options[$number]['after']);
-            $none = attribute_escape($options[$number]['none']);
+            $before = esc_attr($options[$number]['before']);
+            $after = esc_attr($options[$number]['after']);
+            $none = esc_attr($options[$number]['none']);
             $password = $options[$number]['password'];
-            $xformat = attribute_escape($options[$number]['xformat']);
+            $xformat = esc_attr($options[$number]['xformat']);
             $type = $options[$number]['type'];
             $skips = $options[$number]['skips'];
         }
@@ -470,28 +470,28 @@ function wut_widget_related_posts_init(){
         if ($number == -1){
             $title = 'WUT Related Posts';
             $limit = 10;
-            $before = attribute_escape('<li>');
-            $after = attribute_escape('</li>');
+            $before = esc_attr('<li>');
+            $after = esc_attr('</li>');
             $skips = '';
             $leastshare = 1;
             $none = 'No Posts.';
             $password = 'hide';
             $orderby = 'post_date';
             $order = 'desc';
-            $xformat = attribute_escape('<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)');
+            $xformat = esc_attr('<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)');
             $number = '%i%';
         }else{
-            $title = attribute_escape($options[$number]['title']);
+            $title = esc_attr($options[$number]['title']);
             $limit = $options[$number]['limit'];
-            $before = attribute_escape($options[$number]['before']);
-            $after = attribute_escape($options[$number]['after']);
+            $before = esc_attr($options[$number]['before']);
+            $after = esc_attr($options[$number]['after']);
             $skips = $options[$number]['skips'];
             $leastshare = $options[$number]['leastshare'];
-            $none = attribute_escape($options[$number]['none']);
+            $none = esc_attr($options[$number]['none']);
             $password = $options[$number]['password'];
             $orderby = $options[$number]['orderby'];
             $order = $options[$number]['order'];
-            $xformat = attribute_escape($options[$number]['xformat']);            
+            $xformat = esc_attr($options[$number]['xformat']);            
         }
         ?>
         <table>
@@ -669,26 +669,26 @@ function wut_widget_posts_by_category_init(){
         if ($number == -1){
             $title = 'WUT Posts by Category';
             $limit = 10;
-            $before = attribute_escape('<li>');
-            $after = attribute_escape('</li>');
+            $before = esc_attr('<li>');
+            $after = esc_attr('</li>');
             $skips = '';
             $none = 'No Posts.';
             $password = 'hide';
             $orderby = 'post_date';
             $order = 'desc';
-            $xformat = attribute_escape('<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)');
+            $xformat = esc_attr('<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)');
             $number = '%i%';
         }else{
-            $title = attribute_escape($options[$number]['title']);
+            $title = esc_attr($options[$number]['title']);
             $limit = $options[$number]['limit'];
-            $before = attribute_escape($options[$number]['before']);
-            $after = attribute_escape($options[$number]['after']);
+            $before = esc_attr($options[$number]['before']);
+            $after = esc_attr($options[$number]['after']);
             $skips = $options[$number]['skips'];
-            $none = attribute_escape($options[$number]['none']);
+            $none = esc_attr($options[$number]['none']);
             $password = $options[$number]['password'];
             $orderby = $options[$number]['orderby'];
             $order = $options[$number]['order'];
-            $xformat = attribute_escape($options[$number]['xformat']);
+            $xformat = esc_attr($options[$number]['xformat']);
         }
         ?>
         <table>
@@ -869,19 +869,19 @@ function wut_widget_most_commented_posts_init(){
             $days = 30;
             $none = 'No Posts.';
             $password = 'hide';
-            $xformat = attribute_escape('<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)');
+            $xformat = esc_attr('<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)');
             $number = '%i%';
         }else{
-            $title = attribute_escape($options[$number]['title']);
+            $title = esc_attr($options[$number]['title']);
             $limit = $options[$number]['limit'];
-            $before = attribute_escape($options[$number]['before']);
-            $after = attribute_escape($options[$number]['after']);
+            $before = esc_attr($options[$number]['before']);
+            $after = esc_attr($options[$number]['after']);
             $type = $options[$number]['type'];
             $skips = $options[$number]['skips'];
             $days = $options[$number]['days'];
-            $none = attribute_escape($options[$number]['none']);
+            $none = esc_attr($options[$number]['none']);
             $password = $options[$number]['password'];
-            $xformat = attribute_escape($options[$number]['xformat']);
+            $xformat = esc_attr($options[$number]['xformat']);
         }
         ?>
         <table>
@@ -1067,21 +1067,21 @@ function wut_widget_recent_comments_init(){
             $avatarsize = 16;
             $none = 'No Posts.';
             $password = 'hide';
-            $xformat = attribute_escape('%gravatar%<a class="commentator" href="%permalink%" >%commentauthor%</a> : %commentexcerpt%');
+            $xformat = esc_attr('%gravatar%<a class="commentator" href="%permalink%" >%commentauthor%</a> : %commentexcerpt%');
             $number = '%i%';
         }else{
-            $title = attribute_escape($options[$number]['title']);
+            $title = esc_attr($options[$number]['title']);
             $limit = $options[$number]['limit'];
-            $before = attribute_escape($options[$number]['before']);
-            $after = attribute_escape($options[$number]['after']);
+            $before = esc_attr($options[$number]['before']);
+            $after = esc_attr($options[$number]['after']);
             $length = $options[$number]['length'];
             $posttype = $options[$number]['posttype'];
             $commenttype = $options[$number]['commenttype'];
             $skipusers = $options[$number]['skipusers'];
             $avatarsize = $options[$number]['avatarsize'];
-            $none = attribute_escape($options[$number]['none']);
+            $none = esc_attr($options[$number]['none']);
             $password = $options[$number]['password'];
-            $xformat = attribute_escape($options[$number]['xformat']);
+            $xformat = esc_attr($options[$number]['xformat']);
         }
         ?>
         <table>
@@ -1110,7 +1110,7 @@ function wut_widget_recent_comments_init(){
                     <td class="alignright"><?php _e('Post type to show:', 'wut');?></td>
                     <td>
                         <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="both" <?php if($posttype == 'both') echo 'checked="checked"';?>/>both</p>
-                        <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="page" <?php if($psottype == 'page') echo 'checked="checked"';?>/>page only</p>
+                        <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="page" <?php if($posttype == 'page') echo 'checked="checked"';?>/>page only</p>
                         <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="post" <?php if($posttype == 'post') echo 'checked="checked"';?>/>post only</p>
                     </td>
                 </tr>
@@ -1275,19 +1275,19 @@ function wut_widget_active_commentators_init(){
             $threshhold = 2;
             $days = -1;
             $none = 'Anybody.';
-            $xformat = attribute_escape('%avatar%<a href="%url%" rel="nofollow">%author%</a>');
+            $xformat = esc_attr('%avatar%<a href="%url%" rel="nofollow">%author%</a>');
             $number = '%i%';
         }else{
-            $title = attribute_escape($options[$number]['title']);
+            $title = esc_attr($options[$number]['title']);
             $limit = $options[$number]['limit'];
-            $before = attribute_escape($options[$number]['before']);
-            $after = attribute_escape($options[$number]['after']);
+            $before = esc_attr($options[$number]['before']);
+            $after = esc_attr($options[$number]['after']);
             $skipusers = $options[$number]['skipusers'];
             $avatarsize = $options[$number]['avatarsize'];
             $threshhold = $options[$number]['threshhold'];
             $days = $options[$number]['days'];
-            $none = attribute_escape($options[$number]['none']);
-            $xformat = attribute_escape($options[$number]['xformat']);
+            $none = esc_attr($options[$number]['none']);
+            $xformat = esc_attr($options[$number]['xformat']);
         }
         ?>
         <table>
@@ -1465,20 +1465,20 @@ function wut_widget_recent_commentators_init(){
             $type = 'month';
             $days = -1;
             $none = 'Anybody.';
-            $xformat = attribute_escape('%avatar%<a href="%url%" rel="nofollow">%author%</a>');
+            $xformat = esc_attr('%avatar%<a href="%url%" rel="nofollow">%author%</a>');
             $number = '%i%';
         }else{
-            $title = attribute_escape($options[$number]['title']);
+            $title = esc_attr($options[$number]['title']);
             $limit = $options[$number]['limit'];
-            $before = attribute_escape($options[$number]['before']);
-            $after = attribute_escape($options[$number]['after']);
+            $before = esc_attr($options[$number]['before']);
+            $after = esc_attr($options[$number]['after']);
             $skipusers = $options[$number]['skipusers'];
             $avatarsize = $options[$number]['avatarsize'];
             $threshhold = $options[$number]['threshhold'];
             $type = $options[$number]['type'];
             $days = $options[$number]['days'];
-            $none = attribute_escape($options[$number]['none']);
-            $xformat = attribute_escape($options[$number]['xformat']);
+            $none = esc_attr($options[$number]['none']);
+            $xformat = esc_attr($options[$number]['xformat']);
         }
         ?>
         <table>

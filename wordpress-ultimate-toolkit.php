@@ -41,7 +41,7 @@ function wut_init(){
     $wut_utils = new WUT_Utils($wut_optionsmanager->get_options());
 
     //the following lines add all the Widgets
-    $widgets =& $wut_optionsmanager->get_options("widgets");
+    $widgets = $wut_optionsmanager->get_options("widgets");
     foreach($widgets['load'] as $callback){
         add_action('widgets_init', $callback);
     }
@@ -69,4 +69,3 @@ function wut_init(){
         add_action('admin_head', array(&$wut_utils, 'set_column_width'));
     }
 }
-?>

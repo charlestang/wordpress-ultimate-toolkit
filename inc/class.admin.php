@@ -24,7 +24,7 @@ class WUT_Admin{
      * 
      * @param array $opt
      */
-    function WUT_Admin(&$opt){
+    function __construct(&$opt){
         $this->options = &$opt;
     }
 
@@ -43,30 +43,29 @@ class WUT_Admin{
     /**
      * Create the menu and its items.
      *
-     * Note: 8 in the parameters list means the access level is admin.
      */
     function add_menu_items(){
         add_menu_page(__('WordPress Ultimate Toolkit Options', 'wut'),
-                      __('WUT Options', 'wut'), 8, 'wut_admin_default_page',
+                      __('WUT Options', 'wut'), 'manage_options', 'wut_admin_default_page',
                       array(&$this, 'load_widgets'));
         add_submenu_page('wut_admin_default_page', __('Load Widgets', 'wut'),
-                         __('Load Widgets', 'wut'), 8, 'wut_admin_default_page',
+                         __('Load Widgets', 'wut'), 'manage_options', 'wut_admin_default_page',
                          array(&$this, 'load_widgets'));
         add_submenu_page('wut_admin_default_page', __('Excerpt Options', 'wut'),
-                         __('Excerpt Options', 'wut'), 8,
+                         __('Excerpt Options', 'wut'), 'manage_options',
                          'wut_admin_excerpt_options',
                          array(&$this, 'excerpt_options'));
         add_submenu_page('wut_admin_default_page', __('Hide Pages', 'wut'),
-                         __('Hide Pages', 'wut'), 8, 'wut_admin_hide_pages',
+                         __('Hide Pages', 'wut'), 'manage_options', 'wut_admin_hide_pages',
                          array(&$this, 'hide_pages'));
         add_submenu_page('wut_admin_default_page', __('Custom Code','wut'), 
-                         __('Custom Code','wut'), 8, 'wut_admin_custom_code',
+                         __('Custom Code','wut'), 'manage_options', 'wut_admin_custom_code',
                          array(&$this, 'custom_code_snippets'));
         add_submenu_page('wut_admin_default_page', __('Other Options','wut'), 
-                         __('Other Options'), 8, 'wut_admin_other_options',
+                         __('Other Options'), 'manage_options', 'wut_admin_other_options',
                          array(&$this, 'other_options'));
         add_submenu_page('wut_admin_default_page', __('Uninstall', 'wut'),
-                         __('Uninstall', 'wut'), 8, 'wut_admin_uninstall',
+                         __('Uninstall', 'wut'), 'manage_options', 'wut_admin_uninstall',
                          array(&$this, 'uninstall'));
     }
 
@@ -303,7 +302,7 @@ class WUT_Admin{
                     <tr>
                         <td><label for="<?php echo $codesnippet['id'];?>-source"><?php _e('Source Code:','wut');?></label></td>
                         <td>
-                            <textarea id="<?php echo $codesnippet['id'];?>-source" name="<?php echo $codesnippet['id'];?>-source" cols="80" rows="15"><?php echo attribute_escape($codesnippet['source']);?></textarea>
+                            <textarea id="<?php echo $codesnippet['id'];?>-source" name="<?php echo $codesnippet['id'];?>-source" cols="80" rows="15"><?php echo esc_attr($codesnippet['source']);?></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -413,4 +412,3 @@ class WUT_Admin{
         <?php
     }
 }
-?>

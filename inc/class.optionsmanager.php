@@ -1,8 +1,11 @@
 <?php
+
 class WUT_OptionsManager{
+
     var $version = 1.0;
     var $options;
-    function WUT_OptionsManager(){
+
+    function __construct(){
         //update_option('wordpress-ultimate-toolkit-options','');
         $this->options = get_option('wordpress-ultimate-toolkit-options');
 
@@ -87,8 +90,16 @@ class WUT_OptionsManager{
     }
 
     function &get_options($key = ''){
-        if(empty($key)) return $this->options;
-        return isset($this->options[$key])?$this->options[$key]:false;
+        if(empty($key)) {
+            return $this->options;
+        }
+        $vlaue = null;
+        if (isset($this->options[$key])) {
+            $value = $this->options[$key];
+        } else {
+            $value = false;
+        }
+        return $value;
     }
 
     function save_options(){
@@ -108,4 +119,3 @@ class WUT_OptionsManager{
     }
 }
 
-?>

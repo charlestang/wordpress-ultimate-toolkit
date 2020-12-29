@@ -1,11 +1,13 @@
 <?php
-require_once(dirname(dirname(__FILE__)) . '/libs/multibyte.php');
 
 class WUT_Utils{
+
     var $options;
-    function WUT_Utils($opt){
+
+    function __construct($opt){
         $this->options = $opt;
     }
+
     function excerpt($text){
         global $post;
 
@@ -198,5 +200,3 @@ class WUT_Utils{
     }
 }
 
-  
-    
