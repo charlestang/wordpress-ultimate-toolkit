@@ -3,8 +3,7 @@
 class WUT_Utils{
 
     var $options;
-
-    function __construct($opt){
+    function WUT_Utils($opt){
         $this->options = $opt;
     }
 
@@ -24,61 +23,33 @@ class WUT_Utils{
 
             //段落数
             //modified temporarily
-            $this->options['excerpt_paragraphs_number']=3;
-            $fragmentnum=$this->options['excerpt_paragraphs_number'];
+            $options = $this->options['excerpt'];
+            $fragmentnum = $options['paragraphs'];
             //文字数
-            $this->options['excerpt_words_number']=250;
-            $wordnum = $this->options['excerpt_words_number'];
-            //$words = explode("\n", $text, $fragmentnum+7);
-            //avoid blank line
+            $wordnum = $options['words'];
             $words = explode("\n", $text);
             
             
             $num = 0;
             $word_count = 0;
             $output = '';
-            //for test
-          /* $test_str = '';
-            $testnum = 0;
-            while($testnum < count($words))
-            {
-            	$test_str .='The ' . $testnum . ' paragraph has ' . $this->words_count($words[$testnum]) . 'words' . "\n" ;
-            	$testnum++;
-            } 
-            $output .=$test_str;*/
-            while(($word_count < $wordnum) and ($num < min(count($words), $fragmentnum)) )
-            {
-            	 $cur_wordnum=$this->words_count($words[$num]);
-            	 if($cur_wordnum == 0)
-            	     continue;
-            	 
-            	 if($word_count + $cur_wordnum > $wordnum)
-            	 {
-            	 	  //$output = $output . 'Word count ' . ($wordnum - $word_count) . 'words' . "\n";
-            	 	  $output = $output . $this->get_num_of_words(strip_tags($words[$num]), ($wordnum - $word_count));
-            	 	  $output = $output . "\n" . "\n";
-            	 	  $word_count = $wordnum;
-            	 	            	 	            	 	   
-            	 	  
-            	 }
-            	 else
-            	 {
-            	 	  $output = $output . $words[$num] . "\n" . "\n";
-            	    $word_count = $word_count + $cur_wordnum;
-            	 }
-            	 $num++;
-            	           	       	 
-            	 
-            	
-            }
-          //  do {
-            //    $output = $output . $words[$num] . "\n" . "\n";
-             //   $num++;
-            //} while ( (mb_strlen($output, 'UTF-8') < $wordnum) and ($num < min(count($words), $fragmentnum)) );
 
+
+            do {
+                $output .= $words[$num] . "\n" . "\n";
+                $num++;
+            } while ( (mb_strlen($output, 'UTF-8') < $wordnum) and ($num < min(count($words), $fragmentnum)) );
+            $output = substr($output, 0, -2);
             if (mb_strlen($output, 'UTF-8') < mb_strlen($text, 'UTF-8')) {
-                $output .= '<span class="readmore"><a href="' . get_permalink() . '" title="' . strip_tags(get_the_title()) . '">';
-                $output .= __('Read More: ','wut') . $this->words_count(preg_replace('/\s/','',html_entity_decode(strip_tags($post->post_content)))) . __(' Words Totally','wut') . '</a></span>';
+                $permalink = get_permalink();
+                $title = strip_tags(get_the_title());
+                $total_num = $this->words_count(preg_replace('/\s/','',html_entity_decode(strip_tags($post->post_content))));
+
+                $tips = str_replace('%permalink%', $permalink, stripcslashes($options['tip_template']));
+                $tips = str_replace('%title%', $title, $tips);
+                $tips = str_replace('%total_words%', $total_num, $tips);
+
+                $output .= $tips;
             }
             return $output;
         }
@@ -145,7 +116,7 @@ class WUT_Utils{
     function set_column_width(){
     ?>
         <style type="text/css">
-        .column-wordcount {width:5%;}
+        .column-wordcount {width:6%;}
         </style>
     <?php
     }
@@ -177,26 +148,6 @@ class WUT_Utils{
             }
         }
         return $ch_char_count + $en_word_count;
-    }
-    
-     /**
-    * Get the specified number of words in a string.
-    *
-    * This function tries to get an indicated number of words from a string, treating a 
-    * multibyte character as 1 word, and an English word or a consecutive number sequence as 1 word.etc
-    *
-    *
-    * @since 1.0.0
-    * @param string $content, int $number
-    * @return string the words we should get
-    */
-    function get_num_of_words($content, $number){
-    	
-    	return mb_substr($content,0,$number);
-    	//return $content;
-    	
-    	
-    	
     }
 }
 

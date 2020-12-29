@@ -1,11 +1,10 @@
 <?php
 
 class WUT_OptionsManager{
+    public $version = "1.0.2";
+    public $options;
 
-    var $version = 1.0;
-    var $options;
-
-    function __construct(){
+    public function __construct() {
         //update_option('wordpress-ultimate-toolkit-options','');
         $this->options = get_option('wordpress-ultimate-toolkit-options');
 
@@ -15,7 +14,7 @@ class WUT_OptionsManager{
         }
     }
 
-    function set_defaults(){
+    public function set_defaults(){
         $defaults = array(
             'hide-pages'        => '',
             'widgets'           => array(
@@ -73,7 +72,11 @@ class WUT_OptionsManager{
                 ),
                     
             ),
-            'excerpt'          => array(),
+            'excerpt'          => array(
+                'paragraphs'    => 3,
+                'words'         => 250,
+                'tip_template'  => '<br/><br/><span class="readmore"><a href="%permalink%" title="%title%">Continue Reading--%total_words% words totally</a></span>'
+            ),
             'other'            => array(
                 'enabled'        => 1,
                 'wphome'         => get_option('home'),
@@ -89,7 +92,7 @@ class WUT_OptionsManager{
         }
     }
 
-    function &get_options($key = ''){
+    public function &get_options($key = ''){
         if(empty($key)) {
             return $this->options;
         }
@@ -102,11 +105,11 @@ class WUT_OptionsManager{
         return $value;
     }
 
-    function save_options(){
+    public function save_options(){
         update_option('wordpress-ultimate-toolkit-options',$this->options);
     }
 
-    function delete_options(){
+    public function delete_options(){
         delete_option('wordpress-ultimate-toolkit-options');
         delete_option('wut-widget-recent-posts');
         delete_option('wut-widget-random-posts');

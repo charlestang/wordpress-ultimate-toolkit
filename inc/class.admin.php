@@ -111,10 +111,12 @@ class WUT_Admin{
         <div class="wrap">
             <h2><?php _e('Hide Pages','wut');?></h2>
             <form method="post">
-                <table class="widefat">
+                <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th id="cb" class="manage-column column-cb check-column" scope="col"><input type="checkbox" /></th>
+                            <td id="cb" class="manage-column column-cb check-column">
+                                <input type="checkbox" />
+                            </td>
                             <th id="postid" class="manage-column column-postid" scope="col"><?php _e('ID','wut');?></th>
                             <th id="title" class="manage-column column-title" scope="col"><?php _e('Title','wut');?></th>
                             <th id="date" class="manage-column column-date" scope="col"><?php _e('Date','wut');?></th>
@@ -122,7 +124,9 @@ class WUT_Admin{
                     </thead>
                     <tfoot>
                         <tr>
-                            <th class="manage-column column-cb check-column" scope="col"><input type="checkbox" /></th>
+                            <td class="manage-column column-cb check-column">
+                                <input type="checkbox" />
+                            </td>
                             <th class="manage-column column-postid" scope="col"><?php _e('ID','wut');?></th>
                             <th class="manage-column column-title" scope="col"><?php _e('Title','wut');?></th>
                             <th class="manage-column column-date" scope="col"><?php _e('Date','wut');?></th>
@@ -137,16 +141,18 @@ class WUT_Admin{
                     echo '<tr>';
                     echo '<td>','<input id="post-',$page->ID,'" name="post-',$page->ID,'" type="checkbox"',$check,'/>','</td>';
                     echo '<td>',$page->ID,'</td>';
-                    echo '<td>',$page->post_title,'</td>';
-                    echo '<td>',$page->post_date,'</td>';
+                    echo '<td class="column-title">',$page->post_title,'</td>';
+                    echo '<td class="column-date">',$page->post_date,'</td>';
                     echo '</tr>';
                 }
             }
         ?>
                     </tbody>
                 </table>
-                <input type="hidden" value="save" name="action" />
-                <input type="submit" class="button" value="Hide checked pages" />
+                <div class="tablenav bottom">
+                    <input type="hidden" value="save" name="action" />
+                    <input type="submit" class="button action" value="Hide checked pages" />
+                </div>
             </form>
         </div>
         <?php
@@ -177,14 +183,18 @@ class WUT_Admin{
                 <table class="widefat">
                     <thead>
                         <tr>
-                            <th id="cb" class="manage-column column-cb check-column" scope="col"><input type="checkbox" /></th>
+                            <td id="cb" class="manage-column column-cb check-column">
+                                <input type="checkbox" />
+                            </td>
                             <th id="widgetname" class="manage-column column-widgetname" scope="col"><?php _e('Widget Name','wut');?></th>
                             <th id="decript" class="manage-column column-descript" scope="col"><?php _e('Description','wut');?></th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th class="manage-column column-cb check-column" scope="col"><input type="checkbox" /></th>
+                            <td class="manage-column column-cb check-column">
+                                <input type="checkbox" />
+                            </td>
                             <th class="manage-column column-widgetname" scope="col"><?php _e('Widget Name','wut');?></th>
                             <th class="manage-column column-descript" scope="col"><?php _e('Description','wut');?></th>
                         </tr>
@@ -211,8 +221,47 @@ class WUT_Admin{
     }
 
     function excerpt_options(){
+        $options = & $this->options['excerpt'];
+
+        if (isset($_GET['page']) && $_GET['page'] == 'wut_admin_excerpt_options'){
+            if (isset($_REQUEST['submit'])){
+                $options['paragraphs'] = intval($_POST['excerpt_paragraphs_number']);
+                $options['words'] = intval($_POST['excerpt_words_number']);
+                $options['tip_template'] = stripslashes($_POST['excerpt_continue_reading_tip_template']);
+                $this->_save_option();
+            }
+        }
         ?>
-        <div class="wrap">This is Excerpt Options</div>
+        <div class="wrap">
+            <h2><?php _e('Excerpt Options', 'wut');?></h2>
+            <form method="post">
+                <table class="form-table">
+                    <tbody>
+                        <tr valign="top">
+                            <th scope="row"><label for="excerpt_paragraphs_number"><?php _e('Paragraphs Number','wut');?></label></th>
+                            <td><input id="excerpt_paragraphs_number" name="excerpt_paragraphs_number" type="text" size="10" value="<?php echo $options['paragraphs'];?>"/></td>
+                        </tr>
+                        <tr valign="top">
+                            <th scope="row"><label for="excerpt_words_number"><?php _e('Words Number', 'wut');?></label></th>
+                            <td><input id="excerpt_words_number" name="excerpt_words_number" type="text" size="10" value="<?php echo $options['words'];?>"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><label for="excerpt_continue_reading_tip_template"><?php _e('"Continue Reading" tip template:', 'wut');?></label></p>
+                <p>Use variables:</p>
+                <ul>
+                    <li>%total_words% --- The number of words in the post.</li>
+                    <li>%title% --- Post title.</li>
+                    <li>%permalink --- The permanent link of the post.</li>
+                    <li>\n --- new line.</li>
+                </ul>
+                <p>HTML tags supported.</p>
+                <textarea id="excerpt_continue_reading_tip_template" name="excerpt_continue_reading_tip_template" class="large-text code" rows="3"><?php echo esc_attr($options['tip_template']);?></textarea>
+                <p class="submit">
+                    <input type="submit" value="Save Changes" class="button-primary" name="submit">
+                </p>
+            </form>
+        </div>
         <?php
     }
 
@@ -220,7 +269,7 @@ class WUT_Admin{
         global $wut_optionsmanager;
         $options =& $this->options['customcode'];
         if (!is_array($options)){
-            $options = array();
+            //$options = array();
         }
         unset($new_code);
         if (isset($_GET['page']) && $_GET['page'] == 'wut_admin_custom_code'){

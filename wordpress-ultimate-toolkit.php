@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: WordPress Ultimate Toolkit
-Plugin URI: http://wordpress-ultimate-toolkit.googlecode.com
-Description: To be Added!
+Plugin URI: http://sexywp.com/wut
+Description: WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress better, is a set of admin tools, widgets and components.
 Author: Charles
-Version: 1.00
+Version: 1.0.5
 Author URI: http://sexywp.com
 */
 /*  
@@ -35,22 +35,22 @@ require($wut_base_name . '/inc/widgets.php');
 add_action('plugins_loaded','wut_init');
 function wut_init(){
     //initialize the three global objects
-	global $wut_querybox, $wut_utils,$wut_optionsmanager;
+    global $wut_querybox, $wut_utils,$wut_optionsmanager;
     $wut_optionsmanager = new WUT_OptionsManager();
-	$wut_querybox = new WUT_QueryBox();
+    $wut_querybox = new WUT_QueryBox();
     $wut_utils = new WUT_Utils($wut_optionsmanager->get_options());
 
     //the following lines add all the Widgets
-    $widgets = $wut_optionsmanager->get_options("widgets");
+    $widgets =& $wut_optionsmanager->get_options("widgets");
     foreach($widgets['load'] as $callback){
         add_action('widgets_init', $callback);
     }
 
     //add automatic post excerpt
-    add_filter('get_the_excerpt', array(&$wut_utils,'excerpt'), 9);
+    add_filter('get_the_excerpt', array($wut_utils,'excerpt'), 9);
 
     //add exclude pages
-    add_filter('wp_list_pages_excludes', array(&$wut_utils, 'exclude_pages'), 9);
+    add_filter('wp_list_pages_excludes', array($wut_utils, 'exclude_pages'), 9);
 
     //add custom code
     add_action('wp_head', array(&$wut_utils, 'inject_to_head'));

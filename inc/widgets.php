@@ -87,17 +87,17 @@ function wut_widget_recent_posts_init(){
             $update = true;
         }
         if ($number == -1){
-            $title = 'WUT Recent Posts';
+            $title = esc_attr('WUT Recent Posts');
             $limit = 10;
             $offset = 0;
-            $before = '<li>';
-            $after = '</li>';
+            $before = esc_attr('<li>');
+            $after = esc_attr('</li>');
             $type = 'both';
             $skips = '';
-            $none = 'No Posts.';
+            $none = esc_attr('No Posts.');
             $password = 'hide';
             $orderby = 'post_date';
-            $xfomat = '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)';
+            $xformat = esc_attr('<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)');
             $number = '%i%';
         }else{
             $title = esc_attr($options[$number]['title']);
@@ -862,8 +862,8 @@ function wut_widget_most_commented_posts_init(){
         if ($number == -1){
             $title = 'WUT Most Commented Posts';
             $limit = 10;
-            $before = '<li>';
-            $after = '</li>';
+            $before = esc_attr('<li>');
+            $after = esc_attr('</li>');
             $type = 'both';
             $skips = '';
             $days = 30;
@@ -1058,8 +1058,8 @@ function wut_widget_recent_comments_init(){
         if ($number == -1){
             $title = 'WUT Recent Comments';
             $limit = 10;
-            $before = '<li>';
-            $after = '</li>';
+            $before = esc_attr('<li>');
+            $after = esc_attr('</li>');
             $length = 50;
             $posttype = 'post';
             $commenttype = 'comment';
@@ -1110,7 +1110,7 @@ function wut_widget_recent_comments_init(){
                     <td class="alignright"><?php _e('Post type to show:', 'wut');?></td>
                     <td>
                         <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="both" <?php if($posttype == 'both') echo 'checked="checked"';?>/>both</p>
-                        <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="page" <?php if($posttype == 'page') echo 'checked="checked"';?>/>page only</p>
+                        <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="page" <?php if($psottype == 'page') echo 'checked="checked"';?>/>page only</p>
                         <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="post" <?php if($posttype == 'post') echo 'checked="checked"';?>/>post only</p>
                     </td>
                 </tr>
@@ -1268,8 +1268,8 @@ function wut_widget_active_commentators_init(){
         if ($number == -1){
             $title = 'WUT Active Commentators';
             $limit = 10;
-            $before = '<li>';
-            $after = '</li>';
+            $before = esc_attr('<li>');
+            $after = esc_attr('</li>');
             $skipusers = '';
             $avatarsize = 16;
             $threshhold = 2;
@@ -1457,8 +1457,8 @@ function wut_widget_recent_commentators_init(){
         if ($number == -1){
             $title = 'WUT Recent Commentators';
             $limit = 10;
-            $before = '<li>';
-            $after = '</li>';
+            $before = esc_attr('<li>');
+            $after = esc_attr('</li>');
             $skipusers = '';
             $avatarsize = 16;
             $threshhold = 2;

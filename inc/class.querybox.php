@@ -384,7 +384,7 @@ class WUT_QueryBox{
 
     function _post_type_clause($posttype){
         if ('both' == $posttype){
-            return '';
+            return 'AND (post_type = \'post\' OR post_type = \'page\')';
         } else if ('post' == $posttype) {
             return 'AND post_type = \'post\'';
         } else if ('page' == $posttype) {
