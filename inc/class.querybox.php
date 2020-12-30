@@ -414,4 +414,3 @@ class WUT_QueryBox{
         return "ORDER BY {$field} {$order}";
     }
 }/*End class WUT_QueryBox*/
-?>

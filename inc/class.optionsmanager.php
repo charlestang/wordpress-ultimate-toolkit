@@ -1,5 +1,4 @@
 <?php
-
 class WUT_OptionsManager{
     public $version = "1.0.2";
     public $options;

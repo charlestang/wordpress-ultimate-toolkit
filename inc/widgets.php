@@ -6,15 +6,17 @@
 function wut_widget_recent_posts_init(){
     function wut_widget_recent_posts_body($args, $widget_args = 1){
         extract($args, EXTR_SKIP);
-        if (is_numeric($widget_args))
+        if (is_numeric($widget_args)) {
             $widget_args = array('number' => $widget_args);
+        }
         $widget_args = wp_parse_args($widget_args, array('number' => -1));
         extract($widget_args, EXTR_SKIP);
         
         $options = get_option('wut-widget-recent-posts');
 
-        if(!isset($options[$number]))
+        if (!isset($options[$number])) {
             return;
+        }
         $title = $options[$number]['title'];
         
         $tag_args = array(
@@ -31,13 +33,20 @@ function wut_widget_recent_posts_init(){
         );
         
         $paged = intval(get_query_var('paged'));
-        if(empty($paged) || $paged == 0) $paged = 1;
-        if($paged > 1) $tag_args['offset'] = 0;
+
+        if (empty($paged) || $paged == 0) {
+            $paged = 1;
+        }
+
+        if($paged > 1) {
+            $tag_args['offset'] = 0;
+        }
 
         echo $before_widget, $before_title, $title, $after_title;
         echo '<ul>', wut_recent_posts($tag_args), '</ul>';
         echo $after_widget;
     }
+
     function wut_widget_recent_posts_control($widget_args){
         global $wp_registered_widgets;
         static $update = false;
@@ -174,6 +183,7 @@ function wut_widget_recent_posts_init(){
         <input id="wut-recent-posts-submit-<?php echo $number;?>" name="wut-recent-posts-submit-<?php echo $number;?>" type="hidden" value="1"/>
         <?php
     }
+
     $options = get_option('wut-widget-recent-posts');
     if (!$options){
         $options = array();
@@ -1582,4 +1592,3 @@ function wut_widget_advanced_blogroll_init(){
 
     }
 }
-?>
