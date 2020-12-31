@@ -1120,7 +1120,7 @@ function wut_widget_recent_comments_init(){
                     <td class="alignright"><?php _e('Post type to show:', 'wut');?></td>
                     <td>
                         <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="both" <?php if($posttype == 'both') echo 'checked="checked"';?>/>both</p>
-                        <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="page" <?php if($psottype == 'page') echo 'checked="checked"';?>/>page only</p>
+                        <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="page" <?php if($posttype == 'page') echo 'checked="checked"';?>/>page only</p>
                         <p><input type="radio" id="wut-recent-comments-posttype-<?php echo $number;?>" name="wut-recent-comments[<?php echo $number;?>][posttype]" value="post" <?php if($posttype == 'post') echo 'checked="checked"';?>/>post only</p>
                     </td>
                 </tr>

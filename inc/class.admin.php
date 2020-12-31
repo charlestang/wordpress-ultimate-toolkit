@@ -32,12 +32,11 @@ class WUT_Admin{
      * Assist function, used for saving options.
      *
      * @since 1.0.0
-     * @global object $wut_optionsmanager
      * @access private
      */
     function _save_option(){
-        global $wut_optionsmanager;
-        $wut_optionsmanager->save_options();
+        global $wut;
+        $wut->options->save_options();
     }
     
     /**
@@ -266,7 +265,7 @@ class WUT_Admin{
     }
 
     function custom_code_snippets(){
-        global $wut_optionsmanager;
+        global $wut;
         $options =& $this->options['customcode'];
         if (!is_array($options)){
             //$options = array();
@@ -303,7 +302,7 @@ class WUT_Admin{
                     );
                     $options[$new_snippet['id']] = $new_snippet;
                 }
-                $wut_optionsmanager->save_options();
+                $wut->options->save_options();
             }
             if (isset($_REQUEST['delete-checked'])){
                 $temp = array();
@@ -317,7 +316,7 @@ class WUT_Admin{
                     $item = array_shift($options);
                 }
                 $options = $temp;
-                $wut_optionsmanager->save_options();
+                $wut->options->save_options();
             }
         }
         ?>
@@ -386,7 +385,7 @@ class WUT_Admin{
     }
 
     function other_options(){
-        global $wut_optionsmanager;
+        global $wut;
         //Get options
         $options =& $this->options['other'];
 
@@ -401,7 +400,7 @@ class WUT_Admin{
             if (isset($_REQUEST['disable'])){
                 $options['enabled'] = 0;
             }
-            $wut_optionsmanager->save_options();
+            $wut->options->save_options();
         }
         ?>
         <div class="wrap"><h2><?php _e('Advanced Options','wut');?></h2>
@@ -443,10 +442,10 @@ class WUT_Admin{
     }
     
     function uninstall(){
-        global $wut_optionsmanager;
+        global $wut;
         if (isset($_GET['page']) && $_GET['page'] == 'wut_admin_uninstall'){
             if (isset($_REQUEST['action']) && 'save' == $_REQUEST['action']){
-                $wut_optionsmanager->delete_options();
+                $wut->options->delete_options();
                 deactivate_plugins('wordpress-ultimate-toolkit/wordpress-ultimate-toolkit.php');
             }
         }

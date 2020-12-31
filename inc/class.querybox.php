@@ -262,7 +262,7 @@ class WUT_QueryBox{
         $password = $this->_password_clause($r['password']);
         switch($r['commenttype']){
             case 'comment':
-                $commenttype = "AND comment_type=''";
+                $commenttype = "AND comment_type='comment'";
                 break;
             case 'pingback':
                 $commenttype = "AND comment_type='pingback'";
@@ -282,7 +282,7 @@ class WUT_QueryBox{
 
         $query = "SELECT ID, comment_ID, comment_content, comment_author,
                          comment_author_url, comment_author_email, post_title,
-                         comment_date, post_name, comment_type
+                         post_date, comment_date, post_name, comment_type
                   FROM {$wpdb->posts},{$wpdb->comments}
                   WHERE ID = comment_post_ID
                   AND (post_status = 'publish' OR post_status = 'static')
