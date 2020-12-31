@@ -3,7 +3,7 @@ Contributors: Charles
 Donate link: http://sexywp.com/wut
 Tags: comments, posts, widgets, template tags, sidebar, toolkit
 Requires at least: 2.7
-Tested up to: 3.3.1
+Tested up to: 4.3.1
 Stable tag: 1.0.5
 
 WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress better, is a set of admin tools, widgets and components.
