@@ -3,7 +3,7 @@
 class WUT_Utils{
 
     var $options;
-    function WUT_Utils($opt){
+    public function __construct($opt){
         $this->options = $opt;
     }
 
