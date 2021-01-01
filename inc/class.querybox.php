@@ -16,7 +16,7 @@ class WUT_QueryBox{
         $defaults = array(
             'offset'    =>    0,
             'limit'     =>    10,
-            'type'      =>    'post', //'both' or 'page' 
+            'type'      =>    'post', //'both' or 'page'
             'skips'     =>    '',
             'password'  =>    0, //show password protected post or not
             'orderby'   =>    'post_date'  //or 'post_modified'

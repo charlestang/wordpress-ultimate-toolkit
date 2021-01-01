@@ -18,7 +18,6 @@ class WUT_OptionsManager{
             'hide-pages'        => '',
             'widgets'           => array(
                 'load'          => array(
-                    'wut_widget_recent_posts_init',
                     'wut_widget_random_posts_init',
                     'wut_widget_related_posts_init',
                     'wut_widget_posts_by_category_init',
