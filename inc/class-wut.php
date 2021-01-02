@@ -76,7 +76,7 @@ class WUT
         require($this->rootDir . 'inc/class.admin.php');
         require($this->rootDir . 'inc/tags.php');
         require($this->rootDir . 'inc/widgets.php');
-        require($this->rootDir . 'inc/widget.recentposts.php');
+        require($this->rootDir . 'inc/widgets/class-wut-widget-recent-posts.php');
     }
 
     /**
