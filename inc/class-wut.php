@@ -1,141 +1,162 @@
 <?php
+/**
+ * This file is the class
+ *
+ * @package wut
+ */
 
-class WUT
-{
+/**
+ * The plugin entry point class.
+ */
+class WUT {
 
-    /**
-     * @var WUT_OptionsManager
-     */
-    public $options;
 
-    /**
-     * @var WUT_QueryBox
-     */
-    public $query;
+	/**
+	 * The option manager instance.
+	 *
+	 * @var WUT_OptionsManager
+	 */
+	public $options;
 
-    /**
-     * @var WUT_Utils
-     */
-    public $utils;
+	/**
+	 * The query object instance.
+	 *
+	 * @var WUT_QueryBox
+	 */
+	public $query;
 
-    /**
-     * The root dir of the plugin.
-     * 
-     * @var string The root dir path of this plugin with slash / appended.
-     */
-    public $rootDir;
+	/**
+	 * Utils functionality instance.
+	 *
+	 * @var WUT_Utils
+	 */
+	public $utils;
 
-    /**
-     * @var string The root url of this plugin base path.
-     */
-    public $rootUrl;
+	/**
+	 * The root dir of the plugin.
+	 *
+	 * @var string The root dir path of this plugin with slash / appended.
+	 */
+	public $root_dir;
 
-    /**
-     * @var WUT
-     */
-    public static $me;
+	/**
+	 * The root url path of the plugin.
+	 *
+	 * @var string The root url of this plugin base path.
+	 */
+	public $root_url;
 
-    public function __construct($rootDir, $rootUrl)
-    {
-        $this->rootDir = $rootDir;
-        $this->rootUrl = $rootUrl;
-    }
+	/**
+	 * Global object of the plugin.
+	 *
+	 * @var WUT
+	 */
+	public static $me;
 
-    /**
-     * The plugin entry point.
-     * 
-     * @param string $filePath the plugin entry file path.
-     */
-    public static function run($filePath)
-    {
-        global $wut;
-        $dir      = plugin_dir_path($filePath);
-        $url      = plugins_url('', $filePath);
-        self::$me = new WUT($dir, $url);
-        $wut      = self::$me;
-        $wut->load();
-        $wut->register();
-    }
+	/**
+	 * The constructor.
+	 *
+	 * @param string $root_dir The plugin root directory.
+	 * @param string $root_url The plugin root path.
+	 */
+	public function __construct( $root_dir, $root_url ) {
+		$this->root_dir = $root_dir;
+		$this->root_url = $root_url;
+	}
 
-    /**
-     * Register the plugin to WordPress.
-     */
-    public function register()
-    {
-        add_action('plugins_loaded', [$this, 'init']);
-    }
+	/**
+	 * The plugin entry point.
+	 *
+	 * @param string $file_path the plugin entry file path.
+	 */
+	public static function run( $file_path ) {
+		global $wut;
+		$dir      = plugin_dir_path( $file_path );
+		$url      = plugins_url( '', $file_path );
+		self::$me = new WUT( $dir, $url );
+		$wut      = self::$me;
+		$wut->load();
+		$wut->register();
+	}
 
-    /**
-     * Include all the files.
-     */
-    public function load()
-    {
-        require($this->rootDir . 'inc/class.optionsmanager.php');
-        require($this->rootDir . 'inc/class.querybox.php');
-        require($this->rootDir . 'inc/class.utils.php');
-        require($this->rootDir . 'inc/class.admin.php');
-        require($this->rootDir . 'inc/tags.php');
-        require($this->rootDir . 'inc/widgets.php');
-        require($this->rootDir . 'inc/widgets/class-wut-widget-recent-posts.php');
-        require($this->rootDir . 'inc/widgets/class-wut-widget-recent-comments.php');
-    }
+	/**
+	 * Register the plugin to WordPress.
+	 */
+	public function register() {
+		add_action( 'plugins_loaded', array( $this, 'init' ) );
+	}
 
-    /**
-     * Register other hooks.
-     */
-    public function init()
-    {
-        $this->register();
-        $this->options = new WUT_OptionsManager();
-        $this->query   = new WUT_QueryBox();
-        $this->utils   = new WUT_Utils($this->options->get_options());
+	/**
+	 * Include all the files.
+	 */
+	public function load() {
+		require $this->root_dir . 'inc/class.optionsmanager.php';
+		require $this->root_dir . 'inc/class.querybox.php';
+		require $this->root_dir . 'inc/class.utils.php';
+		require $this->root_dir . 'inc/class.admin.php';
+		require $this->root_dir . 'inc/tags.php';
+		require $this->root_dir . 'inc/widgets.php';
+		require $this->root_dir . 'inc/widgets/class-wut-widget-recent-posts.php';
+		require $this->root_dir . 'inc/widgets/class-wut-widget-recent-comments.php';
+	}
 
-        //the following lines add all the Widgets
-        $widgets = $this->options->get_options("widgets");
-        foreach ($widgets['load'] as $callback) {
-            add_action('widgets_init', $callback);
-        }
+	/**
+	 * Register other hooks.
+	 */
+	public function init() {
+		$this->register();
+		$this->options = new WUT_OptionsManager();
+		$this->query   = new WUT_QueryBox();
+		$this->utils   = new WUT_Utils( $this->options->get_options() );
 
-        add_action('widgets_init', function() {
-            register_widget('WUT_Widget_Recent_Posts');
-            register_widget('WUT_Widget_Recent_Comments');
-        });
+		// the following lines add all the Widgets.
+		$widgets = $this->options->get_options( 'widgets' );
+		foreach ( $widgets['load'] as $callback ) {
+			add_action( 'widgets_init', $callback );
+		}
 
-        //add automatic post excerpt
-        add_filter('get_the_excerpt', [$this->utils, 'excerpt'], 9);
+		add_action(
+			'widgets_init',
+			function () {
+				register_widget( 'WUT_Widget_Recent_Posts' );
+				register_widget( 'WUT_Widget_Recent_Comments' );
+			}
+		);
 
-        //add exclude pages
-        add_filter('wp_list_pages_excludes', [$this->utils, 'exclude_pages'], 9);
+		// add automatic post excerpt.
+		add_filter( 'get_the_excerpt', array( $this->utils, 'excerpt' ), 9 );
 
-        //add custom code
-        add_action('wp_head', [$this->utils, 'inject_to_head']);
-        add_action('wp_footer', [$this->utils, 'inject_to_footer']);
+		// add exclude pages.
+		add_filter( 'wp_list_pages_excludes', array( $this->utils, 'exclude_pages' ), 9 );
 
-        if (is_admin()) {
-            //add admin menus
-            $wut_admin = new WUT_Admin($this->options->get_options());
-            add_action('admin_menu', [$wut_admin, 'add_menu_items']);
+		// add custom code.
+		add_action( 'wp_head', array( $this->utils, 'inject_to_head' ) );
+		add_action( 'wp_footer', array( $this->utils, 'inject_to_footer' ) );
 
-            //add word count
-            add_filter('manage_posts_columns', [$this->utils, 'add_wordcount_manage_columns']);
-            add_filter('manage_pages_columns', [$this->utils, 'add_wordcount_manage_columns']);
-            add_action('manage_posts_custom_column', [$this->utils, 'display_wordcount']);
-            add_action('manage_pages_custom_column', [$this->utils, 'display_wordcount']);
-            add_action('admin_head', [$this->utils, 'set_column_width']);
-        }
-    }
+		if ( is_admin() ) {
+			// add admin menus.
+			$wut_admin = new WUT_Admin( $this->options->get_options() );
+			add_action( 'admin_menu', array( $wut_admin, 'add_menu_items' ) );
 
-    public static function log($msg)
-    {
-        if (!WP_DEBUG) {
-            return;
-        }
+			// add word count.
+			add_filter( 'manage_posts_columns', array( $this->utils, 'add_wordcount_manage_columns' ) );
+			add_filter( 'manage_pages_columns', array( $this->utils, 'add_wordcount_manage_columns' ) );
+			add_action( 'manage_posts_custom_column', array( $this->utils, 'display_wordcount' ) );
+			add_action( 'manage_pages_custom_column', array( $this->utils, 'display_wordcount' ) );
+			add_action( 'admin_head', array( $this->utils, 'set_column_width' ) );
+		}
+	}
 
-        $trace = debug_backtrace();
-        $file = basename($trace[0]['file']);
-        $line = $trace[0]['line'];
-        $func = $trace[1]['function'];
-        
-        error_log("[$file][$func][$line]:" . $msg);
-    }
+	public static function log( $msg ) {
+		if ( ! WP_DEBUG ) {
+			return;
+		}
+
+		$trace = debug_backtrace();
+		$file  = basename( $trace[0]['file'] );
+		$line  = $trace[0]['line'];
+		$func  = $trace[1]['function'];
+
+		error_log( "[$file][$func][$line]:" . $msg );
+	}
 }

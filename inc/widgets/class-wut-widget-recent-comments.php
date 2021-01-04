@@ -46,6 +46,12 @@ class WUT_Widget_Recent_Comments extends WP_Widget
 
     public function update($new_instance, $old_instance)
     {
+        $instance = $old_instance;
+        $instance['title'] = sanitize_text_field($new_instance['title']);
+        $instance['number'] = intval($new_instance['number']);
+        $instance['showContent'] = (bool) $new_instance['showContent'];
+        $instance['showAvatar'] = (bool) $new_instance['showAvatar'];
+        $instance['avatarSize'] = intval($new_instance['avatarSize']);
         return $new_instance;
     }
 
