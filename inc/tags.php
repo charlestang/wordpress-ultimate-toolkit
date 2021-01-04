@@ -341,6 +341,7 @@ function wut_recent_comments($args = '') {
             $html = str_replace('%permalink%', $permalink, $html);
             $html = str_replace('%commentauthor%', $item->comment_author, $html);
             $html = str_replace('%commentexcerpt%', $comment_content, $html);
+            $html = str_replace('%posttile%', $item->post_title, $html);
             $html = apply_filters('wut_recent_comment_item', $html, $item);
             $html .= $after . "\n";
         }

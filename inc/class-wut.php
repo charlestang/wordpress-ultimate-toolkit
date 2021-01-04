@@ -77,6 +77,7 @@ class WUT
         require($this->rootDir . 'inc/tags.php');
         require($this->rootDir . 'inc/widgets.php');
         require($this->rootDir . 'inc/widgets/class-wut-widget-recent-posts.php');
+        require($this->rootDir . 'inc/widgets/class-wut-widget-recent-comments.php');
     }
 
     /**
@@ -97,6 +98,7 @@ class WUT
 
         add_action('widgets_init', function() {
             register_widget('WUT_Widget_Recent_Posts');
+            register_widget('WUT_Widget_Recent_Comments');
         });
 
         //add automatic post excerpt

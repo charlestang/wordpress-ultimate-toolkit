@@ -22,7 +22,6 @@ class WUT_OptionsManager{
                     'wut_widget_related_posts_init',
                     'wut_widget_posts_by_category_init',
                     'wut_widget_most_commented_posts_init',
-                    'wut_widget_recent_comments_init',
                     'wut_widget_active_commentators_init',
                     'wut_widget_recent_commentators_init'
                 ),
