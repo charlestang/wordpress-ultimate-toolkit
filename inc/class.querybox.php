@@ -40,6 +40,44 @@ class WUT_QueryBox {
 		return $wpdb->get_results( $query );
 	}
 
+	function get_most_viewed_posts( $args = '' ) {
+		global $wpdb;
+		$defaults = array(
+			'offset'   => 0,
+			'limit'    => 10,
+			// 'both' or 'page'.
+			'type'     => 'post', 
+			'skips'    => '',
+			// show password protected post or not.
+			'password' => 0, 
+		);
+
+		$r = wp_parse_args( $args, $defaults );
+
+		$posttype   = $this->_post_type_clause( $r['type'] );
+		$skipclause = $this->_skip_clause( 'ID', $r['skips'] );
+		$password   = $this->_password_clause( $r['password'] );
+
+		$sql = $wpdb->prepare(
+			"SELECT ID, post_author, post_title, post_date, post_content,
+                       post_name, post_excerpt, post_modified, comment_count,
+						meta_value 'post_views'
+            FROM {$wpdb->posts}
+			INNER JOIN {$wpdb->postmeta} ON ( `ID`=`post_id` AND `meta_key`='views' )
+            WHERE post_status = 'publish'
+            {$password}
+            {$posttype}
+            {$skipclause}
+			ORDER BY `meta_value` DESC
+			LIMIT %d, %d",
+			$r['offset'],
+			$r['limit']
+		);
+		return $wpdb->get_results( $sql );
+	}
+
+
+
 	/**
 	 * @version 1.0
 	 * @author Charles

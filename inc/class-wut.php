@@ -96,8 +96,9 @@ class WUT {
 		require $this->root_dir . 'inc/class.admin.php';
 		require $this->root_dir . 'inc/tags.php';
 		require $this->root_dir . 'inc/widgets.php';
-		require $this->root_dir . 'inc/widgets/class-wut-widget-recent-posts.php';
-		require $this->root_dir . 'inc/widgets/class-wut-widget-recent-comments.php';
+		require $this->root_dir . 'widgets/class-wut-widget-recent-posts.php';
+		require $this->root_dir . 'widgets/class-wut-widget-recent-comments.php';
+		require $this->root_dir . 'widgets/class-wut-widget-most-viewed-posts.php';
 	}
 
 	/**
@@ -120,6 +121,9 @@ class WUT {
 			function () {
 				register_widget( 'WUT_Widget_Recent_Posts' );
 				register_widget( 'WUT_Widget_Recent_Comments' );
+				if ( in_array( 'wp-postviews/wp-postviews.php', get_option( 'active_plugins' ) ) ) {
+					register_widget( 'WUT_Widget_Most_Viewed_Posts' );
+				}
 			}
 		);
 

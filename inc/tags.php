@@ -112,6 +112,58 @@ function wut_recent_posts( $args = '' ) {
 	}
 }
 
+function wut_most_viewed_posts( $args = '' ) {
+	$defaults = array(
+		'limit'    => 5, // how many items should be show
+		'offset'   => 0,
+		'before'   => '<li>',
+		'after'    => '</li>',
+		'type'     => 'post', // 'post' or 'page' or 'both'
+		'skips'    => '', // comma seperated post_ID list
+		'none'     => 'No Posts.', // tips to show when results is empty
+		'password' => 'hide', // show password protected post or not
+		'xformat'  => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%viewcount%)',
+		'echo'     => 1,
+	);
+	$r        = wp_parse_args( array_filter( $args ), $defaults );
+	extract( $r, EXTR_SKIP );
+
+	$password   = ( 'hide' === $password ) ? 0 : 1;
+	$query_args = compact( 'limit', 'offset', 'type', 'skips', 'password' );
+	$items      = WUT::$me->query->get_most_viewed_posts( $query_args );
+
+	$html = '';
+	if ( empty( $items ) ) {
+		$html = $r['before'] . $r['none'] . $r['after'];
+	} else {
+		foreach ( $items as $item ) {
+			$permalink    = _wut_get_permalink( $item );
+			$record       = str_replace(
+				array(
+					'%permalink%',
+					'%title%',
+					'%postdate%',
+					'%viewcount%',
+				),
+				array(
+					$permalink,
+					$item->post_title,
+					$item->post_date,
+					$item->post_views,
+				),
+				$r['xformat']
+			);
+				$sanitize = apply_filters( 'wut_recent_post_item', $record, $item );
+				$html    .= $r['before'] . $sanitize . $r['after'] . "\n";
+		}
+	}
+	if ( $r['echo'] ) {
+		echo $html;
+	} else {
+		return $html;
+	}
+}
+
 /**
  * @version 1.0
  * @author Charles
