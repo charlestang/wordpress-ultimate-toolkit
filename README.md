@@ -1,4 +1,4 @@
-=== WordPress Ultimate Toolkit ===
+# WordPress Ultimate Toolkit
 Contributors: Charles
 Donate link: http://sexywp.com/wut
 Tags: comments, posts, widgets, template tags, sidebar, toolkit
@@ -8,49 +8,47 @@ Stable tag: 1.0.5
 
 WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress better, is a set of admin tools, widgets and components.
 
-== Changelog ==
-= 1.0.5 =
+## Changelog
+### 1.0.5
  * A bug fixed in Recent Posts Widget.
 
-= 1.0.4 =
+### 1.0.4
  * A bug fixed when use WP 3.0 menu system.
 
-= 1.0.3 =
+### 1.0.3
  * A bug fixed. Spelling mistake cause auto expert not work.
 
-= 1.0.2 =
+### 1.0.2
  * Allow variables in excerpt options setting
  * Little change in the excerpt function, make it more extensible
  * Add screenshots.
 
-= 1.0.1 =
+### 1.0.1
  * Excerpt admin page complete.
 
-== Upgrade Notice ==
-= 1.0.5 =
+## Upgrade Notice
+### 1.0.5
  Upgrade recommended.
 
-= 1.0.4 =
+### 1.0.4
  If you use WP 3.0 and the new menu system, you should upgrade.
 
-= 1.0.3 =
+### 1.0.3
 Upgrade recommended.
 
-= 1.0.2 =
-Just upgrade.
 
-== Description ==
+## Description
 
 WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress better, is a set of admin tools, widgets and components.
 
-= Tools =
+### Tools
 
  * Generate posts and pages excerpt automatically
  * Show/Hide specific *Page* on your page navigator
  * Show words count for every post(page) on *Eidt Posts(Pages)*
  * Add custom css/js code snippets to your page without edit theme files
 
-= Widgets =
+### Widgets
 
  * Output recent posts
  * Output random posts
@@ -61,7 +59,7 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  * Output active commentators
  * Output recent commentators
 
-= Template Tags =
+### Template Tags
 
  * `wut_recent_posts()`
  * `wut_random_posts()`
@@ -72,7 +70,7 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  * `wut_active_commentators()`
  * `wut_recent_commentators()`
 
-= Other Features =
+### Other Features
 
  * Easy to use, few coding works
  * Secondary development support(actions and filters supported)
@@ -80,23 +78,23 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  * Feed enhancement (in the development plan)
  * Content enhancement (in the development plan)
 
-== Installation ==
+## Installation
 
  1. Upload the directory `wordpress-ultimate-toolkit` to `/wp-content/plugins`
  1. Go to `Appearances-->Widgets` to activate the plugin
  1. Done :)
 
-== Frequently Asked Questions ==
+## Frequently Asked Questions
 
-= A question that someone might have =
+### A question that someone might have
 
 An answer to that question.
 
-= What about foo bar? =
+### What about foo bar?
 
 Answer to foo bar dilemma.
 
-== Screenshots ==
+## Screenshots
 
 1. Eight widgets in this plugin.
 2. Excerpt settings example.
