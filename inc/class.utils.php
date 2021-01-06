@@ -13,45 +13,56 @@ class WUT_Utils {
 		remove_filter( 'the_excerpt', 'mul_excerpt' );
 		remove_filter( 'the_excerpt_rss', 'mul_excerpt' );
 
-		if ( '' == $text ) {
-			$text = $post->post_content;
-			$text = apply_filters( 'the_content', $text );
-			$text = str_replace( ']]>', ']]&gt;', $text );
-			$text = strip_tags( $text );
+		// retrieve options.
+		$paragraph_number = $this->options['excerpt']['paragraphs'];
+		$word_number      = $this->options['excerpt']['words'];
 
-			$text = trim( $text );
+		// calculate excerpt.
+		$excerpt = '';
+		if ( '' !== $text ) {
+			$excerpt = $text;
+		} else {
+			if ( ( $pos = strpos( $post->post_content, '<!-- wp:more -->' ) ) !== false ) {
+				$excerpt = substr( $post->post_content, 0, $pos );
+			} else {
+				$content = $post->post_content;
+				$content = apply_filters( 'the_content', $content );
+				$content = str_replace( ']]>', ']]&gt;', $content );
+				$content = wp_strip_all_tags( $content );
+				$content = trim( $content );
+				$lines   = array_values( array_filter( explode( "\n", $content ) ) );
+				$num     = 0;
+				$output  = '';
+				$len     = count( $lines );
+				do {
+					if ( $num < $len ) {
+						$output .= $lines[ $num ] . "\n\n";
+					}
+					$num ++;
+				} while ( ( mb_strlen( $output, 'UTF-8' ) < $word_number ) && ( $num < min( $len, $paragraph_number ) ) );
 
-			// 段落数
-			// modified temporarily
-			$options     = $this->options['excerpt'];
-			$fragmentnum = $options['paragraphs'];
-			// 文字数
-			$wordnum = $options['words'];
-			$words   = explode( "\n", $text );
-
-			$num        = 0;
-			$word_count = 0;
-			$output     = '';
-
-			do {
-				$output .= $words[ $num ] . "\n" . "\n";
-				$num++;
-			} while ( ( mb_strlen( $output, 'UTF-8' ) < $wordnum ) and ( $num < min( count( $words ), $fragmentnum ) ) );
-			$output = substr( $output, 0, -2 );
-			if ( mb_strlen( $output, 'UTF-8' ) < mb_strlen( $text, 'UTF-8' ) ) {
-				$permalink = get_permalink();
-				$title     = strip_tags( get_the_title() );
-				$total_num = $this->words_count( preg_replace( '/\s/', '', html_entity_decode( strip_tags( $post->post_content ) ) ) );
-
-				$tips = str_replace( '%permalink%', $permalink, stripcslashes( $options['tip_template'] ) );
-				$tips = str_replace( '%title%', $title, $tips );
-				$tips = str_replace( '%total_words%', $total_num, $tips );
-
-				$output .= $tips;
+				$excerpt = substr( $output, 0, -2 );
 			}
-			return $output;
 		}
-		return $text;
+
+		// add tips.
+		$tips = '';
+		if ( mb_strlen( $excerpt, 'UTF-8' ) < mb_strlen( $post->post_content, 'UTF-8' ) ) {
+			$title     = wp_strip_all_tags( get_the_title() );
+			$total_num = $this->words_count(
+				preg_replace(
+					'/\s/',
+					'',
+					html_entity_decode( strip_tags( $post->post_content ) )
+				)
+			);
+			$tips      = str_replace(
+				array( '%permalink%', '%title%', '%total_words%' ),
+				array( get_permalink(), $title, $total_num ),
+				stripcslashes( $this->options['excerpt']['tip_template'] )
+			);
+		}
+		return $excerpt . $tips;
 	}
 
 	function exclude_pages( $excludes ) {
@@ -117,7 +128,7 @@ class WUT_Utils {
 		}
 	}
 
-	function set_column_width() {
+	public function set_column_width() {
 		?>
 		<style type="text/css">
 		.column-wordcount {width:6%;}
@@ -138,7 +149,7 @@ class WUT_Utils {
 	 * @return int the number of words in this string
 	 * @access private
 	 */
-	function words_count( $content ) {
+	public function words_count( $content ) {
 		$matches = array();
 		preg_match_all( '~[-a-z0-9,.!?\'":;@/ ()\+\_]+~im', $content, $matches );
 		$content       = preg_replace( '~[-a-z0-9,.!?\'":;@/ ()\+\_]+~im', '', $content );
