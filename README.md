@@ -1,5 +1,5 @@
 # WordPress Ultimate Toolkit
-Contributors: charlestang 
+Contributors: charlestang  
 Donate link: http://sexywp.com/wut  
 Tags: comments, posts, widgets, template tags, sidebar, toolkit  
 Requires at least: 2.7  
