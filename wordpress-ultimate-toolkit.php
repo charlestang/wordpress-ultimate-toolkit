@@ -4,12 +4,12 @@ Plugin Name: WordPress Ultimate Toolkit
 Plugin URI: http://sexywp.com/wut
 Description: WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress better, is a set of admin tools, widgets and components.
 Author: Charles
-Version: 1.0.5
+Version: 2.0.0
 Author URI: http://sexywp.com
- */
+*/
 
 /*
-	Copyright 2020  Charles (email : charlestang@foxmail.com)
+	Copyright 2021  Charles (email : charlestang@foxmail.com)
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by

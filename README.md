@@ -2,12 +2,12 @@
 Contributors: charlestang  
 Donate link: http://sexywp.com/wut  
 Tags: comments, posts, widgets, template tags, sidebar, toolkit  
-Requires at least: 2.7  
+Requires at least: 5.2.3  
 Requires PHP: 5.6  
-Tested up to: 4.3.1  
-Stable tag: 1.0.5  
-License:  
-License URI:  
+Tested up to: 5.6  
+Stable tag: 2.0.0  
+License: GPL v3  
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress better, is a set of admin tools, widgets and components. Should be less than 150 character.
 
@@ -21,12 +21,13 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  * Add custom css/js code snippets to your page without edit theme files
 
 ### Widgets
- * Output recent posts
+ * NEW! Output recent posts
+ * NEW! Output most viewed posts(need WP-Postviews plugin)
  * Output random posts
  * Output related posts(only on a single post page)
  * Output posts in the same category(only on a single post page)
  * Output most commented posts
- * Output recent comments with comment contents
+ * NEW! Output recent comments with comment contents
  * Output active commentators
  * Output recent commentators
 
@@ -55,6 +56,11 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  1. Done :)
 
 ## Changelog
+### 2.0.0
+ * Two widgets rewritten from ground up.
+ * Most viewed posts wdiget is added.
+ * It is compatible with new version of WordPress now.
+
 ### 1.0.5
  * A bug fixed in Recent Posts Widget.
 
@@ -73,6 +79,9 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  * Excerpt admin page complete.
 
 ## Upgrade Notice
+### 2.0.0
+ Please uninstall the old version mannually first if you want install this.
+
 ### 1.0.5
  Upgrade recommended.
 
