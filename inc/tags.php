@@ -129,7 +129,7 @@ function wut_most_viewed_posts( $args = '' ) {
 	extract( $r, EXTR_SKIP );
 
 	$password   = ( 'hide' === $password ) ? 0 : 1;
-	$query_args = compact( 'limit', 'offset', 'type', 'skips', 'password' );
+	$query_args = compact( 'limit', 'offset', 'type', 'skips', 'password', 'time_range' );
 	$items      = WUT::$me->query->get_most_viewed_posts( $query_args );
 
 	$html = '';

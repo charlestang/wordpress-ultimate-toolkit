@@ -40,15 +40,20 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 			'offset'   => 0,
 			'before'   => '<li>',
 			'after'    => '</li>',
-			'type'     => 'post', // 'post' or 'page' or 'both'
-			'skips'    => '', // comma seperated post_ID list
-			'none'     => 'No Posts.', // tips to show when results is empty
-			'password' => 'hide', // show password protected post or not
+			'type'     => 'post', // 'post' or 'page' or 'both'.
+			'skips'    => '', // comma seperated post_ID list.
+			'none'     => 'No Posts.', // tips to show when results is empty.
+			'password' => 'hide', // show password protected post or not.
 			'xformat'  => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>',
+			'time_range' => $instance['time_range'] < 0 ? $instance['custom_range'] : $instance['time_range'],
 		);
 
 		if ( $instance['show_view_count'] ) {
-			$tag_args['xformat'] .= '(%viewcount%)';
+			$tag_args['xformat'] .= ' (%viewcount% views)';
+		}
+
+		if ( $instance['show_date'] ) {
+			$tag_args['xformat'] .= ' %postdate%';
 		}
 		echo $args['before_widget'];
 		echo $args['before_title'], $title, $args['after_title'];
@@ -74,8 +79,9 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 	public function form( $instance ) {
 		$title           = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
 		$number          = isset( $instance['number'] ) ? absint( $instance['number'] ) : 10;
+		$show_date       = isset( $instance['show_date'] ) ? (bool) $instance['show_date'] : false;
 		$excerpt_words   = isset( $instance['excerpt_words'] ) ? absint( $instance['excerpt_words'] ) : 15;
-		$time_range      = isset( $instance['time_range'] ) ? absint( $instance['time_range'] ) : 365;
+		$time_range      = isset( $instance['time_range'] ) ? intval( $instance['time_range'] ) : 365;
 		$custom_range    = isset( $instance['custom_range'] ) ? absint( $instance['custom_range'] ) : 365;
 		$show_view_count = isset( $instance['show_view_count'] ) ? (bool) $instance['show_view_count'] : true;
 		?>
@@ -90,6 +96,10 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 		<p>
 			<label for="<?php echo $this->get_field_id( 'excerpt_words' ); ?>"><?php echo __( 'Maximum title length:', 'wut' ); ?></label>
 			<input class="tiny-text" id="<?php echo $this->get_field_id( 'excerpt_words' ); ?>" name="<?php echo $this->get_field_name( 'excerpt_words' ); ?>" type="number" step="1" min="1" value="<?php echo $excerpt_words; ?>" size="3" />
+		</p>
+		<p>
+			<input class="checkbox" type="checkbox"<?php checked( $show_date ); ?> id="<?php echo $this->get_field_id( 'show_date' ); ?>" name="<?php echo $this->get_field_name( 'show_date' ); ?>" />
+			<label for="<?php echo $this->get_field_id( 'show_date' ); ?>"><?php _e( 'Display post date?', 'wut' ); ?></label>
 		</p>
 		<p>
 			<input type="radio" id="wut_past_week" name="<?php echo $this->get_field_name( 'time_range' ); ?>"<?php checked( $time_range, 7 ); ?> value="7"/>

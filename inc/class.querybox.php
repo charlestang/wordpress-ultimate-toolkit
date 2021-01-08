@@ -65,11 +65,13 @@ class WUT_QueryBox {
             FROM {$wpdb->posts}
 			INNER JOIN {$wpdb->postmeta} ON ( `ID`=`post_id` AND `meta_key`='views' )
             WHERE post_status = 'publish'
+			AND post_date > DATE_SUB(CURDATE(), INTERVAL %d DAY)
             {$password}
             {$posttype}
             {$skipclause}
 			ORDER BY `meta_value` DESC
 			LIMIT %d, %d",
+			$r['time_range'],
 			$r['offset'],
 			$r['limit']
 		);
