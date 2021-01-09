@@ -5,7 +5,7 @@ Tags: comments, posts, widgets, template tags, sidebar, toolkit
 Requires at least: 5.2.3  
 Requires PHP: 5.6  
 Tested up to: 5.6  
-Stable tag: 2.0.0  
+Stable tag: 2.0.1  
 License: GPL v3  
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -56,6 +56,9 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  1. Done :)
 
 ## Changelog
+### 2.0.1
+ * Minor change, some clean work.
+
 ### 2.0.0
  * Two widgets rewritten from ground up.
  * Most viewed posts wdiget is added.

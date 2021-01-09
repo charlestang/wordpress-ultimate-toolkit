@@ -45,15 +45,16 @@ def convert_readme(src_path: str, build_path: str) -> None:
     with open(dst_file, 'w') as f:
         f.write("\n".join(content))
     f.close()
-
-    
     
 if __name__ == '__main__':
     src_path = os.path.dirname(os.path.abspath(sys.argv[0]))
     build_path = os.path.join(src_path, 'build')
     
-    clean(build_path)
-    copy_file(src_path, build_path)
-    convert_readme(src_path, build_path)
+    if len(sys.argv) > 1 and 'clean' == sys.argv[1] :
+        clean(build_path)
+    else :
+        clean(build_path)
+        copy_file(src_path, build_path)
+        convert_readme(src_path, build_path)
     
     sys.exit(0)
