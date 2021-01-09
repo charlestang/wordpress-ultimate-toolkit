@@ -102,16 +102,24 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 			<label for="<?php echo $this->get_field_id( 'show_date' ); ?>"><?php _e( 'Display post date?', 'wut' ); ?></label>
 		</p>
 		<p>
-			<input type="radio" id="wut_past_week" name="<?php echo $this->get_field_name( 'time_range' ); ?>"<?php checked( $time_range, 7 ); ?> value="7"/>
-			<label for="wut_past_week"><?php _e( 'Past Week', 'wut' ); ?></label><br/>
-			<input type="radio" id="wut_past_month" name="<?php echo $this->get_field_name( 'time_range' ); ?>"<?php checked( $time_range, 30 ); ?> value="30"/>
-			<label for="wut_past_month"><?php _e( 'Past Month', 'wut' ); ?></label><br/>
-			<input type="radio" id="wut_past_week" name="<?php echo $this->get_field_name( 'time_range' ); ?>"<?php checked( $time_range, 365 ); ?> value="365"/>
-			<label for="wut_past_year"><?php _e( 'Past Year', 'wut' ); ?></label><br/>
-			<input type="radio" id="wut_custom" name="<?php echo $this->get_field_name( 'time_range' ); ?>"<?php checked( $time_range, -1 ); ?> value="-1"/>
-			<label for="wut_past_week"><?php _e( 'Custom', 'wut' ); ?></label>
-			<input class="small-text" id="<?php echo $this->get_field_id( 'custom_range' ); ?>" name="<?php echo $this->get_field_name( 'custom_range' ); ?>" type="number" step="1" min="1" value="<?php echo $custom_range; ?>" size="4" />
-			<br/>
+			<span><?php _e( 'Time frame of posts:', 'wut' ); ?></span><br/>
+			<label>
+				<input type="radio" name="<?php echo $this->get_field_name( 'time_range' ); ?>"<?php checked( $time_range, 7 ); ?> value="7"/>
+				<span><?php _e( 'Past Week', 'wut' ); ?></span>
+			</label><br/>
+			<label>
+				<input type="radio" name="<?php echo $this->get_field_name( 'time_range' ); ?>"<?php checked( $time_range, 30 ); ?> value="30"/>
+				<span><?php _e( 'Past Month', 'wut' ); ?></span>
+			</label><br/>
+			<label>
+				<input type="radio" name="<?php echo $this->get_field_name( 'time_range' ); ?>"<?php checked( $time_range, 365 ); ?> value="365"/>
+				<span><?php _e( 'Past Year', 'wut' ); ?></span>
+			</label><br/>
+			<label>
+				<input type="radio" name="<?php echo $this->get_field_name( 'time_range' ); ?>"<?php checked( $time_range, -1 ); ?> value="-1"/>
+				<span><?php _e( 'Custom', 'wut' ); ?></span>
+				<input class="small-text" id="<?php echo $this->get_field_id( 'custom_range' ); ?>" name="<?php echo $this->get_field_name( 'custom_range' ); ?>" type="number" step="1" min="1" value="<?php echo $custom_range; ?>" size="4" />
+			</label>
 		</p>
 		<p>
 			<input class="checkbox" type="checkbox"<?php checked( $show_view_count ); ?> id="<?php echo $this->get_field_id( 'show_view_count' ); ?>" name="<?php echo $this->get_field_name( 'show_view_count' ); ?>" />
