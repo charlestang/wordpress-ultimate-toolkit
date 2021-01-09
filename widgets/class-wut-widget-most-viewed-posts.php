@@ -36,15 +36,15 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 		$title = $instance['title'];
 
 		$tag_args = array(
-			'limit'    => $instance['number'],
-			'offset'   => 0,
-			'before'   => '<li>',
-			'after'    => '</li>',
-			'type'     => 'post', // 'post' or 'page' or 'both'.
-			'skips'    => '', // comma seperated post_ID list.
-			'none'     => 'No Posts.', // tips to show when results is empty.
-			'password' => 'hide', // show password protected post or not.
-			'xformat'  => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>',
+			'limit'      => $instance['number'],
+			'offset'     => 0,
+			'before'     => '<li>',
+			'after'      => '</li>',
+			'type'       => 'post', // 'post' or 'page' or 'both'.
+			'skips'      => '', // comma seperated post_ID list.
+			'none'       => 'No Posts.', // tips to show when results is empty.
+			'password'   => 'hide', // show password protected post or not.
+			'xformat'    => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>',
 			'time_range' => $instance['time_range'] < 0 ? $instance['custom_range'] : $instance['time_range'],
 		);
 
@@ -53,8 +53,13 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 		}
 
 		if ( $instance['show_date'] ) {
-			$tag_args['xformat'] .= ' %postdate%';
+			if ( $instance['date_front'] ) {
+				$tag_args['xformat'] = '%postdate% ' . $tag_args['xformat'];
+			} else {
+				$tag_args['xformat'] .= ' %postdate%';
+			}
 		}
+
 		echo $args['before_widget'];
 		echo $args['before_title'], $title, $args['after_title'];
 		echo '<ul>', wut_most_viewed_posts( $tag_args ), '</ul>';
@@ -68,7 +73,16 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 	 * @param array $old_instance Original set settings.
 	 */
 	public function update( $new_instance, $old_instance ) {
-		return $new_instance;
+		$instance                    = $old_instance;
+		$instance['title']           = sanitize_text_field( $new_instance['title'] );
+		$instance['number']          = intval( $new_instance['number'] );
+		$instance['show_date']       = (bool) $new_instance['show_date'];
+		$instance['date_front']      = (bool) $new_instance['date_front'];
+		$instance['excerpt_words']   = intval( $new_instance['excerpt_words'] );
+		$instance['time_range']      = intval( $new_instance['time_range'] );
+		$instance['custom_range']    = intval( $new_instance['custom_range'] );
+		$instance['show_view_count'] = (bool) $new_instance['show_view_count'];
+		return $instance;
 	}
 
 	/**
@@ -80,6 +94,7 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 		$title           = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
 		$number          = isset( $instance['number'] ) ? absint( $instance['number'] ) : 10;
 		$show_date       = isset( $instance['show_date'] ) ? (bool) $instance['show_date'] : false;
+		$date_front      = isset( $instance['date_front'] ) ? (bool) $instance['date_front'] : false;
 		$excerpt_words   = isset( $instance['excerpt_words'] ) ? absint( $instance['excerpt_words'] ) : 15;
 		$time_range      = isset( $instance['time_range'] ) ? intval( $instance['time_range'] ) : 365;
 		$custom_range    = isset( $instance['custom_range'] ) ? absint( $instance['custom_range'] ) : 365;
@@ -100,6 +115,9 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 		<p>
 			<input class="checkbox" type="checkbox"<?php checked( $show_date ); ?> id="<?php echo $this->get_field_id( 'show_date' ); ?>" name="<?php echo $this->get_field_name( 'show_date' ); ?>" />
 			<label for="<?php echo $this->get_field_id( 'show_date' ); ?>"><?php _e( 'Display post date?', 'wut' ); ?></label>
+			<br/>
+			<input class="checkbox" type="checkbox"<?php checked( $date_front ); ?> id="<?php echo $this->get_field_id( 'date_front' ); ?>" name="<?php echo $this->get_field_name( 'date_front' ); ?>" />
+			<label for="<?php echo $this->get_field_id( 'date_front' ); ?>"><?php _e( 'Put date in front of post title?' ); ?><label>
 		</p>
 		<p>
 			<span><?php _e( 'Time frame of posts:', 'wut' ); ?></span><br/>

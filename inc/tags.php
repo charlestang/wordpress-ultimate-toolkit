@@ -148,7 +148,7 @@ function wut_most_viewed_posts( $args = '' ) {
 				array(
 					$permalink,
 					$item->post_title,
-					$item->post_date,
+					get_date_from_gmt( $item->post_date_gmt, 'Y-m-d' ),
 					$item->post_views,
 				),
 				$r['xformat']

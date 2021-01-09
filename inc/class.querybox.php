@@ -46,10 +46,10 @@ class WUT_QueryBox {
 			'offset'   => 0,
 			'limit'    => 10,
 			// 'both' or 'page'.
-			'type'     => 'post', 
+			'type'     => 'post',
 			'skips'    => '',
 			// show password protected post or not.
-			'password' => 0, 
+			'password' => 0,
 		);
 
 		$r = wp_parse_args( $args, $defaults );
@@ -59,16 +59,16 @@ class WUT_QueryBox {
 		$password   = $this->_password_clause( $r['password'] );
 
 		$sql = $wpdb->prepare(
-			"SELECT ID, post_author, post_title, post_date, post_content,
+			"SELECT ID, post_author, post_title, post_date, post_date_gmt, post_content,
                        post_name, post_excerpt, post_modified, comment_count,
 						meta_value 'post_views'
             FROM {$wpdb->posts}
 			INNER JOIN {$wpdb->postmeta} ON ( `ID`=`post_id` AND `meta_key`='views' )
             WHERE post_status = 'publish'
 			AND post_date > DATE_SUB(CURDATE(), INTERVAL %d DAY)
-            {$password}
-            {$posttype}
-            {$skipclause}
+			{$password}
+			{$posttype}
+			{$skipclause}
 			ORDER BY `meta_value` DESC
 			LIMIT %d, %d",
 			$r['time_range'],
