@@ -21,7 +21,7 @@ class WUT {
 	/**
 	 * The query object instance.
 	 *
-	 * @var WUT_QueryBox
+	 * @var WUT_Query_Box
 	 */
 	public $query;
 
@@ -91,7 +91,7 @@ class WUT {
 	 */
 	public function load() {
 		require $this->root_dir . 'inc/class.optionsmanager.php';
-		require $this->root_dir . 'inc/class.querybox.php';
+		require $this->root_dir . 'inc/class-wut-query-box.php';
 		require $this->root_dir . 'inc/class.utils.php';
 		require $this->root_dir . 'inc/class.admin.php';
 		require $this->root_dir . 'inc/tags.php';
@@ -107,7 +107,7 @@ class WUT {
 	public function init() {
 		$this->register();
 		$this->options = new WUT_OptionsManager();
-		$this->query   = new WUT_QueryBox();
+		$this->query   = new WUT_Query_Box();
 		$this->utils   = new WUT_Utils( $this->options->get_options() );
 
 		// the following lines add all the Widgets.

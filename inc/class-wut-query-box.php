@@ -5,7 +5,7 @@
  * All the Database queries used in this plugin are
  * put here.
  */
-class WUT_QueryBox {
+class WUT_Query_Box {
 	/**
 	 * @version 1.0
 	 * @author Charles
@@ -15,18 +15,18 @@ class WUT_QueryBox {
 		$defaults = array(
 			'offset'   => 0,
 			'limit'    => 10,
-			'type'     => 'post', // 'both' or 'page'
+			'type'     => 'post',
 			'skips'    => '',
-			'password' => 0, // show password protected post or not
-			'orderby'  => 'post_date',  // or 'post_modified'
+			'password' => 0, // show password protected post or not.
+			'orderby'  => 'post_date',  // or 'post_modified'.
 		);
 
 		$r = wp_parse_args( $args, $defaults );
 
-		$posttype   = $this->_post_type_clause( $r['type'] );
-		$skipclause = $this->_skip_clause( 'ID', $r['skips'] );
-		$password   = $this->_password_clause( $r['password'] );
-		$orderby    = $this->_orderby_clause( $r['orderby'], 'DESC' );
+		$posttype   = $this->post_type_clause( $r['type'] );
+		$skipclause = $this->skip_clause( 'ID', $r['skips'] );
+		$password   = $this->password_clause( $r['password'] );
+		$orderby    = $this->orderby_clause( $r['orderby'], 'DESC' );
 
 		$query = "SELECT ID, post_author, post_title, post_date, post_content,
                         post_name, post_excerpt, post_modified, comment_count
@@ -54,14 +54,14 @@ class WUT_QueryBox {
 
 		$r = wp_parse_args( $args, $defaults );
 
-		$posttype   = $this->_post_type_clause( $r['type'] );
-		$skipclause = $this->_skip_clause( 'ID', $r['skips'] );
-		$password   = $this->_password_clause( $r['password'] );
+		$posttype   = $this->post_type_clause( $r['type'] );
+		$skipclause = $this->skip_clause( 'ID', $r['skips'] );
+		$password   = $this->password_clause( $r['password'] );
 
 		$sql = $wpdb->prepare(
-			"SELECT ID, post_author, post_title, post_date, post_date_gmt, post_content,
-                       post_name, post_excerpt, post_modified, comment_count,
-						meta_value 'post_views'
+			"SELECT ID, post_author, post_title, post_date, post_date_gmt, 
+					post_content, post_name, post_excerpt, post_modified, 
+					comment_count, meta_value 'post_views'
             FROM {$wpdb->posts}
 			INNER JOIN {$wpdb->postmeta} ON ( `ID`=`post_id` AND `meta_key`='views' )
             WHERE post_status = 'publish'
@@ -95,9 +95,9 @@ class WUT_QueryBox {
 
 		$r = wp_parse_args( $args, $defaults );
 
-		$posttype   = $this->_post_type_clause( $r['type'] );
-		$skipclause = $this->_skip_clause( 'ID', $r['skips'] );
-		$password   = $this->_password_clause( $r['password'] );
+		$posttype   = $this->post_type_clause( $r['type'] );
+		$skipclause = $this->skip_clause( 'ID', $r['skips'] );
+		$password   = $this->password_clause( $r['password'] );
 
 		$query = "SELECT ID, post_author, post_title, post_date, post_content,
                         post_name, post_excerpt, post_modified, comment_count
@@ -148,9 +148,9 @@ class WUT_QueryBox {
 			return '';
 		}
 
-		$posttype   = $this->_post_type_clause( $r['type'] );
-		$skipclause = $this->_skip_clause( 'ID', $r['skips'] );
-		$password   = $this->_password_clause( $r['password'] );
+		$posttype   = $this->post_type_clause( $r['type'] );
+		$skipclause = $this->skip_clause( 'ID', $r['skips'] );
+		$password   = $this->password_clause( $r['password'] );
 
 		$query = "SELECT ID, post_author, post_title, post_date, post_content,
                         post_name, post_excerpt, post_modified, comment_count,
@@ -207,11 +207,11 @@ class WUT_QueryBox {
 		}
 		$cat_ids = substr( $cat_ids, 0, strlen( $cat_ids ) - 2 );
 
-		$posttype   = $this->_post_type_clause( $r['type'] );
-		$skipclause = $this->_skip_clause( 'ID', $r['skips'] );
-		$password   = $this->_password_clause( $r['password'] );
+		$posttype   = $this->post_type_clause( $r['type'] );
+		$skipclause = $this->skip_clause( 'ID', $r['skips'] );
+		$password   = $this->password_clause( $r['password'] );
 		if ( $r['orderby'] !== 'rand' ) {
-			$orderby = $this->_orderby_clause( $r['orderby'], $r['order'] );
+			$orderby = $this->orderby_clause( $r['orderby'], $r['order'] );
 			$orderby = str_replace( 'ORDER BY ', 'ORDER BY max_share, ', $orderby );
 		} else {
 			$orderby = 'ORDER BY RAND()';
@@ -254,16 +254,14 @@ class WUT_QueryBox {
 		);
 		$r        = wp_parse_args( $args, $defaults );
 
-		$posttype   = $this->_post_type_clause( $r['type'] );
-		$skipclause = $this->_skip_clause( 'ID', $r['skips'] );
-		$password   = $this->_password_clause( $r['password'] );
+		$posttype   = $this->post_type_clause( $r['type'] );
+		$skipclause = $this->skip_clause( 'ID', $r['skips'] );
+		$password   = $this->password_clause( $r['password'] );
 
 		$days = intval( $r['days'] );
 		if ( $days > 0 ) {
-			$limit_date = current_time( 'timestamp' ) - ( $days * 86400 );
-			$limit_date = date( 'Y-m-d H:i:s', $limit_date );
-			$days       = "AND post_date < '" . current_time( 'mysql' )
-				. "' AND post_date > '" . $limit_date . "'";
+			$today_string = current_datetime()->format( 'Y-m-d' );
+			$days = "AND (post_date BETWEEN DATE_SUB('{$today_string}', INTERVAL {$days} DAY) AND '{$today_string}')";
 		} else {
 			$days = '';
 		}
@@ -296,9 +294,9 @@ class WUT_QueryBox {
 			'commenttype' => 'comment',      // 'pingback' or 'trackback'
 		);
 		$r              = wp_parse_args( $args, $defaults );
-		$skipuserclause = $this->_skip_clause( 'comment_author', $r['skipusers'] );
-		$posttype       = $this->_post_type_clause( $r['posttype'] );
-		$password       = $this->_password_clause( $r['password'] );
+		$skipuserclause = $this->skip_clause( 'comment_author', $r['skipusers'] );
+		$posttype       = $this->post_type_clause( $r['posttype'] );
+		$password       = $this->password_clause( $r['password'] );
 		switch ( $r['commenttype'] ) {
 			case 'comment':
 				$commenttype = "AND comment_type='comment'";
@@ -352,7 +350,7 @@ class WUT_QueryBox {
 		);
 
 		$r              = wp_parse_args( $args, $defaults );
-		$skipuserclause = $this->_skip_clause( 'comment_author', $r['skipusers'] );
+		$skipuserclause = $this->skip_clause( 'comment_author', $r['skipusers'] );
 		if ( $r['limit'] < 0 ) {
 			$limit = '';
 		} else {
@@ -394,7 +392,7 @@ class WUT_QueryBox {
 
 		$r = wp_parse_args( $args, $defaults );
 
-		$skipuserclause = $this->_skip_clause( 'comment_author', $r['skipusers'] );
+		$skipuserclause = $this->skip_clause( 'comment_author', $r['skipusers'] );
 
 		if ( $r['type'] == 'week' ) {
 			$type = 'AND YEARWEEK(comment_date) = YEARWEEK(NOW())';
@@ -421,38 +419,56 @@ class WUT_QueryBox {
 		return $wpdb->get_results( $query );
 	}
 
-	function _post_type_clause( $posttype ) {
-		if ( 'both' == $posttype ) {
-			return 'AND (post_type = \'post\' OR post_type = \'page\')';
-		} elseif ( 'post' == $posttype ) {
-			return 'AND post_type = \'post\'';
-		} elseif ( 'page' == $posttype ) {
-			return 'AND post_type = \'page\'';
-		} else {
+	/**
+	 * Create a SQL condition about post type.
+	 *
+	 * @param string $posttype The post type name in SQL condition.
+	 */
+	protected function post_type_clause( $posttype ) {
+		$condition = '';
+		switch ( $posttype ) {
+			case 'post':
+				$condition = 'AND `post_type` = "post"';
+				break;
+			case 'page':
+				$condition = 'AND `post_type` = "page"';
+				break;
+			default:
+				$condition = 'AND `post_type` IN ( "post", "page" )';
+		}
+		return $condition;
+	}
+
+	/**
+	 * Create a SQL condition to exclude values.
+	 *
+	 * @param string $fieldtoskip Field name to test.
+	 * @param string $skipstr Value list.
+	 */
+	protected function skip_clause( $fieldtoskip, $skipstr ) {
+		if ( empty( trim( $skipstr ) ) ) {
 			return '';
 		}
+		$skips = implode( '\',\'', array_filter( explode( ',', $skipstr ) ) );
+		return "AND {$fieldtoskip} NOT IN('{$skips}')";
 	}
 
-	function _skip_clause( $filedtoskip, $skipstr ) {
-		if ( empty( $skipstr ) ) {
-			return '';
-		}
-		$skips = explode( ',', $skipstr );
-		$skips = implode( '\',\'', $skips );
-		return "AND {$filedtoskip} NOT IN('{$skips}')";
+	/**
+	 * Create a SQL condition to exclude password protected posts.
+	 *
+	 * @param bool $show To show password protected post or not.
+	 */
+	protected function password_clause( $show ) {
+		return $show ? ' ' : 'AND post_password = "" ';
 	}
 
-	function _password_clause( $show ) {
-		if ( ! $show ) {
-			return "AND post_password = '' ";
-		} else {
-			return ' ';
-		}
-	}
-
-	function _orderby_clause( $field, $order ) {
-		// TODO: validate the $field name
+	/**
+	 * Create a SQL condition to set the order.
+	 *
+	 * @param string $field The field name to order.
+	 * @param string $order The order "ASC" or "DESC".
+	 */
+	protected function orderby_clause( $field, $order ) {
 		return "ORDER BY {$field} {$order}";
 	}
-}//end class
-
+}

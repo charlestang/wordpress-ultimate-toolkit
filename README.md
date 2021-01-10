@@ -2,7 +2,7 @@
 Contributors: charlestang  
 Donate link: http://sexywp.com/wut  
 Tags: comments, posts, widgets, template tags, sidebar, toolkit  
-Requires at least: 5.2.3  
+Requires at least: 5.3.0  
 Requires PHP: 5.6  
 Tested up to: 5.6  
 Stable tag: 2.0.1  
