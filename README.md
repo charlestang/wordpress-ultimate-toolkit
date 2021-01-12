@@ -16,7 +16,6 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
 
 ### Tools
  * Generate posts and pages excerpt automatically
- * Show/Hide specific *Page* on your page navigator
  * Show words count for every post(page) on *Eidt Posts(Pages)*
  * Add custom css/js code snippets to your page without edit theme files
 
@@ -32,7 +31,6 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  * Output recent commentators
 
 ### Template Tags
-
  * `wut_recent_posts()`
  * `wut_random_posts()`
  * `wut_related_posts()`
@@ -43,12 +41,9 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  * `wut_recent_commentators()`
 
 ### Other Features
-
  * Easy to use, few coding works
  * Secondary development support(actions and filters supported)
  * Easy to uninstall, leave nothing in your database
- * Feed enhancement (in the development plan)
- * Content enhancement (in the development plan)
 
 ## Installation
  1. Upload the directory `wordpress-ultimate-toolkit` to `/wp-content/plugins`
