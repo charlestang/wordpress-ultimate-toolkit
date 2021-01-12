@@ -60,7 +60,7 @@ function _wut_get_permalink( $post ) {
  *
  * @param array $args arguments to control the template tag.
  */
-function wut_recent_posts( $args = '' ) {
+function wut_recent_posts( $args = array() ) {
 	$defaults = array(
 		'limit'       => 5,
 		'offset'      => 0,
@@ -121,7 +121,7 @@ function wut_recent_posts( $args = '' ) {
 	}
 }
 
-function wut_most_viewed_posts( $args = '' ) {
+function wut_most_viewed_posts( $args = array() ) {
 	$defaults = array(
 		'limit'    => 5, // how many items should be show
 		'offset'   => 0,

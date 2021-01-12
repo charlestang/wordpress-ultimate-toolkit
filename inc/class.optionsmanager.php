@@ -15,7 +15,6 @@ class WUT_OptionsManager {
 
 	public function set_defaults() {
 		$defaults = array(
-			'hide-pages' => '',
 			'widgets'    => array(
 				'load' => array(
 					'wut_widget_random_posts_init',
@@ -103,6 +102,9 @@ class WUT_OptionsManager {
 	}
 
 	public function save_options() {
+		if ( isset ( $this->options['hide-pages'] ) ) {
+			unset( $this->options['hide-pages'] );
+		}
 		update_option( 'wordpress-ultimate-toolkit-options', $this->options );
 	}
 

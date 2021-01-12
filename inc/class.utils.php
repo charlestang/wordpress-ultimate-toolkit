@@ -65,13 +65,6 @@ class WUT_Utils {
 		return $excerpt . $tips;
 	}
 
-	function exclude_pages( $excludes ) {
-		$hidepages       = $this->options['hide-pages'];
-		$custom_excludes = explode( ',', $hidepages );
-		$excludes        = array_unique( array_merge( $excludes, $custom_excludes ) );
-		return $excludes;
-	}
-
 	function _select_code_snippets( $hook ) {
 		$codesnippets = $this->options['customcode'];
 		if ( ! is_array( $codesnippets ) || empty( $codesnippets ) ) {

@@ -68,14 +68,6 @@ class WUT_Admin {
 		);
 		add_submenu_page(
 			'wut_admin_default_page',
-			__( 'Hide Pages', 'wut' ),
-			__( 'Hide Pages', 'wut' ),
-			'manage_options',
-			'wut_admin_hide_pages',
-			array( &$this, 'hide_pages' )
-		);
-		add_submenu_page(
-			'wut_admin_default_page',
 			__( 'Custom Code', 'wut' ),
 			__( 'Custom Code', 'wut' ),
 			'manage_options',
@@ -98,97 +90,6 @@ class WUT_Admin {
 			'wut_admin_uninstall',
 			array( &$this, 'uninstall' )
 		);
-	}
-
-	/**
-	 * Hide Page admin panel.
-	 *
-	 * Here you can choose the pages you don't want to be shown on your blog,
-	 * except you giving out direct links.
-	 *
-	 * Use function wp_list_pages() and wp_page_menu() cannot show the hided
-	 * pages.
-	 *
-	 * @since 1.0.0
-	 */
-	function hide_pages() {
-		// Get options
-		$options =& $this->options['hide-pages'];
-
-		// Fetch all the pages.
-		$para_args = array(
-			'numberposts' => -1,
-			'orderby'     => 'menu_order',
-			'order'       => 'ASC',
-			'post_type'   => 'page',
-		);
-		$pages     = get_posts( $para_args );
-
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'wut_admin_hide_pages' ) {
-			if ( isset( $_REQUEST['action'] ) && 'save' == $_REQUEST['action'] ) {
-				$excludes = '';
-				foreach ( $pages as $page ) {
-					if ( isset( $_REQUEST[ 'post-' . $page->ID ] ) ) {
-						$excludes .= $page->ID . ',';
-					}
-				}
-				$options = substr( $excludes, 0, - 1 );
-				$this->_save_option();
-			}
-		}
-
-		$hide_array = explode( ',', $options );
-		?>
-		<div class="wrap">
-			<h2><?php _e( 'Hide Pages', 'wut' ); ?></h2>
-			<form method="post">
-				<table class="wp-list-table widefat fixed striped">
-					<thead>
-						<tr>
-							<td id="cb" class="manage-column column-cb check-column">
-								<input type="checkbox" />
-							</td>
-							<th id="postid" class="manage-column column-postid" scope="col"><?php _e( 'ID', 'wut' ); ?></th>
-							<th id="title" class="manage-column column-title" scope="col"><?php _e( 'Title', 'wut' ); ?></th>
-							<th id="date" class="manage-column column-date" scope="col"><?php _e( 'Date', 'wut' ); ?></th>
-						</tr>
-					</thead>
-					<tfoot>
-						<tr>
-							<td class="manage-column column-cb check-column">
-								<input type="checkbox" />
-							</td>
-							<th class="manage-column column-postid" scope="col"><?php _e( 'ID', 'wut' ); ?></th>
-							<th class="manage-column column-title" scope="col"><?php _e( 'Title', 'wut' ); ?></th>
-							<th class="manage-column column-date" scope="col"><?php _e( 'Date', 'wut' ); ?></th>
-						</tr>
-					</tfoot>
-					<tbody>
-		<?php
-		if ( $pages ) {
-			foreach ( $pages as $page ) {
-				$check = '';
-				if ( in_array( $page->ID, $hide_array ) ) {
-					$check = ' checked="checked" ';
-				}
-				echo '<tr>';
-				echo '<td>','<input id="post-',$page->ID,'" name="post-',$page->ID,'" type="checkbox"',$check,'/>','</td>';
-				echo '<td>',$page->ID,'</td>';
-				echo '<td class="column-title">',$page->post_title,'</td>';
-				echo '<td class="column-date">',$page->post_date,'</td>';
-				echo '</tr>';
-			}
-		}
-		?>
-					</tbody>
-				</table>
-				<div class="tablenav bottom">
-					<input type="hidden" value="save" name="action" />
-					<input type="submit" class="button action" value="Hide checked pages" />
-				</div>
-			</form>
-		</div>
-		<?php
 	}
 
 	function load_widgets() {
