@@ -29,40 +29,6 @@ class WUT_Query_Box {
 		$this->db = $wpdb;
 	}
 
-	/**
-	 * Build the query to find recent posts.
-	 *
-	 * @param array $args query coniditions.
-	 */
-	public function get_recent_posts( $args = '' ) {
-		$defaults = array(
-			'offset'   => 0,
-			'limit'    => 10,
-			'type'     => 'post',
-			'skips'    => '',
-			'password' => 0, // show password protected post or not.
-			'orderby'  => 'post_date',  // or 'post_modified'.
-		);
-
-		$r = wp_parse_args( $args, $defaults );
-
-		$posttype   = $this->post_type_clause( $r['type'] );
-		$skipclause = $this->skip_clause( 'ID', $r['skips'] );
-		$password   = $this->password_clause( $r['password'] );
-		$orderby    = $this->orderby_clause( $r['orderby'], 'DESC' );
-
-		$query = "SELECT ID, post_author, post_title, post_date, post_content,
-                        post_name, post_excerpt, post_modified, comment_count
-                  FROM {$this->db->posts}
-                  WHERE post_status = 'publish'
-                  {$password}
-                  {$posttype}
-                  {$skipclause}
-                  {$orderby}
-                  LIMIT {$r['offset']},{$r['limit']}";
-		return $this->db->get_results( $query );
-	}
-
 	public function get_most_viewed_posts( $args = '' ) {
 		$defaults = array(
 			'offset'   => 0,

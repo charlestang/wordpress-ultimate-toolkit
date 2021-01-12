@@ -5,7 +5,7 @@ Tags: comments, posts, widgets, template tags, sidebar, toolkit
 Requires at least: 5.3.0  
 Requires PHP: 5.6  
 Tested up to: 5.6  
-Stable tag: 2.0.1  
+Stable tag: 2.0.2  
 License: GPL v3  
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -56,6 +56,10 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  1. Done :)
 
 ## Changelog
+### 2.0.2
+ * Recent posts widget support date format.
+ * `wut_recent_posts()` re-implemented with WP_Query API.
+
 ### 2.0.1
  * Minor change, some clean work.
 
@@ -76,14 +80,14 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  * Excerpt admin page complete.
 
 ## Upgrade Notice
+### 2.0.2
+ Upgrade recommended if you are using >= 2.0.0.
+
+### 2.0.1
+ Upgrade recommended if you are using >= 2.0.0.
+
 ### 2.0.0
  Please uninstall the old version mannually first if you want install this.
-
-### 1.0.5
- Upgrade recommended.
-
-### 1.0.4
- If you use WP 3.0 and the new menu system, you should upgrade.
 
 ### 1.0.3
 Upgrade recommended.

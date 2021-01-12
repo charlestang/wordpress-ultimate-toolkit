@@ -62,16 +62,18 @@ function _wut_get_permalink( $post ) {
  */
 function wut_recent_posts( $args = '' ) {
 	$defaults = array(
-		'limit'   => 5,
-		'offset'  => 0,
-		'before'  => '<li>',
-		'after'   => '</li>',
-		'type'    => 'post', // the value of type could be `post`, `page` or `both`.
-		'skips'   => '', // comma seperated post_ID list.
-		'none'    => __( 'No Posts.', 'wut' ), // tips to show when results is empty.
-		'orderby' => 'post_date', // 'post_modified' is alternative.
-		'xformat' => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
-		'echo'    => 1, // to show all results or just return.
+		'limit'       => 5,
+		'offset'      => 0,
+		'before'      => '<li>',
+		'after'       => '</li>',
+		'type'        => 'post', // the value of type could be `post`, `page` or `both`.
+		'skips'       => '', // comma seperated post_ID list.
+		'none'        => __( 'No Posts.', 'wut' ), // tips to show when results is empty.
+		'password'    => 'hide',
+		'orderby'     => 'post_date', // 'post_modified' is alternative.
+		'xformat'     => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
+		'date_format' => '',
+		'echo'        => 1, // to show all results or just return.
 	);
 	$r        = wp_parse_args( array_filter( $args ), $defaults );
 	$query    = new WP_Query(
@@ -81,7 +83,8 @@ function wut_recent_posts( $args = '' ) {
 			'post_status'         => 'publish',
 			'ignore_sticky_posts' => true,
 			'post__not_in'        => array_filter( explode( ',', $r['skips'] ) ),
-			'orderby'             => 'post_date' === $r['orderby'] ? 'date' : 'modified',
+			'orderby'             => $r['orderby'],
+			'has_password'        => ! 'hide' === $r['password'],
 		)
 	);
 
@@ -102,7 +105,7 @@ function wut_recent_posts( $args = '' ) {
 				array(
 					$permalink,
 					( ! empty( $post_title ) ) ? $post_title : __( '(no title)' ),
-					get_the_date( '', $post->ID ),
+					get_the_date( $r['date_format'], $post->ID ),
 					$post->comment_count,
 				),
 				$r['xformat']
