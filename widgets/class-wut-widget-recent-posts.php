@@ -33,20 +33,11 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 
 		$tag_args = array(
 			'limit'   => $instance['number'],
-			'offset'  => 0,
-			'before'  => '<li>',
-			'after'   => '</li>',
-			'type'    => 'post',
-			'skips'   => '',
-			'none'    => __( 'No Posts.' ),
-			'orderby' => 'post_date',
 			'xformat' => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>',
 		);
 
 		$tag_args['xformat'] .= $instance['show_comment_count'] ? '(%commentcount%)' : '';
 		$tag_args['xformat'] .= $instance['show_date'] ? '<span class="post-date">%postdate%</span>' : '';
-
-		$tag_args['password'] = $instance['show_password_protected'] ? 'show' : 'hide';
 
 		echo $args['before_widget'];
 		echo $args['before_title'] . $title . $args['after_title'];
@@ -61,12 +52,11 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 	 * @param array $old_instance Original set settings.
 	 */
 	public function update( $new_instance, $old_instance ) {
-		$instance                            = $old_instance;
-		$instance['title']                   = sanitize_text_field( $new_instance['title'] );
-		$instance['number']                  = absint( $new_instance['number'] );
-		$instance['show_date']               = isset( $new_instance['show_date'] ) ? (bool) $new_instance['show_date'] : false;
-		$instance['show_comment_count']      = isset( $new_instance['show_comment_count'] ) ? (bool) $new_instance['show_comment_count'] : false;
-		$instance['show_password_protected'] = isset( $new_instance['show_password_protected'] ) ? (bool) $new_instance['show_password_protected'] : false;
+		$instance                       = $old_instance;
+		$instance['title']              = sanitize_text_field( $new_instance['title'] );
+		$instance['number']             = absint( $new_instance['number'] );
+		$instance['show_date']          = isset( $new_instance['show_date'] ) ? (bool) $new_instance['show_date'] : false;
+		$instance['show_comment_count'] = isset( $new_instance['show_comment_count'] ) ? (bool) $new_instance['show_comment_count'] : false;
 		return $instance;
 	}
 
@@ -76,11 +66,10 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 	 * @param array $instance The settings of this widget instance.
 	 */
 	public function form( $instance ) {
-		$title                   = isset( $instance['title'] ) && ! empty( trim( $instance['title'] ) ) ? esc_attr( $instance['title'] ) : '';
-		$number                  = isset( $instance['number'] ) ? absint( $instance['number'] ) : 5;
-		$show_date               = isset( $instance['show_date'] ) ? (bool) $instance['show_date'] : false;
-		$show_comment_count      = isset( $instance['show_comment_count'] ) ? (bool) $instance['show_comment_count'] : false;
-		$show_password_protected = isset( $instance['show_password_protected'] ) ? (bool) $instance['show_password_protected'] : false;
+		$title              = isset( $instance['title'] ) && ! empty( trim( $instance['title'] ) ) ? esc_attr( $instance['title'] ) : '';
+		$number             = isset( $instance['number'] ) ? absint( $instance['number'] ) : 5;
+		$show_date          = isset( $instance['show_date'] ) ? (bool) $instance['show_date'] : false;
+		$show_comment_count = isset( $instance['show_comment_count'] ) ? (bool) $instance['show_comment_count'] : false;
 		?>
 		<p>
 			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
@@ -100,11 +89,6 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 		<p>
 			<input class="checkbox" type="checkbox"<?php checked( $show_comment_count ); ?> id="<?php echo $this->get_field_id( 'show_comment_count' ); ?>" name="<?php echo $this->get_field_name( 'show_comment_count' ); ?>" />
 			<label for="<?php echo $this->get_field_id( 'show_comment_count' ); ?>"><?php _e( 'Display comment count?' ); ?></label>
-		</p>
-
-		<p>
-			<input class="checkbox" type="checkbox"<?php checked( $show_password_protected ); ?> id="<?php echo $this->get_field_id( 'show_password_protected' ); ?>" name="<?php echo $this->get_field_name( 'show_password_protected' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'show_password_protected' ); ?>"><?php _e( 'Display password protected posts?' ); ?></label>
 		</p>
 		<?php
 	}

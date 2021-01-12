@@ -56,37 +56,43 @@ function _wut_get_permalink( $post ) {
 	}
 }
 /**
- * @version 1.0
- * @author Charles
+ * Template tag: Recent posts.
+ *
+ * @param array $args arguments to control the template tag.
  */
 function wut_recent_posts( $args = '' ) {
 	$defaults = array(
-		'limit'    => 5, // how many items should be show
-		'offset'   => 0,
-		'before'   => '<li>',
-		'after'    => '</li>',
-		'type'     => 'both', // 'post' or 'page' or 'both'
-		'skips'    => '', // comma seperated post_ID list
-		'none'     => 'No Posts.', // tips to show when results is empty
-		'password' => 'hide', // show password protected post or not
-		'orderby'  => 'post_date', // 'post_modified' is alternative
-		'xformat'  => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
-		'echo'     => 1,
+		'limit'   => 5,
+		'offset'  => 0,
+		'before'  => '<li>',
+		'after'   => '</li>',
+		'type'    => 'post', // the value of type could be `post`, `page` or `both`.
+		'skips'   => '', // comma seperated post_ID list.
+		'none'    => __( 'No Posts.', 'wut' ), // tips to show when results is empty.
+		'orderby' => 'post_date', // 'post_modified' is alternative.
+		'xformat' => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
+		'echo'    => 1, // to show all results or just return.
 	);
 	$r        = wp_parse_args( array_filter( $args ), $defaults );
-	extract( $r, EXTR_SKIP );
-
-	$password   = $password == 'hide' ? 0 : 1;
-	$query_args = compact( 'limit', 'offset', 'type', 'skips', 'password', 'orderby' );
-	$items      = WUT::$me->query->get_recent_posts( $query_args );
+	$query    = new WP_Query(
+		array(
+			'post_per_paage'      => $r['limit'],
+			'no_found_rows'       => true,
+			'post_status'         => 'publish',
+			'ignore_sticky_posts' => true,
+			'post__not_in'        => array_filter( explode( ',', $r['skips'] ) ),
+			'orderby'             => 'post_date' === $r['orderby'] ? 'date' : 'modified',
+		)
+	);
 
 	$html = '';
-	if ( empty( $items ) ) {
+	if ( ! $query->have_posts() ) {
 		$html = $r['before'] . $r['none'] . $r['after'];
 	} else {
-		foreach ( $items as $item ) {
-			$permalink    = _wut_get_permalink( $item );
-			$record       = str_replace(
+		foreach ( $query->posts as $post ) {
+			$permalink  = get_the_permalink( $post->ID );
+			$post_title = get_the_title( $post->ID );
+			$record     = str_replace(
 				array(
 					'%permalink%',
 					'%title%',
@@ -95,14 +101,14 @@ function wut_recent_posts( $args = '' ) {
 				),
 				array(
 					$permalink,
-					$item->post_title,
-					$item->post_date,
-					$item->comment_count,
+					( ! empty( $post_title ) ) ? $post_title : __( '(no title)' ),
+					get_the_date( '', $post->ID ),
+					$post->comment_count,
 				),
 				$r['xformat']
 			);
-				$sanitize = apply_filters( 'wut_recent_post_item', $record, $item );
-				$html    .= $r['before'] . $sanitize . $r['after'] . "\n";
+			$sanitize   = apply_filters( 'wut_recent_post_item', $record, $post );
+			$html      .= $r['before'] . $sanitize . $r['after'] . "\n";
 		}
 	}
 	if ( $r['echo'] ) {

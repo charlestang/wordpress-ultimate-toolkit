@@ -1,5 +1,13 @@
 <?php
 /**
+ * Class: WUT_Query_Box
+ *
+ * The class is used to build query.
+ *
+ * @package wut
+ */
+
+/**
  * All the queries.
  *
  * All the Database queries used in this plugin are
@@ -7,11 +15,26 @@
  */
 class WUT_Query_Box {
 	/**
-	 * @version 1.0
-	 * @author Charles
+	 * Database connection.
+	 *
+	 * @var wpdb
 	 */
-	function get_recent_posts( $args = '' ) {
+	protected $db;
+
+	/**
+	 * The constructor of query box.
+	 */
+	public function __construct() {
 		global $wpdb;
+		$this->db = $wpdb;
+	}
+
+	/**
+	 * Build the query to find recent posts.
+	 *
+	 * @param array $args query coniditions.
+	 */
+	public function get_recent_posts( $args = '' ) {
 		$defaults = array(
 			'offset'   => 0,
 			'limit'    => 10,
@@ -30,18 +53,17 @@ class WUT_Query_Box {
 
 		$query = "SELECT ID, post_author, post_title, post_date, post_content,
                         post_name, post_excerpt, post_modified, comment_count
-                  FROM {$wpdb->posts}
+                  FROM {$this->db->posts}
                   WHERE post_status = 'publish'
                   {$password}
                   {$posttype}
                   {$skipclause}
                   {$orderby}
                   LIMIT {$r['offset']},{$r['limit']}";
-		return $wpdb->get_results( $query );
+		return $this->db->get_results( $query );
 	}
 
-	function get_most_viewed_posts( $args = '' ) {
-		global $wpdb;
+	public function get_most_viewed_posts( $args = '' ) {
 		$defaults = array(
 			'offset'   => 0,
 			'limit'    => 10,
@@ -58,12 +80,12 @@ class WUT_Query_Box {
 		$skipclause = $this->skip_clause( 'ID', $r['skips'] );
 		$password   = $this->password_clause( $r['password'] );
 
-		$sql = $wpdb->prepare(
+		$sql = $this->db->prepare(
 			"SELECT ID, post_author, post_title, post_date, post_date_gmt, 
 					post_content, post_name, post_excerpt, post_modified, 
 					comment_count, meta_value 'post_views'
-            FROM {$wpdb->posts}
-			INNER JOIN {$wpdb->postmeta} ON ( `ID`=`post_id` AND `meta_key`='views' )
+            FROM {$this->db->posts}
+			INNER JOIN {$this->db->postmeta} ON ( `ID`=`post_id` AND `meta_key`='views' )
             WHERE post_status = 'publish'
 			AND post_date > DATE_SUB(CURDATE(), INTERVAL %d DAY)
 			{$password}
@@ -75,7 +97,7 @@ class WUT_Query_Box {
 			$r['offset'],
 			$r['limit']
 		);
-		return $wpdb->get_results( $sql );
+		return $this->db->get_results( $sql );
 	}
 
 
@@ -84,8 +106,7 @@ class WUT_Query_Box {
 	 * @version 1.0
 	 * @author Charles
 	 */
-	function get_random_posts( $args = '' ) {
-		global $wpdb;
+	public function get_random_posts( $args = '' ) {
 		$defaults = array(
 			'limit'    => 10,
 			'type'     => 'post',
@@ -101,14 +122,14 @@ class WUT_Query_Box {
 
 		$query = "SELECT ID, post_author, post_title, post_date, post_content,
                         post_name, post_excerpt, post_modified, comment_count
-                  FROM {$wpdb->posts}
+                  FROM {$this->db->posts}
                   WHERE post_status = 'publish'
                   {$password}
                   {$posttype}
                   {$skipclause}
                   ORDER BY RAND()
                   LIMIT {$r['limit']}";
-		return $wpdb->get_results( $query );
+		return $this->db->get_results( $query );
 	}
 
 	/**
@@ -261,7 +282,7 @@ class WUT_Query_Box {
 		$days = intval( $r['days'] );
 		if ( $days > 0 ) {
 			$today_string = current_datetime()->format( 'Y-m-d' );
-			$days = "AND (post_date BETWEEN DATE_SUB('{$today_string}', INTERVAL {$days} DAY) AND '{$today_string}')";
+			$days         = "AND (post_date BETWEEN DATE_SUB('{$today_string}', INTERVAL {$days} DAY) AND '{$today_string}')";
 		} else {
 			$days = '';
 		}
