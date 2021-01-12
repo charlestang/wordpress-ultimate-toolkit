@@ -113,6 +113,10 @@ class WUT {
 		// the following lines add all the Widgets.
 		$widgets = $this->options->get_options( 'widgets' );
 		foreach ( $widgets['load'] as $callback ) {
+			if ( 'wut_widget_recent_posts_init' === $callback 
+				|| 'wut_widget_recent_comments_init' === $callback)	{
+				continue;
+			}
 			add_action( 'widgets_init', $callback );
 		}
 
@@ -148,9 +152,19 @@ class WUT {
 		}
 	}
 
-	public static function log( $msg ) {
+	public static function log() {
 		if ( ! WP_DEBUG ) {
 			return;
+		}
+		
+		$args = func_get_args();
+		$msg = '';
+		foreach ($args as $arg) {
+			if ( is_string( $arg ) || is_numeric( $arg ) ) {
+				$msg .= $arg;
+			} else {
+				$msg .= var_export( $arg, true );
+			}
 		}
 
 		$trace = debug_backtrace();

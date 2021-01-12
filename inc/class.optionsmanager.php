@@ -6,6 +6,14 @@ class WUT_OptionsManager {
 	public function __construct() {
 		// update_option('wordpress-ultimate-toolkit-options','');
 		$this->options = get_option( 'wordpress-ultimate-toolkit-options' );
+		
+		$this->options['widgets']['all'] = array_filter( $this->options['widgets']['all'], function ($value) {
+			if ( $value['callback'] === 'wut_widget_recent_posts_init' 
+				|| $value['callback'] === 'wut_widget_recent_comments_init' ) {
+				return false;
+			}
+			return true;
+		} );
 
 		// when the plugin updated, this will be true
 		if ( empty( $this->options ) || $this->version > $this->options['version'] ) {
@@ -26,11 +34,6 @@ class WUT_OptionsManager {
 				),
 				'all'  => array(
 					array(
-						'name'     => __( 'Recent Posts', 'wut' ),
-						'descript' => __( 'Display a list of recent posts.', 'wut' ),
-						'callback' => 'wut_widget_recent_posts_init',
-					),
-					array(
 						'name'     => __( 'Random Posts', 'wut' ),
 						'descript' => __( 'Display a list of random posts.', 'wut' ),
 						'callback' => 'wut_widget_random_posts_init',
@@ -49,11 +52,6 @@ class WUT_OptionsManager {
 						'name'     => __( 'Most Commented Posts', 'wut' ),
 						'descript' => __( 'Display a list of most commented posts.', 'wut' ),
 						'callback' => 'wut_widget_most_commented_posts_init',
-					),
-					array(
-						'name'     => __( 'Recent Comments', 'wut' ),
-						'descript' => __( 'Display recent comments.', 'wut' ),
-						'callback' => 'wut_widget_recent_comments_init',
 					),
 					array(
 						'name'     => __( 'Active Commentators', 'wut' ),
@@ -105,6 +103,8 @@ class WUT_OptionsManager {
 		if ( isset ( $this->options['hide-pages'] ) ) {
 			unset( $this->options['hide-pages'] );
 		}
+		delete_option( 'wut-widget-recent-posts' );
+		delete_option( 'wut-widget-recent-comments' );
 		update_option( 'wordpress-ultimate-toolkit-options', $this->options );
 	}
 

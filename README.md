@@ -56,6 +56,11 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  1. Done :)
 
 ## Changelog
+### 2.0.3
+ * Hide pages option removed from admin panel.
+ * Old version of recent posts widget removed.
+ * Old version of recent comments widget removed.
+
 ### 2.0.2
  * Recent posts widget support date format.
  * `wut_recent_posts()` re-implemented with WP_Query API.
@@ -80,11 +85,14 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  * Excerpt admin page complete.
 
 ## Upgrade Notice
+### 2.0.3
+ Upgrade recommended if you are using version >= 2.0.0.
+
 ### 2.0.2
- Upgrade recommended if you are using >= 2.0.0.
+ Upgrade recommended if you are using version >= 2.0.0.
 
 ### 2.0.1
- Upgrade recommended if you are using >= 2.0.0.
+ Upgrade recommended if you are using version >= 2.0.0.
 
 ### 2.0.0
  Please uninstall the old version mannually first if you want install this.
