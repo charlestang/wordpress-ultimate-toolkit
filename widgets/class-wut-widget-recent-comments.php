@@ -111,5 +111,3 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 		<?php
 	}
 }
-
-/* vim: set et=off ts=4 sw=4 */

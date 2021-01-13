@@ -12,6 +12,13 @@
 class WUT_Widget_Recent_Posts extends WP_Widget {
 
 	/**
+	 * The form helper.
+	 *
+	 * @var WUT_Form_Helper the form helper to generate the form control.
+	 */
+	protected $helper;
+
+	/**
 	 * Set the name and description of the widget.
 	 */
 	public function __construct() {
@@ -20,6 +27,7 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 			'customize_selective_refresh' => true,
 		);
 		parent::__construct( '', __( 'WUT:Recent Posts', 'wut' ), $widget_ops );
+		$this->helper = new WUT_Form_Helper( $this );
 	}
 
 	/**
@@ -91,25 +99,16 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 		$custom_format      = isset( $instance['custom_format'] ) ? wp_strip_all_tags( $instance['custom_format'] ) : $site_date_format;
 		$show_comment_count = isset( $instance['show_comment_count'] ) ? (bool) $instance['show_comment_count'] : false;
 		?>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
-		</p>
+		<?php $tihs->helper->text( 'title', $title, __( 'Title:' ) ); ?>
 
 		<p>
 			<label for="<?php echo $this->get_field_id( 'number' ); ?>"><?php _e( 'Number of posts to show:' ); ?></label>
 			<input class="tiny-text" id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" type="number" step="1" min="1" value="<?php echo $number; ?>" size="3" />
 		</p>
 
-		<p>
-			<input class="checkbox" type="checkbox"<?php checked( $show_date ); ?> id="<?php echo $this->get_field_id( 'show_date' ); ?>" name="<?php echo $this->get_field_name( 'show_date' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'show_date' ); ?>"><?php _e( 'Display post date?' ); ?></label>
-		</p>
+		<?php $this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?' ) ); ?>
 
-		<p>
-			<input class="checkbox" type="checkbox"<?php checked( $date_before_title ); ?> id="<?php echo $this->get_field_id( 'date_before_title' ); ?>" name="<?php echo $this->get_field_name( 'date_before_title' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'date_before_title' ); ?>"><?php _e( 'Show date before title?', 'wut' ); ?></label>
-		</p>
+		<?php $this->helper->checkbox( 'date_before_title', $date_before_title, __( 'Show date before title?' ) ); ?>
 
 		<p>
 			<span><?php _e( 'Date format:', 'wut' ); ?></span><br/>
@@ -136,12 +135,7 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 			<strong><?php _e( 'Preview: ', 'wut' ); ?></strong><span><?php echo 'custom' === $date_format ? date( $custom_format ) : date( '' === $date_format ? $site_date_format : $date_format ); ?></span>
 		</p>
 
-		<p>
-			<input class="checkbox" type="checkbox"<?php checked( $show_comment_count ); ?> id="<?php echo $this->get_field_id( 'show_comment_count' ); ?>" name="<?php echo $this->get_field_name( 'show_comment_count' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'show_comment_count' ); ?>"><?php _e( 'Display comment count?', 'wut' ); ?></label>
-		</p>
+		<?php $this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Display comment count?', 'wut' ) ); ?>
 		<?php
 	}
 }
-
-/* vim: set et=off ts=4 sw=4 */

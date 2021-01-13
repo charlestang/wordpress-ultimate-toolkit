@@ -92,6 +92,7 @@ class WUT {
 	public function load() {
 		require $this->root_dir . 'inc/class.optionsmanager.php';
 		require $this->root_dir . 'inc/class-wut-query-box.php';
+		require $this->root_dir . 'inc/class-wut-form-helper.php';
 		require $this->root_dir . 'inc/class.utils.php';
 		require $this->root_dir . 'inc/class.admin.php';
 		require $this->root_dir . 'inc/tags.php';
@@ -113,8 +114,8 @@ class WUT {
 		// the following lines add all the Widgets.
 		$widgets = $this->options->get_options( 'widgets' );
 		foreach ( $widgets['load'] as $callback ) {
-			if ( 'wut_widget_recent_posts_init' === $callback 
-				|| 'wut_widget_recent_comments_init' === $callback)	{
+			if ( 'wut_widget_recent_posts_init' === $callback
+				|| 'wut_widget_recent_comments_init' === $callback ) {
 				continue;
 			}
 			add_action( 'widgets_init', $callback );
@@ -156,10 +157,10 @@ class WUT {
 		if ( ! WP_DEBUG ) {
 			return;
 		}
-		
+
 		$args = func_get_args();
-		$msg = '';
-		foreach ($args as $arg) {
+		$msg  = '';
+		foreach ( $args as $arg ) {
 			if ( is_string( $arg ) || is_numeric( $arg ) ) {
 				$msg .= $arg;
 			} else {
