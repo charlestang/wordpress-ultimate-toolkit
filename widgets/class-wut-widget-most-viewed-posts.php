@@ -16,6 +16,12 @@
 class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 
 	/**
+	 * The helper to build widget form.
+	 *
+	 * @var WUT_Form_Helper
+	 */
+	protected $helper;
+	/**
 	 * Set the name and description of the widget.
 	 */
 	public function __construct() {

@@ -99,12 +99,9 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 		$custom_format      = isset( $instance['custom_format'] ) ? wp_strip_all_tags( $instance['custom_format'] ) : $site_date_format;
 		$show_comment_count = isset( $instance['show_comment_count'] ) ? (bool) $instance['show_comment_count'] : false;
 		?>
-		<?php $tihs->helper->text( 'title', $title, __( 'Title:' ) ); ?>
+		<?php $this->helper->text( 'title', $title, __( 'Title:' ) ); ?>
 
-		<p>
-			<label for="<?php echo $this->get_field_id( 'number' ); ?>"><?php _e( 'Number of posts to show:' ); ?></label>
-			<input class="tiny-text" id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" type="number" step="1" min="1" value="<?php echo $number; ?>" size="3" />
-		</p>
+		<?php $this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' ); ?>
 
 		<?php $this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?' ) ); ?>
 
