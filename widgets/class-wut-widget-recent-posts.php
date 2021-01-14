@@ -50,7 +50,10 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 			'xformat'     => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>',
 		);
 
-		$tag_args['xformat'] .= $instance['show_comment_count'] ? ' (%commentcount%)' : '';
+		$instance['show_date'] = $this->helper->default( $instance, 'show_date', 'bool', false );
+		$instance['show_comment_count'] = $this->helper->default( $instance, 'show_comment_count', 'bool', false );
+		$instance['date_before_title'] = $this->helper->default( $instance, 'date_before_title', 'bool', false );
+		$tag_args['xformat'] .= ( $instance['show_comment_count'] ? ' (%commentcount%)' : '' );
 		if ( $instance['show_date'] ) {
 			if ( $instance['date_before_title'] ) {
 				$tag_args['xformat'] = '<span class="post-date">%postdate%</span>&nbsp;' . $tag_args['xformat'];
@@ -90,14 +93,14 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 	 * @param array $instance The settings of this widget instance.
 	 */
 	public function form( $instance ) {
-		$title              = isset( $instance['title'] ) && ! empty( trim( $instance['title'] ) ) ? esc_attr( $instance['title'] ) : '';
-		$number             = isset( $instance['number'] ) ? absint( $instance['number'] ) : 5;
-		$show_date          = isset( $instance['show_date'] ) ? (bool) $instance['show_date'] : false;
-		$date_before_title  = isset( $instance['date_before_title'] ) ? (bool) $instance['date_before_title'] : false;
-		$date_format        = isset( $instance['date_format'] ) ? wp_strip_all_tags( $instance['date_format'] ) : '';
+		$title              = $this->helper->default( $instance, 'title', 'string', '' );
+		$number             = $this->helper->default( $instance, 'number', 'uint', 5 );
+		$show_date          = $this->helper->default( $instance, 'show_date', 'bool', false );
+		$date_before_title  = $this->helper->default( $instance, 'date_before_title', 'bool', false );
 		$site_date_format   = get_option( 'date_format' );
-		$custom_format      = isset( $instance['custom_format'] ) ? wp_strip_all_tags( $instance['custom_format'] ) : $site_date_format;
-		$show_comment_count = isset( $instance['show_comment_count'] ) ? (bool) $instance['show_comment_count'] : false;
+		$date_format        = $this->helper->default( $instance, 'date_format', 'string', $site_date_format );
+		$custom_format      = $this->helper->default( $instance, 'custom_format', 'string', $site_date_format );
+		$show_comment_count = $this->helper->default( $instance, 'show_comment_count', 'bool', false );
 		?>
 		<?php $this->helper->text( 'title', $title, __( 'Title:' ) ); ?>
 

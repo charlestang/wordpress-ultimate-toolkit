@@ -52,6 +52,8 @@ class WUT_Form_Helper {
 	 * @param string $property The property name.
 	 * @param string $value The value of the property.
 	 * @param string $label The label tip of the checkbox.
+	 * @param string $type The type of input control.
+	 * @param string $class The class of input control.
 	 */
 	public function text( $property, $value, $label, $type = 'text', $class = 'widefat' ) {
 		?>
@@ -59,12 +61,31 @@ class WUT_Form_Helper {
 			<label for="<?php echo $this->widget->get_field_id( $property ); ?>">
 				<?php echo $label; ?>
 			</label>
-			<input class="<?php echo $class;?>" 
+			<input class="<?php echo $class; ?>" 
 				id="<?php echo $this->widget->get_field_id( $property ); ?>" 
 				name="<?php echo $this->widget->get_field_name( $property ); ?>" 
 				type="<?php echo $type; ?>" value="<?php echo $value; ?>" />
 		</p>
 		<?php
+	}
+
+	public function default( $haystack, $key, $type, $default ) {
+		if ( isset( $haystack[ $key ] ) ) {
+			switch ( $type ) {
+				case 'string':
+					return sanitize_text_field( $haystack[ $key ] );
+				case 'int':
+					return intval( $haystack[ $key ] );
+				case 'uint':
+					return absint( $haystack[ $key ] );
+				case 'bool':
+					return (bool) $haystack[ $key ];
+				default:
+					trigger_error( 'Dose not support this type check now.' );
+					return $haystack[ $key ];
+			}
+		}
+		return $default;
 	}
 
 }
