@@ -97,4 +97,63 @@ class WUT_Form_Helper {
 		return $default;
 	}
 
+	/**
+	 * This will print a full date format choose control group.
+	 *
+	 * $config should be like:
+	 * array(
+	 *      'date_format_property'   => 'date_format',
+	 *      'date_format_value'      => $date_format,
+	 *      'date_format_default'    => $site_date_format,
+	 *      'custom_format_property' => 'custom_format',
+	 *      'custom_format_value'    => $custom_format,
+	 * )
+	 *
+	 * @param array $config The properties and values of this control group.
+	 */
+	public function date_format_chooser( $config ) {
+		?>
+		<p>
+			<span><?php _e( 'Date format:', 'wut' ); ?></span><br/>
+			<label>
+				<input type="radio" 
+					name="<?php echo $this->widget->get_field_name( $config['date_format_property'] ); ?>"
+					<?php checked( $config['date_format_value'], $config['date_format_default'] ); ?> 
+					value="<?php echo $config['date_format_default']; ?>"/>
+				<span style="display:inline-block;min-width:10em;">
+					<?php echo date( $config['date_format_default'] ); ?>
+				</span>
+				<code><?php echo $config['date_format_default']; ?></code>
+			</label><br/>
+			<label>
+				<input type="radio" 
+					name="<?php echo $this->widget->get_field_name( $config['date_format_property'] ); ?>"
+					<?php checked( $config['date_format_value'], 'M d' ); ?> value="M d"/>
+				<span style="display:inline-block;min-width:10em;"><?php echo date( 'M d' ); ?></span>
+				<code>M d</code>
+			</label><br/>
+			<label>
+				<input type="radio" 
+					name="<?php echo $this->widget->get_field_name( $config['date_format_property'] ); ?>"
+					<?php checked( $config['date_format_value'], 'd F y' ); ?> value="d F y"/>
+				<span style="display:inline-block;min-width:10em;"><?php echo date( 'd F y' ); ?></span>
+				<code>d F y</code>
+			</label><br/>
+			<label>
+				<input type="radio" 
+					name="<?php echo $this->widget->get_field_name( $config['date_format_property'] ); ?>"
+					<?php checked( $config['date_format_value'], 'custom' ); ?> value="custom"/>
+				<span style="display:inline-block;min-width:10em;"><?php _e( 'Custom', 'wut' ); ?></span>
+				<input class="medium-text" 
+					id="<?php echo $this->widget->get_field_id( $config['custom_format_property'] ); ?>" 
+					name="<?php echo $this->widget->get_field_name( $config['custom_format_property'] ); ?>" 
+					type="text" step="1" min="1" value="<?php echo $config['custom_format_value']; ?>" 
+					size="6" />
+			</label><br/>
+			<strong><?php _e( 'Preview: ', 'wut' ); ?></strong>
+			<span><?php echo 'custom' === $config['date_format_value'] ? date( $config['custom_format_value'] ) : date( $config['date_format_value'] ); ?></span>
+		</p>
+		<?php
+	}
+
 }

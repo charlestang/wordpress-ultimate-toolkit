@@ -110,30 +110,17 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 
 		<?php $this->helper->checkbox( 'date_before_title', $date_before_title, __( 'Show date before title?' ) ); ?>
 
-		<p>
-			<span><?php _e( 'Date format:', 'wut' ); ?></span><br/>
-			<label>
-				<input type="radio" name="<?php echo $this->get_field_name( 'date_format' ); ?>"<?php checked( $date_format, '' ); ?> value=""/>
-				<span style="display:inline-block;min-width:10em;"><?php echo date( $site_date_format ); ?></span>
-				<code><?php echo $site_date_format; ?></code>
-			</label><br/>
-			<label>
-				<input type="radio" name="<?php echo $this->get_field_name( 'date_format' ); ?>"<?php checked( $date_format, 'M d' ); ?> value="M d"/>
-				<span style="display:inline-block;min-width:10em;"><?php echo date( 'M d' ); ?></span>
-				<code>M d</code>
-			</label><br/>
-			<label>
-				<input type="radio" name="<?php echo $this->get_field_name( 'date_format' ); ?>"<?php checked( $date_format, 'd F y' ); ?> value="d F y"/>
-				<span style="display:inline-block;min-width:10em;"><?php echo date( 'd F y' ); ?></span>
-				<code>d F y</code>
-			</label><br/>
-			<label>
-				<input type="radio" name="<?php echo $this->get_field_name( 'date_format' ); ?>"<?php checked( $date_format, 'custom' ); ?> value="custom"/>
-				<span style="display:inline-block;min-width:10em;"><?php _e( 'Custom', 'wut' ); ?></span>
-				<input class="medium-text" id="<?php echo $this->get_field_id( 'custom_format' ); ?>" name="<?php echo $this->get_field_name( 'custom_format' ); ?>" type="text" step="1" min="1" value="<?php echo $custom_format; ?>" size="6" />
-			</label><br/>
-			<strong><?php _e( 'Preview: ', 'wut' ); ?></strong><span><?php echo 'custom' === $date_format ? date( $custom_format ) : date( '' === $date_format ? $site_date_format : $date_format ); ?></span>
-		</p>
+		<?php
+		$this->helper->date_format_chooser(
+			array(
+				'date_format_property'   => 'date_format',
+				'date_format_value'      => $date_format,
+				'date_format_default'    => $site_date_format,
+				'custom_format_property' => 'custom_format',
+				'custom_format_value'    => $custom_format,
+			)
+		);
+		?>
 
 		<?php $this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Display comment count?', 'wut' ) ); ?>
 		<?php
