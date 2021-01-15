@@ -30,6 +30,7 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 			'customize_selective_refresh' => true,
 		);
 		parent::__construct( '', __( 'WUT:Most Viewed Posts', 'wut' ), $widget_ops );
+		$this->helper = new WUT_Form_Helper( $this );
 	}
 
 	/**
@@ -106,18 +107,12 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 		$custom_range    = isset( $instance['custom_range'] ) ? absint( $instance['custom_range'] ) : 365;
 		$show_view_count = isset( $instance['show_view_count'] ) ? (bool) $instance['show_view_count'] : true;
 		?>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php echo __( 'Title:', 'wut' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'number' ); ?>"><?php echo __( 'Number of posts to show:', 'wut' ); ?></label>
-			<input class="tiny-text" id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" type="number" step="1" min="1" value="<?php echo $number; ?>" size="3" />
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'excerpt_words' ); ?>"><?php echo __( 'Maximum title length:', 'wut' ); ?></label>
-			<input class="tiny-text" id="<?php echo $this->get_field_id( 'excerpt_words' ); ?>" name="<?php echo $this->get_field_name( 'excerpt_words' ); ?>" type="number" step="1" min="1" value="<?php echo $excerpt_words; ?>" size="3" />
-		</p>
+
+		<?php $this->helper->text( 'title', $title, __( 'Title:' ) ); ?>
+
+		<?php $this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' ); ?>
+
+		<?php $this->helper->text( 'excerpt_words', $excerpt_words, __( 'Maximum title length:', 'wut' ), 'number', 'tiny-text' ); ?>
 		<p>
 			<input class="checkbox" type="checkbox"<?php checked( $show_date ); ?> id="<?php echo $this->get_field_id( 'show_date' ); ?>" name="<?php echo $this->get_field_name( 'show_date' ); ?>" />
 			<label for="<?php echo $this->get_field_id( 'show_date' ); ?>"><?php _e( 'Display post date?', 'wut' ); ?></label>

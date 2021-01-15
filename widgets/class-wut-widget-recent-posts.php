@@ -39,7 +39,7 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 	public function widget( $args, $instance ) {
 		$title            = $instance['title'];
 		$site_date_format = get_option( 'date_format' );
-		$date_format      = empty( $instance['date_format'] ) ? $site_date_format : $instance['date_format'];
+		$date_format      = $this->helper->default( $instance, 'date_format', 'string', $site_date_format );
 		if ( 'custom' === $date_format ) {
 			$date_format = $instance['custom_format'];
 		}
@@ -50,10 +50,10 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 			'xformat'     => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>',
 		);
 
-		$instance['show_date'] = $this->helper->default( $instance, 'show_date', 'bool', false );
+		$instance['show_date']          = $this->helper->default( $instance, 'show_date', 'bool', false );
 		$instance['show_comment_count'] = $this->helper->default( $instance, 'show_comment_count', 'bool', false );
-		$instance['date_before_title'] = $this->helper->default( $instance, 'date_before_title', 'bool', false );
-		$tag_args['xformat'] .= ( $instance['show_comment_count'] ? ' (%commentcount%)' : '' );
+		$instance['date_before_title']  = $this->helper->default( $instance, 'date_before_title', 'bool', false );
+		$tag_args['xformat']           .= ( $instance['show_comment_count'] ? ' (%commentcount%)' : '' );
 		if ( $instance['show_date'] ) {
 			if ( $instance['date_before_title'] ) {
 				$tag_args['xformat'] = '<span class="post-date">%postdate%</span>&nbsp;' . $tag_args['xformat'];
@@ -76,14 +76,14 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance                       = $old_instance;
-		$instance['title']              = sanitize_text_field( $new_instance['title'] );
-		$instance['number']             = absint( $new_instance['number'] );
-		$instance['show_date']          = isset( $new_instance['show_date'] ) ? (bool) $new_instance['show_date'] : false;
-		$instance['date_before_title']  = isset( $new_instance['date_before_title'] ) ? (bool) $new_instance['date_before_title'] : false;
+		$instance['title']              = $this->helper->default( $new_instance, 'title', 'string', '' );
+		$instance['number']             = $this->helper->default( $new_instance, 'number', 'uint', 5 );
+		$instance['show_date']          = $this->helper->default( $new_instance, 'show_date', 'bool', false );
+		$instance['date_before_title']  = $this->helper->default( $new_instance, 'date_before_title', 'bool', false );
 		$site_date_format               = get_option( 'date_format' );
-		$instance['date_format']        = isset( $new_instance['date_format'] ) ? wp_strip_all_tags( $new_instance['date_format'] ) : $site_date_format;
-		$instance['custom_format']      = isset( $new_instance['custom_format'] ) ? wp_strip_all_tags( $new_instance['custom_format'] ) : $site_date_format;
-		$instance['show_comment_count'] = isset( $new_instance['show_comment_count'] ) ? (bool) $new_instance['show_comment_count'] : false;
+		$instance['date_format']        = $this->helper->default( $new_instance, 'date_format', 'string', $site_date_format );
+		$instance['custom_format']      = $this->helper->default( $new_instance, 'custom_format', 'string', $site_date_format );
+		$instance['show_comment_count'] = $this->helper->default( $new_instance, 'show_comment_count', 'bool', false );
 		return $instance;
 	}
 

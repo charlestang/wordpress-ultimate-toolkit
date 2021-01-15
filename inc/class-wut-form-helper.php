@@ -69,6 +69,15 @@ class WUT_Form_Helper {
 		<?php
 	}
 
+	/**
+	 * Check the value type of the sepcific key and give it a default value if not set.
+	 *
+	 * @param array  $haystack The haystack which contains the key.
+	 * @param string $key The key to check.
+	 * @param string $type Could be `int`, `uint`, `string`, `bool`.
+	 * @param mixed  $default The default value of the key.
+	 * @return mixed The sanitized value or default value if not set.
+	 */
 	public function default( $haystack, $key, $type, $default ) {
 		if ( isset( $haystack[ $key ] ) ) {
 			switch ( $type ) {
