@@ -132,8 +132,15 @@ class WUT {
 			}
 		);
 
-		// add automatic post excerpt.
-		add_filter( 'get_the_excerpt', array( $this->utils, 'excerpt' ), 9 );
+		$excerpt = $this->options->get_options( 'excerpt' );
+		if ( ! isset( $excerpt['enabled'] ) ) {
+			$excerpt['enabled'] = true;
+		}
+
+		if ( $excerpt['enabled'] ) {
+			// add automatic post excerpt.
+			add_filter( 'get_the_excerpt', array( $this->utils, 'excerpt' ), 9 );
+		}
 
 		// add custom code.
 		add_action( 'wp_head', array( $this->utils, 'inject_to_head' ) );

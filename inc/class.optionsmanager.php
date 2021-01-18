@@ -67,6 +67,7 @@ class WUT_OptionsManager {
 
 			),
 			'excerpt'    => array(
+				'enabled'      => true,
 				'paragraphs'   => 3,
 				'words'        => 250,
 				'tip_template' => '<br/><br/><span class="readmore"><a href="%permalink%" title="%title%">Continue Reading--%total_words% words totally</a></span>',

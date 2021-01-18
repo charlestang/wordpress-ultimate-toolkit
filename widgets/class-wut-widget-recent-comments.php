@@ -12,6 +12,13 @@
 class WUT_Widget_Recent_Comments extends WP_Widget {
 
 	/**
+	 * Help to create form control.
+	 *
+	 * @var WUT_Form_Helper
+	 */
+	protected $helper;
+
+	/**
 	 * To set the name and description of this widget.
 	 */
 	public function __construct() {
@@ -20,6 +27,7 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 			'customize_selective_refresh' => true,
 		);
 		parent::__construct( '', __( 'WUT:Recent Comments', 'wut' ), $widget_ops );
+		$this->helper = new WUT_Form_Helper( $this );
 	}
 
 	/**
@@ -83,31 +91,21 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 	 * @param array $instance The settings of this widget instance.
 	 */
 	public function form( $instance ) {
-		$title        = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
-		$number       = isset( $instance['number'] ) ? absint( $instance['number'] ) : 5;
-		$show_content = isset( $instance['show_content'] ) ? (bool) $instance['show_content'] : true;
-		$show_avatar  = isset( $instance['show_avatar'] ) ? (bool) $instance['show_avatar'] : false;
-		$avatar_size  = isset( $instance['avatar_size'] ) ? absint( $instance['avatar_size'] ) : 16; ?>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php echo __( 'Title:', 'wut' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" />
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'number' ); ?>"><?php echo __( 'Number of comments to show:', 'wut' ); ?></label>
-			<input class="tiny-text" id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" type="number" step="1" min="1" value="<?php echo $number; ?>" size="3" />
-		</p>
-		<p>
-			<input class="checkbox" type="checkbox"<?php checked( $show_content ); ?> id="<?php echo $this->get_field_id( 'show_content' ); ?>" name="<?php echo $this->get_field_name( 'show_content' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'show_content' ); ?>"><?php echo __( 'Display comment content?', 'wut' ); ?></label>
-		</p>
-		<p>
-			<input class="checkbox" type="checkbox"<?php checked( $show_avatar ); ?> id="<?php echo $this->get_field_id( 'show_avatar' ); ?>" name="<?php echo $this->get_field_name( 'show_avatar' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'show_avatar' ); ?>"><?php echo __( 'Display avatar?', 'wut' ); ?></label>
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'avatar_size' ); ?>"><?php echo __( 'The size of avatar: ', 'wut' ); ?></label>
-			<input class="tiny-text" id="<?php echo $this->get_field_id( 'avatar_size' ); ?>" name="<?php echo $this->get_field_name( 'avatar_size' ); ?>" type="number" step="1" min="1" value="<?php echo $avatar_size; ?>" size="3" />
-		</p>
+		$title        = $this->helper->default( $instance, 'title', 'string', '' );
+		$number       = $this->helper->default( $instance, 'number', 'uint', 5 );
+		$show_content = $this->helper->default( $instance, 'show_content', 'bool', true );
+		$show_avatar  = $this->helper->default( $instance, 'show_avatar', 'bool', false );
+		$avatar_size  = $this->helper->default( $instance, 'avatar_size', 'uint', 16 );
+		?>
+		<?php $this->helper->text( 'title', $title, __( 'Title:' ) ); ?>
+
+		<?php $this->helper->text( 'number', $number, __( 'Number of comments to show:', 'wut' ), 'number', 'tiny-text' ); ?>
+
+		<?php $this->helper->checkbox( 'show_content', $show_content, __( 'Display comment content?', 'wut' ) ); ?>
+
+		<?php $this->helper->checkbox( 'show_avatar', $show_avatar, __( 'Display avatar?', 'wut' ) ); ?>
+
+		<?php $this->helper->text( 'avatar_size', $avatar_size, __( 'The size of avatar: ', 'wut' ), 'number', 'tiny-text' ); ?>
 		<?php
 	}
 }

@@ -158,9 +158,13 @@ class WUT_Admin {
 
 	function excerpt_options() {
 		$options = & $this->options['excerpt'];
+		if ( ! isset( $options['enabled'] ) ) {
+			$options['enabled'] = true;
+		}
 
 		if ( isset( $_GET['page'] ) && $_GET['page'] == 'wut_admin_excerpt_options' ) {
 			if ( isset( $_REQUEST['submit'] ) ) {
+				$options['enabled']      = isset( $_POST['excerpt_enabled'] ) ? (bool) $_POST['excerpt_enabled'] : false;
 				$options['paragraphs']   = intval( $_POST['excerpt_paragraphs_number'] );
 				$options['words']        = intval( $_POST['excerpt_words_number'] );
 				$options['tip_template'] = stripslashes( $_POST['excerpt_continue_reading_tip_template'] );
@@ -173,6 +177,10 @@ class WUT_Admin {
 			<form method="post">
 				<table class="form-table">
 					<tbody>
+						<tr valign="top">
+							<th scope="row"><label for="excerpt_enabled"><?php _e( 'Enable this feature ', 'wut' ); ?></label></th>
+							<td><input id="excerpt_enabled" name="excerpt_enabled" type="checkbox" value="1"<?php checked( $options['enabled'] ); ?>/></td>
+						</tr>
 						<tr valign="top">
 							<th scope="row"><label for="excerpt_paragraphs_number"><?php _e( 'Paragraphs Number', 'wut' ); ?></label></th>
 							<td><input id="excerpt_paragraphs_number" name="excerpt_paragraphs_number" type="text" size="10" value="<?php echo $options['paragraphs']; ?>"/></td>

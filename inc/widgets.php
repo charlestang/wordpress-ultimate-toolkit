@@ -1293,16 +1293,3 @@ function wut_widget_recent_commentators_init() {
 		wp_register_widget_control( 'wut-widget-recent-commentators-1', $name, $control_cb, $control_ops, array( 'number' => -1 ) );
 	}
 }
-
-function wut_widget_advanced_blogroll_init() {
-	function wut_widget_advanced_blogroll_body( $args, $widget_args ) {
-		extract( $args );
-		$options = get_option( 'wut-widget-recent-posts' );
-		echo $before_widget, $before_title, $options['title'], $after_title;
-		echo '<ul>', wut_recent_posts(), '</ul>';
-		echo $after_widget;
-	}
-	function wut_widget_advanced_blogroll_control( $widget_args ) {
-
-	}
-}

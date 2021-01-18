@@ -98,14 +98,14 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 	 * @param array $instance The settings of this widget instance.
 	 */
 	public function form( $instance ) {
-		$title           = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
-		$number          = isset( $instance['number'] ) ? absint( $instance['number'] ) : 10;
-		$show_date       = isset( $instance['show_date'] ) ? (bool) $instance['show_date'] : false;
-		$date_front      = isset( $instance['date_front'] ) ? (bool) $instance['date_front'] : false;
-		$excerpt_words   = isset( $instance['excerpt_words'] ) ? absint( $instance['excerpt_words'] ) : 15;
-		$time_range      = isset( $instance['time_range'] ) ? intval( $instance['time_range'] ) : 365;
-		$custom_range    = isset( $instance['custom_range'] ) ? absint( $instance['custom_range'] ) : 365;
-		$show_view_count = isset( $instance['show_view_count'] ) ? (bool) $instance['show_view_count'] : true;
+		$title           = $this->helper->default( $instance, 'title', 'string', '' );
+		$number          = $this->helper->default( $instance, 'number', 'uint', 10 );
+		$show_date       = $this->helper->default( $instance, 'show_date', 'bool', false );
+		$date_front      = $this->helper->default( $instance, 'date_front', 'bool', false );
+		$excerpt_words   = $this->helper->default( $instance, 'excerpt_words', 'uint', 15 );
+		$time_range      = $this->helper->default( $instance, 'time_range', 'uint', 365 );
+		$custom_range    = $this->helper->default( $instance, 'custom_range', 'uint', 365 );
+		$show_view_count = $this->helper->default( $instance, 'show_view_count', 'bool', true );
 		?>
 
 		<?php $this->helper->text( 'title', $title, __( 'Title:' ) ); ?>
@@ -147,5 +147,3 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 		<?php
 	}
 }
-
-/* vim: set et=off ts=4 sw=4: */
