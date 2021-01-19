@@ -100,6 +100,7 @@ class WUT {
 		require $this->root_dir . 'widgets/class-wut-widget-recent-posts.php';
 		require $this->root_dir . 'widgets/class-wut-widget-recent-comments.php';
 		require $this->root_dir . 'widgets/class-wut-widget-most-viewed-posts.php';
+		require $this->root_dir . 'widgets/class-wut-widget-related-posts.php';
 	}
 
 	/**
@@ -126,7 +127,8 @@ class WUT {
 			function () {
 				register_widget( 'WUT_Widget_Recent_Posts' );
 				register_widget( 'WUT_Widget_Recent_Comments' );
-				if ( in_array( 'wp-postviews/wp-postviews.php', get_option( 'active_plugins' ) ) ) {
+				register_widget( 'WUT_Widget_Related_Posts' );
+				if ( in_array( 'wp-postviews/wp-postviews.php', get_option( 'active_plugins' ), true ) ) {
 					register_widget( 'WUT_Widget_Most_Viewed_Posts' );
 				}
 			}
@@ -158,8 +160,16 @@ class WUT {
 			add_action( 'manage_pages_custom_column', array( $this->utils, 'display_wordcount' ) );
 			add_action( 'admin_head', array( $this->utils, 'set_column_width' ) );
 		}
+
+		// Add related posts list to end of a post or page.
+		add_filter( 'wp_link_pages', array( $this->utils, 'display_related_posts' ), 10, 2 );
 	}
 
+	/**
+	 * Output debug log.
+	 *
+	 * @return void
+	 */
 	public static function log() {
 		if ( ! WP_DEBUG ) {
 			return;

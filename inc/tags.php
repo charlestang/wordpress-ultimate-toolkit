@@ -1,10 +1,16 @@
 <?php
 /**
- * All the template tags user can use are in this
- * file.
+ * Template tags.
+ *
+ * @package WordPress_Ultimate_Toolkit
  */
 
-
+/**
+ * Generate a permalink from a post object.
+ *
+ * @param Object $post The post to calculate the permalink.
+ * @return string The permalink of the post.
+ */
 function _wut_get_permalink( $post ) {
 	if ( isset( WUT::$me->options ) ) {
 		$options =& WUT::$me->options->get_options( 'other' );
@@ -55,6 +61,7 @@ function _wut_get_permalink( $post ) {
 		return get_permalink( $post->ID );
 	}
 }
+
 /**
  * Template tag: Recent posts.
  *
@@ -174,8 +181,9 @@ function wut_most_viewed_posts( $args = array() ) {
 }
 
 /**
- * @version 1.0
- * @author Charles
+ * Template tag to output ramdom posts.
+ *
+ * @param array $args Control info.
  */
 function wut_random_posts( $args = '' ) {
 	global $wut;
@@ -220,8 +228,9 @@ function wut_random_posts( $args = '' ) {
 }
 
 /**
- * @version 1.0
- * @author Charles
+ * Template tag to output related posts.
+ *
+ * @param array $args Control arguments.
  */
 function wut_related_posts( $args = '' ) {
 	global $wut;
@@ -379,6 +388,7 @@ function wut_most_commented_posts( $args = '' ) {
 		return $html;
 	}
 }
+
 /**
  * @version 1.0
  * @author Charles
@@ -432,6 +442,7 @@ function wut_recent_comments( $args = '' ) {
 		return $html;
 	}
 }
+
 /**
  * @version 1.0
  * @author Charles
@@ -534,4 +545,3 @@ function wut_recent_commentators( $args = '' ) {
 		return $html;
 	}
 }
-

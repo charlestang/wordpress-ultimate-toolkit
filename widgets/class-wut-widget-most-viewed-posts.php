@@ -107,19 +107,13 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 		$custom_range    = $this->helper->default( $instance, 'custom_range', 'uint', 365 );
 		$show_view_count = $this->helper->default( $instance, 'show_view_count', 'bool', true );
 		?>
-
-		<?php $this->helper->text( 'title', $title, __( 'Title:' ) ); ?>
-
-		<?php $this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' ); ?>
-
-		<?php $this->helper->text( 'excerpt_words', $excerpt_words, __( 'Maximum title length:', 'wut' ), 'number', 'tiny-text' ); ?>
-		<p>
-			<input class="checkbox" type="checkbox"<?php checked( $show_date ); ?> id="<?php echo $this->get_field_id( 'show_date' ); ?>" name="<?php echo $this->get_field_name( 'show_date' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'show_date' ); ?>"><?php _e( 'Display post date?', 'wut' ); ?></label>
-			<br/>
-			<input class="checkbox" type="checkbox"<?php checked( $date_front ); ?> id="<?php echo $this->get_field_id( 'date_front' ); ?>" name="<?php echo $this->get_field_name( 'date_front' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'date_front' ); ?>"><?php _e( 'Put date in front of post title?' ); ?><label>
-		</p>
+		<?php
+			$this->helper->text( 'title', $title, __( 'Title:' ) );
+			$this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' );
+			$this->helper->text( 'excerpt_words', $excerpt_words, __( 'Maximum title length:', 'wut' ), 'number', 'tiny-text' );
+			$this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?', 'wut' ) );
+			$this->helper->checkbox( 'date_front', $date_front, __( 'Put date in front of post title?', 'wut' ) );
+		?>
 		<p>
 			<span><?php _e( 'Time frame of posts:', 'wut' ); ?></span><br/>
 			<label>
@@ -140,10 +134,7 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 				<input class="small-text" id="<?php echo $this->get_field_id( 'custom_range' ); ?>" name="<?php echo $this->get_field_name( 'custom_range' ); ?>" type="number" step="1" min="1" value="<?php echo $custom_range; ?>" size="4" />
 			</label>
 		</p>
-		<p>
-			<input class="checkbox" type="checkbox"<?php checked( $show_view_count ); ?> id="<?php echo $this->get_field_id( 'show_view_count' ); ?>" name="<?php echo $this->get_field_name( 'show_view_count' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'show_view_count' ); ?>"><?php _e( 'Show view count?', 'wut' ); ?></label>
-		</p>
 		<?php
+			$this->helper->checkbox( 'show_view_count', $show_view_count, __( 'Show view count?', 'wut' ) );
 	}
 }

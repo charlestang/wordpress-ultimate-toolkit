@@ -212,9 +212,7 @@ class WUT_Admin {
 	function custom_code_snippets() {
 		global $wut;
 		$options =& $this->options['customcode'];
-		if ( ! is_array( $options ) ) {
-			// $options = array();
-		}
+
 		unset( $new_code );
 		if ( isset( $_GET['page'] ) && $_GET['page'] == 'wut_admin_custom_code' ) {
 			if ( isset( $_REQUEST['add-new-snippet'] ) ) {
@@ -312,11 +310,11 @@ class WUT_Admin {
 					</tr>
 				<?php } ?>
 				<?php
-				if ( ! empty( $options ) ) :
-					foreach ( $options as $codesnippet ) :
+				if ( ! empty( $options ) ) {
+					foreach ( $options as $codesnippet ) {
 						print_code_item( $codesnippet );
-				endforeach;
-endif;
+					}
+				}
 				if ( isset( $new_code ) ) {
 					print_code_item( $new_code );
 				}

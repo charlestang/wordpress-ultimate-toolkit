@@ -157,5 +157,38 @@ class WUT_Utils {
 		}
 		return $ch_char_count + $en_word_count;
 	}
+
+	/**
+	 * This will be hooked to wp_link_pages filter
+	 *
+	 * @param string $output HTML output of paginated posts' page links.
+	 * @param array  $args   An array of arguments.
+	 * @return string
+	 */
+	public function display_related_posts( $output, $args = array() ) {
+		if ( ! is_single() ) {
+			return $output;
+		}
+
+		$tag_args = array(
+			'limit'      => 5,
+			'before'     => '<li>',
+			'after'      => '</li>',
+			'type'       => 'post',
+			'skips'      => '',
+			'leastshare' => true,
+			'password'   => 'hide',
+			'orderby'    => 'post_date',
+			'order'      => 'DESC',
+			'xformat'    => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
+			'none'       => __( 'No related posts.', 'wut' ),
+			'echo'       => false,
+		);
+
+		$html = '<ul>' . wut_related_posts( $tag_args ) . '</ul>';
+		$args = func_get_args();
+		WUT::log( 'output is:', $output, "\n args are: ", $args, "\n html is: ", $html );
+		return $output . $html;
+	}
 }
 
