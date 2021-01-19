@@ -83,9 +83,11 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 	 * @return void
 	 */
 	public function form( $instance ) {
-		$title  = $this->helper->default( $instance, 'title', 'string', '' );
-		$number = $this->helper->default( $instance, 'number', 'uint', 5 );
+		$title              = $this->helper->default( $instance, 'title', 'string', '' );
+		$number             = $this->helper->default( $instance, 'number', 'uint', 5 );
+		$show_comment_count = $this->helper->default( $instance, 'show_comment_count', 'bool', true );
 		$this->helper->text( 'title', $title, __( 'Title:' ) );
 		$this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' );
+		$this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Show comment count:', 'wut' ) );
 	}
 }

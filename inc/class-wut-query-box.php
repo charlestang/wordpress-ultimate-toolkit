@@ -99,11 +99,12 @@ class WUT_Query_Box {
 	}
 
 	/**
+	 * SQL query to generate related posts by tags.
 	 *
-	 * @version 1.0
-	 * @author Charles
+	 * @param array $args Control arguments.
+	 * @return Object[]
 	 */
-	function get_related_posts( $args = '' ) {
+	public function get_related_posts( $args = array() ) {
 		global $wpdb;
 		$defaults = array(
 			'offset'     => 0,
@@ -324,10 +325,12 @@ class WUT_Query_Box {
 	}
 
 	/**
-	 * @version 1.0
-	 * @author Charles
+	 * SQL query to findout active commentators.
+	 *
+	 * @param array $args Arguments used to query.
+	 * @return Object
 	 */
-	function get_active_commentators( $args = '' ) {
+	public function get_active_commentators( $args = '' ) {
 		global $wpdb;
 		$defaults = array(
 			'limit'     => 10, // -1 to disable the limit
