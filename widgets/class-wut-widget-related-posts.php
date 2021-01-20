@@ -59,6 +59,7 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 			'none'       => __( 'No related posts.', 'wut' ),
 		);
 
+		// TODO: change with helper print.
 		echo $args['before_widget'], $args['before_title'], $instance['title'], $args['after_title'];
 		echo '<ul>', wut_related_posts( $tag_args ), '</ul>';
 		echo $args['after_widget'];
@@ -73,6 +74,7 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
+		// TODO: options filtered.
 		return $new_instance;
 	}
 
@@ -89,5 +91,6 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 		$this->helper->text( 'title', $title, __( 'Title:' ) );
 		$this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' );
 		$this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Show comment count:', 'wut' ) );
+		// TODO: more options.
 	}
 }

@@ -6,6 +6,16 @@
  */
 
 /**
+ * Print a piece of HTML code.
+ *
+ * @param string $html HTML string.
+ * @return void
+ */
+function wut_print_html( $html ) {
+	echo $html;
+}
+
+/**
  * Generate a permalink from a post object.
  *
  * @param Object $post The post to calculate the permalink.
@@ -15,7 +25,7 @@ function _wut_get_permalink( $post ) {
 	if ( isset( WUT::$me->options ) ) {
 		$options =& WUT::$me->options->get_options( 'other' );
 		if ( $options['enabled'] ) {
-			if ( $options['perma_struct'] ) : // if the user enabled the permalink feature in wp
+			if ( $options['perma_struct'] ) : // if the user enabled the permalink feature in wp.
 				$permalink      = $options['perma_struct'];
 				$rewritecode    = array(
 					'%year%',
@@ -30,8 +40,7 @@ function _wut_get_permalink( $post ) {
 					'%author%',
 					'%pagename%',
 				);
-				$unixtime       = strtotime( $post->post_date );
-				$date           = explode( ' ', date( 'Y m d H i s', $unixtime ) );
+				$date           = explode( ' ', date_create( $post->post_date )->format( 'Y m d H i s' ) );
 				$rewritereplace = array(
 					$date[0],
 					$date[1],
@@ -41,13 +50,13 @@ function _wut_get_permalink( $post ) {
 					$date[5],
 					$post->post_name,
 					$post->ID,
-					'%error%',                     // cannot fetch category info
-					'%error%',                     // cannot fetch author info
+					'%error%',                     // cannot fetch category info.
+					'%error%',                     // cannot fetch author info.
 					$post->post_name,
 				);
 				$permalink      = $options['wphome'] . str_replace( $rewritecode, $rewritereplace, $permalink );
 				$permalink      = user_trailingslashit( $permalink, 'single' );
-			else :                          // if user use default link structure
+			else :                          // if user use default link structure.
 				$permalink = $options['wphome'] . '/?p=' . $post->ID;
 			endif;
 			if ( strpos( $permalink, '%error%' ) == false ) {
@@ -122,58 +131,61 @@ function wut_recent_posts( $args = array() ) {
 		}
 	}
 	if ( $r['echo'] ) {
-		echo $html;
+		wut_print_html( $html );
 	} else {
 		return $html;
 	}
 }
 
+/**
+ * Template tag print most viewed posts list.
+ *
+ * @param array $args Arguments array.
+ * @return string|void
+ */
 function wut_most_viewed_posts( $args = array() ) {
 	$defaults = array(
-		'limit'    => 5, // how many items should be show
+		'limit'    => 5,
 		'offset'   => 0,
 		'before'   => '<li>',
 		'after'    => '</li>',
-		'type'     => 'post', // 'post' or 'page' or 'both'
-		'skips'    => '', // comma seperated post_ID list
-		'none'     => 'No Posts.', // tips to show when results is empty
-		'password' => 'hide', // show password protected post or not
+		'type'     => 'post',
+		'skips'    => '',
+		'none'     => __( 'No Posts.', 'wut' ),
+		'password' => 'hide',
 		'xformat'  => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%viewcount%)',
 		'echo'     => 1,
 	);
 	$r        = wp_parse_args( array_filter( $args ), $defaults );
-	extract( $r, EXTR_SKIP );
 
-	$password   = ( 'hide' === $password ) ? 0 : 1;
-	$query_args = compact( 'limit', 'offset', 'type', 'skips', 'password', 'time_range' );
-	$items      = WUT::$me->query->get_most_viewed_posts( $query_args );
-	// TODO: remove above line of code to use WP_Query replace it.
-	$query      = new WP_Query(
+	$date  = date_create()->sub( new DateInterval( 'P' . $r['time_range'] . 'D' ) );
+	$query = new WP_Query(
 		array(
 			'post_per_page'       => $r['limit'],
+			'offset'              => $r['offset'],
 			'no_found_rows'       => true,
 			'post_status'         => 'publish',
 			'ignore_sticky_posts' => true,
 			'post__not_in'        => array_filter( explode( ',', $r['skips'] ) ),
+			'meta_key'            => 'views',
 			'orderby'             => 'meta_value_num',
 			'order'               => 'DESC',
 			'has_password'        => ! 'hide' === $r['password'],
-			'meta_key'            => 'views',
 			'date_query'          => array(
 				array(
-					'after' => date( 'Y-m-d', strtotime( $r['time_range'] . ' days ago' ) ),
+					'after' => $date->format( 'Y-m-d H:i:s' ),
 				),
 			),
 		)
 	);
 
 	$html = '';
-	if ( empty( $items ) ) {
+	if ( ! $query->have_posts() ) {
 		$html = $r['before'] . $r['none'] . $r['after'];
 	} else {
-		foreach ( $items as $item ) {
-			$permalink    = _wut_get_permalink( $item );
-			$record       = str_replace(
+		foreach ( $query->posts as $post ) {
+			$permalink = get_the_permalink( $post->ID );
+			$record    = str_replace(
 				array(
 					'%permalink%',
 					'%title%',
@@ -182,18 +194,18 @@ function wut_most_viewed_posts( $args = array() ) {
 				),
 				array(
 					$permalink,
-					$item->post_title,
-					get_date_from_gmt( $item->post_date_gmt, 'Y-m-d' ),
-					$item->post_views,
+					get_the_title( $post->ID ),
+					get_the_date( 'Y-m-d', $post->post_date ),
+					get_post_meta( $post->ID, 'views', true ),
 				),
 				$r['xformat']
 			);
-				$sanitize = apply_filters( 'wut_recent_post_item', $record, $item );
-				$html    .= $r['before'] . $sanitize . $r['after'] . "\n";
+			$sanitize  = apply_filters( 'wut_most_viewed_item', $record, $post );
+			$html     .= $r['before'] . $sanitize . $r['after'] . "\n";
 		}
 	}
 	if ( $r['echo'] ) {
-		echo $html;
+		wut_print_html( $html );
 	} else {
 		return $html;
 	}
@@ -218,11 +230,9 @@ function wut_random_posts( $args = '' ) {
 		'echo'     => 1,
 	);
 	$r        = wp_parse_args( $args, $defaults );
-	extract( $r, EXTR_SKIP );
 
-	$password   = $password == 'hide' ? 0 : 1;
-	$query_args = compact( 'limit', 'type', 'skips', 'password' );
-	$items      = $wut->query->get_random_posts( $query_args );
+	$r['password'] = 'hide' === $r['password'] ? 0 : 1;
+	$items         = $wut->query->get_random_posts( $r );
 
 	$html = '';
 	if ( empty( $items ) ) {
@@ -240,7 +250,7 @@ function wut_random_posts( $args = '' ) {
 		}
 	}
 	if ( $echo ) {
-		echo $html;
+		wut_print_html( $html );
 	} else {
 		return $html;
 	}
@@ -270,21 +280,9 @@ function wut_related_posts( $args = '' ) {
 		'echo'       => 1,
 	);
 	$r        = wp_parse_args( $args, $defaults );
-	extract( $r, EXTR_SKIP );
 
-	$password   = $password == 'hide' ? 0 : 1;
-	$query_args = compact(
-		'offset',
-		'limit',
-		'postid',
-		'skips',
-		'password',
-		'orderby',
-		'order',
-		'leastshare',
-		'type'
-	);
-	$items      = $wut->query->get_related_posts( $query_args );
+	$r['password'] = 'hide' === $r['password'] ? 0 : 1;
+	$items         = $wut->query->get_related_posts( $r );
 
 	$html = '';
 	if ( empty( $items ) ) {
@@ -292,31 +290,33 @@ function wut_related_posts( $args = '' ) {
 	} else {
 		foreach ( $items as $item ) {
 			$permalink = _wut_get_permalink( $item );
-			$html     .= $before . $xformat;
+			$html     .= $r['before'] . $r['xformat'];
 			$html      = str_replace( '%permalink%', $permalink, $html );
 			$html      = str_replace( '%title%', $item->post_title, $html );
 			$html      = str_replace( '%postdate%', $item->post_date, $html );
 			$html      = str_replace( '%commentcount%', $item->comment_count, $html );
 			$html      = apply_filters( 'wut_related_post_item', $html, $item );
-			$html     .= $after . "\n";
+			$html     .= $r['after'] . "\n";
 		}
 	}
-	if ( $echo ) {
-		echo $html;
+	if ( $r['echo'] ) {
+		wut_print_html( $html );
 	} else {
 		return $html;
 	}
 }
 
 /**
- * @version 1.0
- * @author Charles
+ * Template tag to display posts list in a category.
+ *
+ * @param array $args config.
+ * @return string
  */
-function wut_posts_by_category( $args = '' ) {
+function wut_posts_by_category( $args = array() ) {
 	global $wut;
 	$defaults = array(
 		'postid'   => false,
-		'orderby'  => 'rand', // 'post_date', 'comment_count', 'post_modified'
+		'orderby'  => 'rand', // 'post_date', 'comment_count', 'post_modified'.
 		'order'    => 'asc', // 'desc'
 		'before'   => '<li>',
 		'after'    => '</li>',
@@ -331,11 +331,9 @@ function wut_posts_by_category( $args = '' ) {
 	);
 
 	$r = wp_parse_args( $args, $defaults );
-	extract( $r, EXTR_SKIP );
 
-	$password   = $password == 'hide' ? 0 : 1;
-	$query_args = compact( 'offset', 'limit', 'postid', 'skips', 'type', 'orderby', 'order', 'password' );
-	$items      = $wut->query->get_posts_by_category( $query_args );
+	$r['password'] = 'hide' === $r['password'] ? 0 : 1;
+	$items         = $wut->query->get_posts_by_category( $r );
 
 	$html = '';
 	if ( empty( $items ) ) {
@@ -353,17 +351,19 @@ function wut_posts_by_category( $args = '' ) {
 		}
 	}
 	if ( $echo ) {
-		echo $html;
+		wut_print_html( $html );
 	} else {
 		return $html;
 	}
 }
 
 /**
- * @version 1.0
- * @author Charles
+ * Templdate tag to display most commented posts list.
+ *
+ * @param array $args config.
+ * @return string
  */
-function wut_most_commented_posts( $args = '' ) {
+function wut_most_commented_posts( $args = array() ) {
 	global $wut;
 	$defaults = array(
 		'limit'    => 5,
@@ -371,9 +371,9 @@ function wut_most_commented_posts( $args = '' ) {
 		'days'     => 7,
 		'before'   => '<li>',
 		'after'    => '</li>',
-		'type'     => 'post', // 'page', 'both'
+		'type'     => 'post',
 		'skips'    => '',
-		'days'     => 30, // use -1 to disable the time limit
+		'days'     => 30, // use -1 to disable the time limit.
 		'password' => 'hide',
 		'none'     => 'No Posts.',
 		'xformat'  => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
@@ -381,11 +381,9 @@ function wut_most_commented_posts( $args = '' ) {
 	);
 
 	$r = wp_parse_args( $args, $defaults );
-	extract( $r, EXTR_SKIP );
 
-	$password   = $password == 'hide' ? 0 : 1;
-	$query_args = compact( 'offset', 'limit', 'type', 'skips', 'password', 'days' );
-	$items      = $wut->query->get_most_commented_posts( $query_args );
+	$r['password'] = 'hide' === $r['password'] ? 0 : 1;
+	$items         = $wut->query->get_most_commented_posts( $r );
 
 	$html = '';
 	if ( empty( $items ) ) {
@@ -393,33 +391,35 @@ function wut_most_commented_posts( $args = '' ) {
 	}
 	foreach ( $items as $item ) {
 			$permalink = _wut_get_permalink( $item );
-			$html     .= $before . $xformat;
+			$html     .= $r['before'] . $r['xformat'];
 			$html      = str_replace( '%permalink%', $permalink, $html );
 			$html      = str_replace( '%title%', htmlspecialchars( $item->post_title ), $html );
 			$html      = str_replace( '%postdate%', $item->post_date, $html );
 			$html      = str_replace( '%commentcount%', $item->comment_count, $html );
 			$html      = apply_filters( 'wut_most_commented_post_item', $html, $item );
-			$html     .= $after . "\n";
+			$html     .= $r['after'] . "\n";
 	}
 	if ( $r['echo'] ) {
-		echo $html;
+		wut_print_html( $html );
 	} else {
 		return $html;
 	}
 }
 
 /**
- * @version 1.0
- * @author Charles
+ * Template tag to display recent comments list.
+ *
+ * @param array $args Config.
+ * @return string
  */
-function wut_recent_comments( $args = '' ) {
+function wut_recent_comments( $args = array() ) {
 	$defaults = array(
 		'limit'       => 5,
 		'offset'      => 0,
 		'before'      => '<li>',
 		'after'       => '</li>',
 		'length'      => 50,
-		'skipusers'   => '', // comma seperated name list
+		'skipusers'   => '',
 		'avatarsize'  => 16,
 		'password'    => 'hide',
 		'posttype'    => 'post',
@@ -428,52 +428,45 @@ function wut_recent_comments( $args = '' ) {
 		'echo'        => 1,
 	);
 	$r        = wp_parse_args( array_filter( $args ), $defaults );
-	extract( $r, EXTR_SKIP );
 
-	$password   = $password == 'hide' ? 0 : 1;
-	$query_args = compact( 'limit', 'offset', 'skipusers', 'password', 'posttype', 'commenttype' );
-	$items      = WUT::$me->query->get_recent_comments( $query_args );
+	$r['password'] = 'hide' === $r['password'] ? 0 : 1;
+	// TODO: this may be replaced by WP_Comment_Query objcet API.
+	$items = WUT::$me->query->get_recent_comments( $r );
 
 	$html = '';
-	if ( empty( $items ) ) {
-		if ( $echo ) {
-			echo '';
-		} else {
-			return '';
-		}
-	} else {
-		foreach ( $items as $item ) {
-			$permalink       = _wut_get_permalink( $item ) . '#comment-' . $item->comment_ID;
-			$comment_content = mb_substr( strip_tags( $item->comment_content ), 0, $length ) . '...';
-			$html           .= $before . $xformat;
-			$html            = str_replace( '%gravatar%', get_avatar( $item->comment_author_email, $avatarsize ), $html );
-			$html            = str_replace( '%permalink%', $permalink, $html );
-			$html            = str_replace( '%commentauthor%', $item->comment_author, $html );
-			$html            = str_replace( '%commentexcerpt%', $comment_content, $html );
-			$html            = str_replace( '%posttile%', $item->post_title, $html );
-			$html            = apply_filters( 'wut_recent_comment_item', $html, $item );
-			$html           .= $after . "\n";
-		}
+	foreach ( $items as $item ) {
+		$permalink       = _wut_get_permalink( $item ) . '#comment-' . $item->comment_ID;
+		$comment_content = mb_substr( wp_strip_all_tags( $item->comment_content ), 0, $length ) . '...';
+		$html           .= $before . $xformat;
+		$html            = str_replace( '%gravatar%', get_avatar( $item->comment_author_email, $avatarsize ), $html );
+		$html            = str_replace( '%permalink%', $permalink, $html );
+		$html            = str_replace( '%commentauthor%', $item->comment_author, $html );
+		$html            = str_replace( '%commentexcerpt%', $comment_content, $html );
+		$html            = str_replace( '%posttile%', $item->post_title, $html );
+		$html            = apply_filters( 'wut_recent_comment_item', $html, $item );
+		$html           .= $after . "\n";
 	}
 	if ( $echo ) {
-		echo $html;
+		wut_print_html( $html );
 	} else {
 		return $html;
 	}
 }
 
 /**
- * @version 1.0
- * @author Charles
+ * Template tag to display active commentators list.
+ *
+ * @param array $args config.
+ * @return string
  */
-function wut_active_commentators( $args = '' ) {
+function wut_active_commentators( $args = array() ) {
 	global $wut;
 	$defaults = array(
 		'limit'      => 10, // -1 to disable the limit
 		'threshhold' => 2,
 		'avatarsize' => 16,
 		'days'       => -1,
-		'skipusers'  => 'admin', // comma seperated name list
+		'skipusers'  => 'admin', // comma seperated name list.
 		'before'     => '<li class="wkc_most_active">',
 		'after'      => '</li>',
 		'none'       => 'No Results.',
@@ -482,10 +475,8 @@ function wut_active_commentators( $args = '' ) {
 	);
 
 	$r = wp_parse_args( $args, $defaults );
-	extract( $r, EXTR_SKIP );
 
-	$query_args = compact( 'limit', 'offset', 'skipusers', 'days' );
-	$items      = $wut->query->get_active_commentators( $query_args );
+	$items = $wut->query->get_active_commentators( $r );
 
 	$html = '';
 	if ( empty( $items ) ) {
@@ -508,22 +499,24 @@ function wut_active_commentators( $args = '' ) {
 	}
 
 	if ( $echo ) {
-		echo $html;
+		wut_print_html( $html );
 	} else {
 		return $html;
 	}
 }
 
 /**
- * @version 1.0
- * @author Charles
+ * Template tag to display recent commentators list.
+ *
+ * @param array $args Config.
+ * @return string
  */
-function wut_recent_commentators( $args = '' ) {
+function wut_recent_commentators( $args = array() ) {
 	global $wut;
 	$defaults = array(
 		'limit'      => 10, // -1 to disable
 		'offset'     => 0,
-		'threshhold' => -1, // minus one to disable this functionality
+		'threshhold' => -1, // minus one to disable this functionality.
 		'type'       => 'month', // 'month' is the alternative
 		'skipusers'  => 'admin',
 		'before'     => '<li>',
@@ -559,7 +552,7 @@ function wut_recent_commentators( $args = '' ) {
 		}
 	}
 	if ( $echo ) {
-		echo $html;
+		wut_print_html( $html );
 	} else {
 		return $html;
 	}

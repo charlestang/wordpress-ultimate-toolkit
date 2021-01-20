@@ -1,5 +1,12 @@
 <?php
 /**
+ * Admin panel of this plugin.
+ *
+ * @package WordPress_Ultimate_Toolkit
+ * @subpackage admin
+ */
+
+/**
  * Admin pages of the WordPress Ultimate Toolkit.
  *
  * WordPress Ultimate Toolkit has its own top level menu, because of its huge
@@ -17,24 +24,21 @@ class WUT_Admin {
 	 * @access private
 	 * @var array
 	 */
-	var $options;
+	protected $options;
 
 	/**
 	 * The Constructor.
 	 *
-	 * @param array $opt
+	 * @param array $opt Options of this plugin.
 	 */
-	function __construct( &$opt ) {
+	public function __construct( &$opt ) {
 		$this->options = &$opt;
 	}
 
 	/**
 	 * Assist function, used for saving options.
-	 *
-	 * @since 1.0.0
-	 * @access private
 	 */
-	function _save_option() {
+	protected function _save_option() {
 		global $wut;
 		$wut->options->save_options();
 	}
@@ -42,7 +46,7 @@ class WUT_Admin {
 	/**
 	 * Create the menu and its items.
 	 */
-	function add_menu_items() {
+	public function add_menu_items() {
 		add_menu_page(
 			__( 'WordPress Ultimate Toolkit Options', 'wut' ),
 			__( 'WUT Options', 'wut' ),
@@ -92,7 +96,7 @@ class WUT_Admin {
 		);
 	}
 
-	function load_widgets() {
+	public function load_widgets() {
 		// Get options
 		$options =& $this->options['widgets'];
 		$all     = $options['all'];
@@ -156,7 +160,7 @@ class WUT_Admin {
 		<?php
 	}
 
-	function excerpt_options() {
+	public function excerpt_options() {
 		$options = & $this->options['excerpt'];
 		if ( ! isset( $options['enabled'] ) ) {
 			$options['enabled'] = true;
@@ -209,7 +213,7 @@ class WUT_Admin {
 		<?php
 	}
 
-	function custom_code_snippets() {
+	public function custom_code_snippets() {
 		global $wut;
 		$options =& $this->options['customcode'];
 
@@ -329,7 +333,7 @@ class WUT_Admin {
 		<?php
 	}
 
-	function other_options() {
+	public function other_options() {
 		global $wut;
 		// Get options
 		$options =& $this->options['other'];
@@ -386,7 +390,7 @@ class WUT_Admin {
 		<?php
 	}
 
-	function uninstall() {
+	public function uninstall() {
 		global $wut;
 		if ( isset( $_GET['page'] ) && $_GET['page'] == 'wut_admin_uninstall' ) {
 			if ( isset( $_REQUEST['action'] ) && 'save' == $_REQUEST['action'] ) {

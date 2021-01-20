@@ -67,6 +67,7 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 			}
 		}
 
+		// TODO: change with helper print method.
 		echo $args['before_widget'];
 		echo $args['before_title'], $title, $args['after_title'];
 		echo '<ul>', wut_most_viewed_posts( $tag_args ), '</ul>';
@@ -103,16 +104,15 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 		$show_date       = $this->helper->default( $instance, 'show_date', 'bool', false );
 		$date_front      = $this->helper->default( $instance, 'date_front', 'bool', false );
 		$excerpt_words   = $this->helper->default( $instance, 'excerpt_words', 'uint', 15 );
-		$time_range      = $this->helper->default( $instance, 'time_range', 'uint', 365 );
+		$time_range      = $this->helper->default( $instance, 'time_range', 'int', 365 );
 		$custom_range    = $this->helper->default( $instance, 'custom_range', 'uint', 365 );
 		$show_view_count = $this->helper->default( $instance, 'show_view_count', 'bool', true );
-		?>
-		<?php
-			$this->helper->text( 'title', $title, __( 'Title:' ) );
-			$this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' );
-			$this->helper->text( 'excerpt_words', $excerpt_words, __( 'Maximum title length:', 'wut' ), 'number', 'tiny-text' );
-			$this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?', 'wut' ) );
-			$this->helper->checkbox( 'date_front', $date_front, __( 'Put date in front of post title?', 'wut' ) );
+
+		$this->helper->text( 'title', $title, __( 'Title:' ) );
+		$this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' );
+		$this->helper->text( 'excerpt_words', $excerpt_words, __( 'Maximum title length:', 'wut' ), 'number', 'tiny-text' );
+		$this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?', 'wut' ) );
+		$this->helper->checkbox( 'date_front', $date_front, __( 'Put date in front of post title?', 'wut' ) );
 		?>
 		<p>
 			<span><?php _e( 'Time frame of posts:', 'wut' ); ?></span><br/>
@@ -136,5 +136,6 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 		</p>
 		<?php
 			$this->helper->checkbox( 'show_view_count', $show_view_count, __( 'Show view count?', 'wut' ) );
+		// TODO: Add date format support for this posts list.
 	}
 }

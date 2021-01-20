@@ -38,6 +38,7 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		$title            = $instance['title'];
+		$title            = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 		$site_date_format = get_option( 'date_format' );
 		$date_format      = $this->helper->default( $instance, 'date_format', 'string', $site_date_format );
 		if ( 'custom' === $date_format ) {
@@ -62,10 +63,7 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 			}
 		}
 
-		echo $args['before_widget'];
-		echo $args['before_title'] . $title . $args['after_title'];
-		echo '<ul>', wut_recent_posts( $tag_args ), '</ul>';
-		echo $args['after_widget'];
+		$this->helper->print_widget( $args, $title, '<ul>' . wut_recent_posts( $tag_args ) . '</ul>' );
 	}
 
 	/**
@@ -101,16 +99,10 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 		$date_format        = $this->helper->default( $instance, 'date_format', 'string', $site_date_format );
 		$custom_format      = $this->helper->default( $instance, 'custom_format', 'string', $site_date_format );
 		$show_comment_count = $this->helper->default( $instance, 'show_comment_count', 'bool', false );
-		?>
-		<?php $this->helper->text( 'title', $title, __( 'Title:' ) ); ?>
-
-		<?php $this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' ); ?>
-
-		<?php $this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?' ) ); ?>
-
-		<?php $this->helper->checkbox( 'date_before_title', $date_before_title, __( 'Show date before title?' ) ); ?>
-
-		<?php
+		$this->helper->text( 'title', $title, __( 'Title:' ) );
+		$this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' );
+		$this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?' ) );
+		$this->helper->checkbox( 'date_before_title', $date_before_title, __( 'Show date before title?' ) );
 		$this->helper->date_format_chooser(
 			array(
 				'date_format_property'   => 'date_format',
@@ -120,9 +112,6 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 				'custom_format_value'    => $custom_format,
 			)
 		);
-		?>
-
-		<?php $this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Display comment count?', 'wut' ) ); ?>
-		<?php
+		$this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Display comment count?', 'wut' ) );
 	}
 }

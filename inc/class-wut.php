@@ -14,7 +14,7 @@ class WUT {
 	/**
 	 * The option manager instance.
 	 *
-	 * @var WUT_OptionsManager
+	 * @var WUT_Option_Manager
 	 */
 	public $options;
 
@@ -90,17 +90,19 @@ class WUT {
 	 * Include all the files.
 	 */
 	public function load() {
-		require $this->root_dir . 'inc/class.optionsmanager.php';
+		require $this->root_dir . 'inc/class-option-manager.php';
 		require $this->root_dir . 'inc/class-wut-query-box.php';
-		require $this->root_dir . 'inc/class-wut-form-helper.php';
 		require $this->root_dir . 'inc/class.utils.php';
-		require $this->root_dir . 'inc/class.admin.php';
 		require $this->root_dir . 'inc/tags.php';
 		require $this->root_dir . 'inc/widgets.php';
+		require $this->root_dir . 'inc/class-wut-form-helper.php';
 		require $this->root_dir . 'widgets/class-wut-widget-recent-posts.php';
 		require $this->root_dir . 'widgets/class-wut-widget-recent-comments.php';
 		require $this->root_dir . 'widgets/class-wut-widget-most-viewed-posts.php';
 		require $this->root_dir . 'widgets/class-wut-widget-related-posts.php';
+		if ( is_admin() ) {
+			require $this->root_dir . 'inc/class-wut-admin.php';
+		}
 	}
 
 	/**
@@ -108,7 +110,7 @@ class WUT {
 	 */
 	public function init() {
 		$this->register();
-		$this->options = new WUT_OptionsManager();
+		$this->options = new WUT_Option_Manager();
 		$this->query   = new WUT_Query_Box();
 		$this->utils   = new WUT_Utils( $this->options->get_options() );
 

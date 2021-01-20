@@ -29,45 +29,6 @@ class WUT_Query_Box {
 		$this->db = $wpdb;
 	}
 
-	public function get_most_viewed_posts( $args = '' ) {
-		$defaults = array(
-			'offset'   => 0,
-			'limit'    => 10,
-			// 'both' or 'page'.
-			'type'     => 'post',
-			'skips'    => '',
-			// show password protected post or not.
-			'password' => 0,
-		);
-
-		$r = wp_parse_args( $args, $defaults );
-
-		$posttype   = $this->post_type_clause( $r['type'] );
-		$skipclause = $this->skip_clause( 'ID', $r['skips'] );
-		$password   = $this->password_clause( $r['password'] );
-
-		$sql = $this->db->prepare(
-			"SELECT ID, post_author, post_title, post_date, post_date_gmt, 
-					post_content, post_name, post_excerpt, post_modified, 
-					comment_count, meta_value 'post_views'
-            FROM {$this->db->posts}
-			INNER JOIN {$this->db->postmeta} ON ( `ID`=`post_id` AND `meta_key`='views' )
-            WHERE post_status = 'publish'
-			AND post_date > DATE_SUB(CURDATE(), INTERVAL %d DAY)
-			{$password}
-			{$posttype}
-			{$skipclause}
-			ORDER BY `meta_value` DESC
-			LIMIT %d, %d",
-			$r['time_range'],
-			$r['offset'],
-			$r['limit']
-		);
-		return $this->db->get_results( $sql );
-	}
-
-
-
 	/**
 	 * @version 1.0
 	 * @author Charles
@@ -275,11 +236,11 @@ class WUT_Query_Box {
 		$defaults       = array(
 			'limit'       => 10,
 			'offset'      => 0,
-			'skipusers'   => '',     // comma seperated name list
+			'skipusers'   => '',
 			'password'    => 0,
 			'postid'      => false,
-			'posttype'    => 'both', // 'page' or 'post'
-			'commenttype' => 'comment',      // 'pingback' or 'trackback'
+			'posttype'    => 'both',
+			'commenttype' => 'comment',
 		);
 		$r              = wp_parse_args( $args, $defaults );
 		$skipuserclause = $this->skip_clause( 'comment_author', $r['skipusers'] );

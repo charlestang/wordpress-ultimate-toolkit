@@ -209,6 +209,7 @@ function wut_widget_random_posts_init() {
 	}
 }
 
+// TODO: remove this old widget code.
 function wut_widget_related_posts_init() {
 	function wut_widget_related_posts_body( $args, $widget_args ) {
 		if ( ! is_single() ) {

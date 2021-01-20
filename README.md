@@ -55,6 +55,8 @@ WordPress Ultimate Toolkit(WUT), which helps you control the output of WordPress
  * Hide pages option removed from admin panel.
  * Old version of recent posts widget removed.
  * Old version of recent comments widget removed.
+ * Related posts widget rewritten.
+ * Function switch add to auto excerption feature.
 
 ### 2.0.2
  * Recent posts widget support date format.

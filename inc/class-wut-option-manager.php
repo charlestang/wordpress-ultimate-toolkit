@@ -1,26 +1,62 @@
 <?php
-class WUT_OptionsManager {
+/**
+ * Options manager.
+ *
+ * @package WordPress_Ultimate_Toolkit
+ */
+
+/**
+ * Options manager class.
+ */
+class WUT_Option_Manager {
+	/**
+	 * The version of options layout.
+	 *
+	 * @var string Semantic version.
+	 */
 	public $version = '1.0.2';
+
+	/**
+	 * The options array.
+	 *
+	 * @var array Options key value table.
+	 */
 	public $options;
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
-		// update_option('wordpress-ultimate-toolkit-options','');
 		$this->options = get_option( 'wordpress-ultimate-toolkit-options' );
-		
-		$this->options['widgets']['all'] = array_filter( $this->options['widgets']['all'], function ($value) {
-			if ( $value['callback'] === 'wut_widget_recent_posts_init' 
-				|| $value['callback'] === 'wut_widget_recent_comments_init' ) {
-				return false;
-			}
-			return true;
-		} );
 
-		// when the plugin updated, this will be true
+		$this->options['widgets']['all'] = array_filter(
+			$this->options['widgets']['all'],
+			function ( $value ) {
+				if ( in_array(
+					$value['callback'],
+					array(
+						'wut_widget_recent_posts_init',
+						'wut_widget_recent_comments_init',
+					),
+					true
+				) ) {
+					return false;
+				}
+				return true;
+			}
+		);
+
+		// when the plugin updated, this will be true.
 		if ( empty( $this->options ) || $this->version > $this->options['version'] ) {
 			$this->set_defaults();
 		}
 	}
 
+	/**
+	 * Initialize all options.
+	 *
+	 * @return void
+	 */
 	public function set_defaults() {
 		$defaults = array(
 			'widgets'    => array(
@@ -87,6 +123,12 @@ class WUT_OptionsManager {
 		}
 	}
 
+	/**
+	 * Retrieve all options.
+	 *
+	 * @param string $key Options key.
+	 * @return mixed
+	 */
 	public function &get_options( $key = '' ) {
 		if ( empty( $key ) ) {
 			return $this->options;
@@ -100,8 +142,13 @@ class WUT_OptionsManager {
 		return $value;
 	}
 
+	/**
+	 * Save all options.
+	 *
+	 * @return void
+	 */
 	public function save_options() {
-		if ( isset ( $this->options['hide-pages'] ) ) {
+		if ( isset( $this->options['hide-pages'] ) ) {
 			unset( $this->options['hide-pages'] );
 		}
 		delete_option( 'wut-widget-recent-posts' );
@@ -109,6 +156,11 @@ class WUT_OptionsManager {
 		update_option( 'wordpress-ultimate-toolkit-options', $this->options );
 	}
 
+	/**
+	 * Delete all options to clean the site database.
+	 *
+	 * @return void
+	 */
 	public function delete_options() {
 		delete_option( 'wordpress-ultimate-toolkit-options' );
 		delete_option( 'wut-widget-recent-posts' );

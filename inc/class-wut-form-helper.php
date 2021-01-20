@@ -156,4 +156,20 @@ class WUT_Form_Helper {
 		<?php
 	}
 
+	/**
+	 * This helper is used to print a widget content.
+	 *
+	 * @param array  $args Site widget configurations.
+	 * @param string $title Widget title.
+	 * @param string $content Widget content.
+	 * @return void
+	 */
+	public function print_widget( $args, $title, $content ) {
+		echo $args['before_widget'];
+		if ( $title ) {
+			echo $args['before_title'], $title, $args['after_title'];
+		}
+		echo $content, $args['after_widget'];
+	}
+
 }

@@ -38,6 +38,7 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		$title = $instance['title'];
+		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
 		$tag_args = array(
 			'limit'       => $instance['number'],
@@ -63,10 +64,7 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 			$tag_args['xformat'] .= __( ' on ', 'wut' ) . '<<%posttile>>';
 		}
 
-		echo $args['before_widget'];
-		echo $args['before_title'], $title, $args['after_title'];
-		echo '<ul>', wut_recent_comments( $tag_args ), '</ul>';
-		echo $args['after_widget'];
+		$this->helper->print_widget( $args, $title, '<ul>' . wut_recent_comments( $tag_args ) . '</ul>' );
 	}
 
 	/**
@@ -96,16 +94,10 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 		$show_content = $this->helper->default( $instance, 'show_content', 'bool', true );
 		$show_avatar  = $this->helper->default( $instance, 'show_avatar', 'bool', false );
 		$avatar_size  = $this->helper->default( $instance, 'avatar_size', 'uint', 16 );
-		?>
-		<?php $this->helper->text( 'title', $title, __( 'Title:' ) ); ?>
-
-		<?php $this->helper->text( 'number', $number, __( 'Number of comments to show:', 'wut' ), 'number', 'tiny-text' ); ?>
-
-		<?php $this->helper->checkbox( 'show_content', $show_content, __( 'Display comment content?', 'wut' ) ); ?>
-
-		<?php $this->helper->checkbox( 'show_avatar', $show_avatar, __( 'Display avatar?', 'wut' ) ); ?>
-
-		<?php $this->helper->text( 'avatar_size', $avatar_size, __( 'The size of avatar: ', 'wut' ), 'number', 'tiny-text' ); ?>
-		<?php
+		$this->helper->text( 'title', $title, __( 'Title:' ) );
+		$this->helper->text( 'number', $number, __( 'Number of comments to show:', 'wut' ), 'number', 'tiny-text' );
+		$this->helper->checkbox( 'show_content', $show_content, __( 'Display comment content?', 'wut' ) );
+		$this->helper->checkbox( 'show_avatar', $show_avatar, __( 'Display avatar?', 'wut' ) );
+		$this->helper->text( 'avatar_size', $avatar_size, __( 'The size of avatar: ', 'wut' ), 'number', 'tiny-text' );
 	}
 }

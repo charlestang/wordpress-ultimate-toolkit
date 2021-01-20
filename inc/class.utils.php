@@ -2,11 +2,22 @@
 
 class WUT_Utils {
 
-	var $options;
+	protected $options;
+	/**
+	 * Constructor function
+	 *
+	 * @param array $opt Options array.
+	 */
 	public function __construct( $opt ) {
 		$this->options = $opt;
 	}
 
+	/**
+	 * Excerpt method.
+	 *
+	 * @param string $text Post content.
+	 * @return string
+	 */
 	public function excerpt( $text ) {
 		global $post;
 
@@ -65,7 +76,7 @@ class WUT_Utils {
 		return $excerpt . $tips;
 	}
 
-	function _select_code_snippets( $hook ) {
+	protected function _select_code_snippets( $hook ) {
 		$codesnippets = $this->options['customcode'];
 		if ( ! is_array( $codesnippets ) || empty( $codesnippets ) ) {
 			return '';
@@ -88,24 +99,24 @@ class WUT_Utils {
 		return $codetoprint;
 	}
 
-	function inject_to_head() {
+	public function inject_to_head() {
 		echo "\n\n <!--This Piece of Code is Injected by WUT Custom Code-->\n";
 		echo $this->_select_code_snippets( 'wp_head' );
 		echo "\n<!--The End of WUT Custom Code-->\n";
 	}
 
-	function inject_to_footer() {
+	public function inject_to_footer() {
 		echo "\n\n <!--This Piece of Code is Injected by WUT Custom Code-->\n";
 		echo $this->_select_code_snippets( 'wp_footer' );
 		echo "\n<!--The End of WUT Custom Code-->\n";
 	}
 
-	function add_wordcount_manage_columns( $post_columns ) {
+	public function add_wordcount_manage_columns( $post_columns ) {
 		$post_columns['wordcount'] = __( 'Words', 'wut' );
 		return $post_columns;
 	}
 
-	function display_wordcount( $column_name ) {
+	public function display_wordcount( $column_name ) {
 		global $post;
 		if ( $column_name == 'wordcount' ) {
 			$content = strip_tags( $post->post_content );
@@ -185,6 +196,8 @@ class WUT_Utils {
 			'echo'       => false,
 		);
 
+		// TODO: Add admin option page for this feature.
+		// TODO: Related psots list should support feature image layout.
 		$html = '<ul>' . wut_related_posts( $tag_args ) . '</ul>';
 		$args = func_get_args();
 		return $output . $html;
