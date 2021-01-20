@@ -85,7 +85,7 @@ function wut_recent_posts( $args = array() ) {
 	$r        = wp_parse_args( array_filter( $args ), $defaults );
 	$query    = new WP_Query(
 		array(
-			'post_per_paage'      => $r['limit'],
+			'post_per_page'       => $r['limit'],
 			'no_found_rows'       => true,
 			'post_status'         => 'publish',
 			'ignore_sticky_posts' => true,
@@ -147,6 +147,25 @@ function wut_most_viewed_posts( $args = array() ) {
 	$password   = ( 'hide' === $password ) ? 0 : 1;
 	$query_args = compact( 'limit', 'offset', 'type', 'skips', 'password', 'time_range' );
 	$items      = WUT::$me->query->get_most_viewed_posts( $query_args );
+	// TODO: remove above line of code to use WP_Query replace it.
+	$query      = new WP_Query(
+		array(
+			'post_per_page'       => $r['limit'],
+			'no_found_rows'       => true,
+			'post_status'         => 'publish',
+			'ignore_sticky_posts' => true,
+			'post__not_in'        => array_filter( explode( ',', $r['skips'] ) ),
+			'orderby'             => 'meta_value_num',
+			'order'               => 'DESC',
+			'has_password'        => ! 'hide' === $r['password'],
+			'meta_key'            => 'views',
+			'date_query'          => array(
+				array(
+					'after' => date( 'Y-m-d', strtotime( $r['time_range'] . ' days ago' ) ),
+				),
+			),
+		)
+	);
 
 	$html = '';
 	if ( empty( $items ) ) {

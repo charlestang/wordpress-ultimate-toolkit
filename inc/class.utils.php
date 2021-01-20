@@ -187,7 +187,6 @@ class WUT_Utils {
 
 		$html = '<ul>' . wut_related_posts( $tag_args ) . '</ul>';
 		$args = func_get_args();
-		WUT::log( 'output is:', $output, "\n args are: ", $args, "\n html is: ", $html );
 		return $output . $html;
 	}
 }
