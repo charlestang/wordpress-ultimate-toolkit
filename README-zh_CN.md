@@ -9,18 +9,18 @@ Stable tag: 2.0.2
 License: GPL v3  
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Provide a variety of widgets with rich options, such as recent posts, related articles, latest comments, and popular posts, etc.
+提供多种功能丰富的小挂件，比如最近更新文章列表，相关文章列表，最新评论列表，热门文章列表等等，还有很多方便的小功能。
 
 ## Description
-Provide a variety of widgets with rich options, such as recent posts, related articles, latest comments, and popular posts, etc.
+提供多种功能丰富的小挂件，比如最近更新文章列表，相关文章列表，最新评论列表，热门文章列表等等。
 
-Provides a variety of handy little features such as word count, inserting custom style sheets and Js code snippets on the page, automatic article summary, TDK settings (SEO), etc.
+提供多种方便的小功能，比如字数统计，在页面插入自定义样式表和Js代码片段，文章自动摘要，TDK设置（SEO）等等。
 
-### Sidebar Widgets
- * Recent posts - Display a list of recently published articles with many options available for control. For example, you can control whether to show the date the article was posted, the format of the date, the number of comments the article has received, etc.
- * Popular posts(need WP-Postviews plugin) -  Display a list of the most popular articles (sorted by number of views), control whether to display the date the article was published, specify the date to filter articles that are too old, control whether to display the number of comments on the article, etc.
- * Related posts - Display a list of articles related to the current article on a single page, based on the article's category and tags. You can control whether to show the post date of the article, the number of comments the article has received, and other options.
- * Recent comments - You can show the latest comment list, different from the official widget, which can show the content of the comment, and you can freely control the number of words truncated, and whether to show the date of the comment, etc.
+### 侧边栏小挂件
+ * 最近更新文章 —— 展示一个最近发布文章的列表，有许多可供控制的选项。比如，可以控制是否展示文章发布的日期，日期的格式，文章获得的评论数量等等。
+ * 热门文章列表（需要 WP-Postviews 插件）——  展示最受欢迎的文章列表（按照查看次数进行排序），可以控制是否展示文章的发表日期，可以指定日期以过滤太老的文章，可以控制是否展示文章的评论数量等等。
+ * 相关文章列表 —— 根据文章的分类和标签，在单篇文章页面，展示一个与当前文章相关的文章列表。可以控制是否展示文章的发布日期，文章获得的评论数量等选项。
+ * 最新评论列表 —— 可以展示最新的评论列表，与官方提供的小挂件不同，该小挂件可以展示评论的内容，可以自由控制截断的字数，以及是否展示评论的日期等等。
 
 ### Tools
  * Generate posts and pages excerpt automatically
