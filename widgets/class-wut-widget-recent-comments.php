@@ -40,6 +40,7 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 		$title = $instance['title'];
 		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
+		$avatar_size = $this->helper->default( $instance, 'avatar_size', 'uint', 16 );
 		$tag_args = array(
 			'limit'       => $instance['number'],
 			'before'      => '<li>',
@@ -48,17 +49,19 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 			'posttype'    => 'post',
 			'commenttype' => 'comment',
 			'skipusers'   => '',
-			'avatarsize'  => $instance['avatar_size'],
+			'avatarsize'  => $avatar_size,
 			'none'        => __( 'No comments.', 'wut' ),
 			'password'    => 'hide',
 			'xformat'     => '<a class="commentator" href="%permalink%" >%commentauthor%</a>',
 		);
 
-		if ( $instance['show_avatar'] ) {
+		$show_avatar = $this->helper->default( $instance, 'show_avatar', 'bool', false );
+		if ( $show_avatar ) {
 			$tag_args['xformat'] = '%gravatar%' . $tag_args['xformat'];
 		}
 
-		if ( $instance['show_content'] ) {
+		$show_content = $this->helper->default( $instance, 'show_content', 'bool', true );
+		if ( $show_content ) {
 			$tag_args['xformat'] .= ' : %commentexcerpt%';
 		} else {
 			$tag_args['xformat'] .= __( ' on ', 'wut' ) . '<<%posttile>>';

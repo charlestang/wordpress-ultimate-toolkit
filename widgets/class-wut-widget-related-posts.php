@@ -74,7 +74,11 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
+		$instance['title'] = $this->helper->default( $new_instance, 'title', 'string', '' );
+		$instance['number'] = $this->helper->default( $new_instance, 'number', 'uint', $old_instance['number'] );
+		$instance['show_comment_count'] = $this->helper->default( $new_instance, 'show_comment_count', 'bool', $old_instance['show_comment_count'] );
 		// TODO: options filtered.
+
 		return $new_instance;
 	}
 
@@ -88,9 +92,25 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 		$title              = $this->helper->default( $instance, 'title', 'string', '' );
 		$number             = $this->helper->default( $instance, 'number', 'uint', 5 );
 		$show_comment_count = $this->helper->default( $instance, 'show_comment_count', 'bool', true );
+		$show_date          = $this->helper->default( $instance, 'show_date', 'bool', false );
+		$date_front         = $this->helper->default( $instance, 'date_front', 'bool', false );
+		$site_date_format   = get_option( 'date_format' );
+		$date_format        = $this->helper->default( $instance, 'date_format', 'string', $site_date_format, false );
+		$custom_format      = $this->helper->default( $instance, 'custom_format', 'string', $site_date_format );
+
 		$this->helper->text( 'title', $title, __( 'Title:' ) );
 		$this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' );
 		$this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Show comment count:', 'wut' ) );
-		// TODO: more options.
+		$this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?', 'wut' ) );
+		$this->helper->checkbox( 'date_front', $date_front, __( 'Show date before title?', 'wut' ) );
+		$this->helper->date_format_chooser(
+			array(
+				'date_format_property'   => 'date_format',
+				'date_format_value'      => $date_format,
+				'date_format_default'    => $site_date_format,
+				'custom_format_property' => 'custom_format',
+				'custom_format_value'    => $custom_format,
+			)
+		);
 	}
 }

@@ -90,7 +90,7 @@ class WUT {
 	 * Include all the files.
 	 */
 	public function load() {
-		require $this->root_dir . 'inc/class-option-manager.php';
+		require $this->root_dir . 'inc/class-wut-option-manager.php';
 		require $this->root_dir . 'inc/class-wut-query-box.php';
 		require $this->root_dir . 'inc/class.utils.php';
 		require $this->root_dir . 'inc/tags.php';
@@ -193,5 +193,27 @@ class WUT {
 		$func  = $trace[1]['function'];
 
 		error_log( "[$file][$func][$line]:" . $msg );
+	}
+
+	public static function trace() {
+		if ( ! WP_DEBUG ) {
+			return;
+		}
+
+		$trace = debug_backtrace();
+		$msg = "\n";
+		$depth = 0;
+		foreach ( $trace as $stack ) {
+			$msg .= '#' . ( $depth ++ ) . ' ';
+			$msg .= str_replace( rtrim( ABSPATH, '\/' ), '', $stack['file'] );
+			$msg .= '(' . $stack['line'] . '):';
+			if ( isset( $stack['class'] ) ) {
+				$msg .= $stack['class'] . $stack['type'];
+			}
+			$msg .= $stack['function'] . '()';
+			$msg .= "\n";
+		}
+
+		error_log( $msg );
 	}
 }

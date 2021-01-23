@@ -76,13 +76,15 @@ class WUT_Form_Helper {
 	 * @param string $key The key to check.
 	 * @param string $type Could be `int`, `uint`, `string`, `bool`.
 	 * @param mixed  $default The default value of the key.
+	 * @param bool   $allow_empty Dose the value allow empty.
 	 * @return mixed The sanitized value or default value if not set.
 	 */
-	public function default( $haystack, $key, $type, $default ) {
+	public function default( $haystack, $key, $type, $default, $allow_empty = true ) {
 		if ( isset( $haystack[ $key ] ) ) {
 			switch ( $type ) {
 				case 'string':
-					return sanitize_text_field( $haystack[ $key ] );
+					$value = sanitize_text_field( $haystack[ $key ] );
+					return ( ! $allow_empty && empty( $value ) ) ? $default : $value;
 				case 'int':
 					return intval( $haystack[ $key ] );
 				case 'uint':

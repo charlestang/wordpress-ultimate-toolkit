@@ -436,17 +436,17 @@ function wut_recent_comments( $args = array() ) {
 	$html = '';
 	foreach ( $items as $item ) {
 		$permalink       = _wut_get_permalink( $item ) . '#comment-' . $item->comment_ID;
-		$comment_content = mb_substr( wp_strip_all_tags( $item->comment_content ), 0, $length ) . '...';
-		$html           .= $before . $xformat;
-		$html            = str_replace( '%gravatar%', get_avatar( $item->comment_author_email, $avatarsize ), $html );
+		$comment_content = mb_substr( wp_strip_all_tags( $item->comment_content ), 0, $r['length'] ) . '...';
+		$html           .= $r['before'] . $r['xformat'];
+		$html            = str_replace( '%gravatar%', get_avatar( $item->comment_author_email, $r['avatarsize'] ), $html );
 		$html            = str_replace( '%permalink%', $permalink, $html );
 		$html            = str_replace( '%commentauthor%', $item->comment_author, $html );
 		$html            = str_replace( '%commentexcerpt%', $comment_content, $html );
 		$html            = str_replace( '%posttile%', $item->post_title, $html );
 		$html            = apply_filters( 'wut_recent_comment_item', $html, $item );
-		$html           .= $after . "\n";
+		$html           .= $r['after'] . "\n";
 	}
-	if ( $echo ) {
+	if ( $r['echo'] ) {
 		wut_print_html( $html );
 	} else {
 		return $html;
