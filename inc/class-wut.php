@@ -70,13 +70,11 @@ class WUT {
 	 * @param string $file_path the plugin entry file path.
 	 */
 	public static function run( $file_path ) {
-		global $wut;
 		$dir      = plugin_dir_path( $file_path );
 		$url      = plugins_url( '', $file_path );
 		self::$me = new WUT( $dir, $url );
-		$wut      = self::$me;
-		$wut->load();
-		$wut->register();
+		self::$me->load();
+		self::$me->register();
 	}
 
 	/**

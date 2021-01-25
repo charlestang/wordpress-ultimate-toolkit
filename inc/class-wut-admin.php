@@ -39,8 +39,7 @@ class WUT_Admin {
 	 * Assist function, used for saving options.
 	 */
 	protected function _save_option() {
-		global $wut;
-		$wut->options->save_options();
+		WUT::$me->options->save_options();
 	}
 
 	/**
@@ -214,7 +213,6 @@ class WUT_Admin {
 	}
 
 	public function custom_code_snippets() {
-		global $wut;
 		$options =& $this->options['customcode'];
 
 		unset( $new_code );
@@ -249,7 +247,7 @@ class WUT_Admin {
 					);
 					$options[ $new_snippet['id'] ] = $new_snippet;
 				}
-				$wut->options->save_options();
+				WUT::$me->options->save_options();
 			}
 			if ( isset( $_REQUEST['delete-checked'] ) ) {
 				$temp = array();
@@ -263,7 +261,7 @@ class WUT_Admin {
 					$item = array_shift( $options );
 				}
 				$options = $temp;
-				$wut->options->save_options();
+				WUT::$me->options->save_options();
 			}
 		}
 		?>
@@ -334,7 +332,6 @@ class WUT_Admin {
 	}
 
 	public function other_options() {
-		global $wut;
 		// Get options
 		$options =& $this->options['other'];
 
@@ -349,7 +346,7 @@ class WUT_Admin {
 			if ( isset( $_REQUEST['disable'] ) ) {
 				$options['enabled'] = 0;
 			}
-			$wut->options->save_options();
+			WUT::$me->options->save_options();
 		}
 		?>
 		<div class="wrap"><h2><?php _e( 'Advanced Options', 'wut' ); ?></h2>
@@ -391,10 +388,9 @@ class WUT_Admin {
 	}
 
 	public function uninstall() {
-		global $wut;
 		if ( isset( $_GET['page'] ) && $_GET['page'] == 'wut_admin_uninstall' ) {
 			if ( isset( $_REQUEST['action'] ) && 'save' == $_REQUEST['action'] ) {
-				$wut->options->delete_options();
+				WUT::$me->options->delete_options();
 				deactivate_plugins( 'wordpress-ultimate-toolkit/wordpress-ultimate-toolkit.php' );
 			}
 		}

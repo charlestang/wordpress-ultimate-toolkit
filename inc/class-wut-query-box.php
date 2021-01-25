@@ -30,36 +30,6 @@ class WUT_Query_Box {
 	}
 
 	/**
-	 * @version 1.0
-	 * @author Charles
-	 */
-	public function get_random_posts( $args = '' ) {
-		$defaults = array(
-			'limit'    => 10,
-			'type'     => 'post',
-			'skips'    => '',
-			'password' => 0,
-		);
-
-		$r = wp_parse_args( $args, $defaults );
-
-		$posttype   = $this->post_type_clause( $r['type'] );
-		$skipclause = $this->skip_clause( 'ID', $r['skips'] );
-		$password   = $this->password_clause( $r['password'] );
-
-		$query = "SELECT ID, post_author, post_title, post_date, post_content,
-                        post_name, post_excerpt, post_modified, comment_count
-                  FROM {$this->db->posts}
-                  WHERE post_status = 'publish'
-                  {$password}
-                  {$posttype}
-                  {$skipclause}
-                  ORDER BY RAND()
-                  LIMIT {$r['limit']}";
-		return $this->db->get_results( $query );
-	}
-
-	/**
 	 * SQL query to generate related posts by tags.
 	 *
 	 * @param array $args Control arguments.
