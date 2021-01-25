@@ -33,14 +33,19 @@ class WUT_Admin {
 						__( 'WP Ultimate Toolkit', 'wut' ),
 						'activate_plugins',
 						'wut-options-page',
-						array( $this, 'option_page' ),
+						array( $this, 'options_page' ),
 					);
 				}
 			);
 		}
 	}
 
-	public function option_page() {
+	/**
+	 * All WUT options will be set on this page, and seperated by tabs.
+	 *
+	 * @return void
+	 */
+	public function options_page() {
 		?>
 		<h1> hello world </h1>
 		<?php
