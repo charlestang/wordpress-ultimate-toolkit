@@ -117,8 +117,15 @@ class WUT {
 		// the following lines add all the Widgets.
 		$widgets = $this->options->get_options( 'widgets' );
 		foreach ( $widgets['load'] as $callback ) {
-			if ( 'wut_widget_recent_posts_init' === $callback
-				|| 'wut_widget_recent_comments_init' === $callback ) {
+			if ( in_array(
+				$callback,
+				array(
+					'wut_widget_recent_posts_init',
+					'wut_widget_recent_comments_init',
+					'wut_widget_related_posts_init',
+				),
+				true
+			) ) {
 				continue;
 			}
 			add_action( 'widgets_init', $callback );
@@ -201,7 +208,7 @@ class WUT {
 		}
 
 		$trace = debug_backtrace();
-		$msg = "\n";
+		$msg   = "\n";
 		$depth = 0;
 		foreach ( $trace as $stack ) {
 			$msg .= '#' . ( $depth ++ ) . ' ';

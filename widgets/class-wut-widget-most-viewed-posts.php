@@ -67,11 +67,7 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 			}
 		}
 
-		// TODO: change with helper print method.
-		echo $args['before_widget'];
-		echo $args['before_title'], $title, $args['after_title'];
-		echo '<ul>', wut_most_viewed_posts( $tag_args ), '</ul>';
-		echo $args['after_widget'];
+		$this->helper->print_widget( $args, $title, '<ul>' . wut_most_viewed_posts( $tag_args ) . '</ul>' );
 	}
 
 	/**

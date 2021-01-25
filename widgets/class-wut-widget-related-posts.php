@@ -59,10 +59,7 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 			'none'       => __( 'No related posts.', 'wut' ),
 		);
 
-		// TODO: change with helper print.
-		echo $args['before_widget'], $args['before_title'], $instance['title'], $args['after_title'];
-		echo '<ul>', wut_related_posts( $tag_args ), '</ul>';
-		echo $args['after_widget'];
+		$this->helper->print_widget( $args, $title, '<ul>' . wut_related_posts( $tag_args ) . '</ul>' );
 	}
 
 	/**
@@ -73,11 +70,14 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 	 * @return array Filtered arguments to save.
 	 */
 	public function update( $new_instance, $old_instance ) {
-		$instance = $old_instance;
-		$instance['title'] = $this->helper->default( $new_instance, 'title', 'string', '' );
-		$instance['number'] = $this->helper->default( $new_instance, 'number', 'uint', $old_instance['number'] );
+		$instance                       = $old_instance;
+		$instance['title']              = $this->helper->default( $new_instance, 'title', 'string', '' );
+		$instance['number']             = $this->helper->default( $new_instance, 'number', 'uint', $old_instance['number'] );
 		$instance['show_comment_count'] = $this->helper->default( $new_instance, 'show_comment_count', 'bool', $old_instance['show_comment_count'] );
-		// TODO: options filtered.
+		$instance['show_date']          = $this->helper->default( $new_instance, 'show_date', 'bool', $old_instance['show_date'] );
+		$instance['date_front']         = $this->helper->default( $new_instance, 'date_front', 'bool', $old_instance['date_front'] );
+		$instance['date_format']        = $this->helper->default( $new_instance, 'date_format', 'string', $old_instance['date_format'] );
+		$instance['custom_format']      = $this->helper->default( $new_instance, 'custom_format', 'string', $old_instance['custom_format'] );
 
 		return $new_instance;
 	}

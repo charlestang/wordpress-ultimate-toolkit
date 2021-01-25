@@ -41,7 +41,7 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
 		$avatar_size = $this->helper->default( $instance, 'avatar_size', 'uint', 16 );
-		$tag_args = array(
+		$tag_args    = array(
 			'limit'       => $instance['number'],
 			'before'      => '<li>',
 			'after'       => '</li>',

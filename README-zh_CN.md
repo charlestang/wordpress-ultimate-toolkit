@@ -1,7 +1,7 @@
 # WordPress Ultimate Toolkit
 Contributors: charlestang  
 Donate link: http://sexywp.com/wut  
-Tags: comments, posts, widgets, sidebar, toolkit  
+Tags: related psots, recent posts, recent comments, popular posts, widgets, auto digest  
 Requires at least: 5.3.0  
 Requires PHP: 5.6  
 Tested up to: 5.6  

@@ -29,25 +29,34 @@ class WUT_Option_Manager {
 	public function __construct() {
 		$this->options = get_option( 'wordpress-ultimate-toolkit-options' );
 
-		$this->options['widgets']['all'] = array_filter(
-			$this->options['widgets']['all'],
-			function ( $value ) {
-				if ( in_array(
-					$value['callback'],
-					array(
-						'wut_widget_recent_posts_init',
-						'wut_widget_recent_comments_init',
-					),
-					true
-				) ) {
-					return false;
+		if ( empty( $this->options ) ) {
+			$this->set_defaults();
+			return;
+		}
+
+		// when the first time install, the options array will be empty.
+		if ( isset( $this->options['widgets'] ) && isset( $this->options['widgets']['all'] ) ) {
+			$this->options['widgets']['all'] = array_filter(
+				$this->options['widgets']['all'],
+				function ( $value ) {
+					if ( in_array(
+						$value['callback'],
+						array(
+							'wut_widget_recent_posts_init',
+							'wut_widget_recent_comments_init',
+							'wut_widget_related_posts_init',
+						),
+						true
+					) ) {
+						return false;
+					}
+					return true;
 				}
-				return true;
-			}
-		);
+			);
+		}
 
 		// when the plugin updated, this will be true.
-		if ( empty( $this->options ) || $this->version > $this->options['version'] ) {
+		if ( $this->version > $this->options['version'] ) {
 			$this->set_defaults();
 		}
 	}
@@ -62,7 +71,6 @@ class WUT_Option_Manager {
 			'widgets'    => array(
 				'load' => array(
 					'wut_widget_random_posts_init',
-					'wut_widget_related_posts_init',
 					'wut_widget_posts_by_category_init',
 					'wut_widget_most_commented_posts_init',
 					'wut_widget_active_commentators_init',
@@ -73,11 +81,6 @@ class WUT_Option_Manager {
 						'name'     => __( 'Random Posts', 'wut' ),
 						'descript' => __( 'Display a list of random posts.', 'wut' ),
 						'callback' => 'wut_widget_random_posts_init',
-					),
-					array(
-						'name'     => __( 'Related Posts', 'wut' ),
-						'descript' => __( 'Display a list of related posts of a certain post.', 'wut' ),
-						'callback' => 'wut_widget_related_posts_init',
 					),
 					array(
 						'name'     => __( 'In Category Posts Widget', 'wut' ),
@@ -153,6 +156,7 @@ class WUT_Option_Manager {
 		}
 		delete_option( 'wut-widget-recent-posts' );
 		delete_option( 'wut-widget-recent-comments' );
+		delete_option( 'wut-widget-related-posts' );
 		update_option( 'wordpress-ultimate-toolkit-options', $this->options );
 	}
 
@@ -171,6 +175,14 @@ class WUT_Option_Manager {
 		delete_option( 'wut-widget-recent-comments' );
 		delete_option( 'wut-widget-active-commentators' );
 		delete_option( 'wut-widget-recent-commentators' );
+		$widget = new WUT_Widget_Recent_Posts();
+		delete_option( $widget->option_name );
+		$widget = new WUT_Widget_Recent_Comments();
+		delete_option( $widget->option_name );
+		$widget = new WUT_Widget_Most_Viewed_Posts();
+		delete_option( $widget->option_name );
+		$widget = new WUT_Widget_Related_Posts();
+		delete_option( $widget->option_name );
 	}
 }
 
