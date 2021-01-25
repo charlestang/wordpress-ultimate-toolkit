@@ -111,6 +111,9 @@ class WUT_Option_Manager {
 				'words'        => 250,
 				'tip_template' => '<br/><br/><span class="readmore"><a href="%permalink%" title="%title%">Continue Reading--%total_words% words totally</a></span>',
 			),
+			'related'    => array(
+				'enabled' => true,
+			),
 			'other'      => array(
 				'enabled'      => 1,
 				'wphome'       => get_option( 'home' ),

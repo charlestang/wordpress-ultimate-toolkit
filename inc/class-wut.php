@@ -158,6 +158,7 @@ class WUT {
 		if ( is_admin() ) {
 			// add admin menus.
 			$wut_admin = new WUT_Admin( $this->options->get_options() );
+			$wut_admin->register_admin_entry();
 			add_action( 'admin_menu', array( $wut_admin, 'add_menu_items' ) );
 
 			// add word count.
@@ -200,6 +201,11 @@ class WUT {
 		error_log( "[$file][$func][$line]:" . $msg );
 	}
 
+	/**
+	 * Output backtrace of this method call inserted point.
+	 *
+	 * @return void
+	 */
 	public static function trace() {
 		if ( ! WP_DEBUG ) {
 			return;
@@ -215,7 +221,27 @@ class WUT {
 			if ( isset( $stack['class'] ) ) {
 				$msg .= $stack['class'] . $stack['type'];
 			}
-			$msg .= $stack['function'] . '()';
+			$msg .= $stack['function'] . '( ';
+			if ( ! empty( $stack['args'] ) ) {
+				foreach ( $stack['args'] as $arg ) {
+					if ( is_numeric( $arg ) ) {
+						$msg .= $arg . ', ';
+					} elseif ( is_string( $arg ) ) {
+						if ( in_array( $stack['function'], array( 'require', 'require_once', 'include', 'include_once' ), true ) ) {
+							$arg = str_replace( rtrim( ABSPATH, '\/' ), '', $arg );
+						}
+						$msg .= '"' . $arg . '", ';
+					} elseif ( is_array( $arg ) ) {
+						$msg .= json_encode( $arg ) . ', ';
+					} elseif ( is_null( $arg ) ) {
+						$msg .= 'NULL, ';
+					} else {
+						$msg .= '<obj>, ';
+					}
+				}
+				$msg = substr( $msg, 0, -2 );
+			}
+			$msg .= ' )';
 			$msg .= "\n";
 		}
 

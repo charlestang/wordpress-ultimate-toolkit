@@ -18,6 +18,34 @@
 class WUT_Admin {
 
 	/**
+	 * Add an entry point of admin panel of this plugin to WordPress admin area,
+	 * or add admin only features to WordPress admin area.
+	 *
+	 * @return void
+	 */
+	public function register_admin_entry() {
+		if ( is_admin() ) {
+			add_action(
+				'admin_menu',
+				function() {
+					add_options_page(
+						__( 'WordPress Ultimate Toolkit', 'wut' ),
+						__( 'WP Ultimate Toolkit', 'wut' ),
+						'activate_plugins',
+						'wut-options-page',
+						array( $this, 'option_page' ),
+					);
+				}
+			);
+		}
+	}
+
+	public function option_page() {
+		?>
+		<h1> hello world </h1>
+		<?php
+	}
+	/**
 	 * Hold the options. This the reference of the options, not the copy of it.
 	 *
 	 * @since 1.0.0
