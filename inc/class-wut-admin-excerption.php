@@ -25,6 +25,7 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 	}
 
 	public function form( $options ) {
+		$enabled = isset( $options['enabled'] ) ? (bool) $options['enabled'] : true;
 		?>
 		<table class="form-table" role="presentation"><tbody>
 			<tr valign="top">
@@ -38,7 +39,7 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 						id="<?php echo $this->get_field_id( 'excerpt_enabled' ); ?>"
 						name="<?php echo $this->get_field_name( 'enabled' ); ?>"
 						type="checkbox"
-						value="1"<?php checked( $options['enabled'] ); ?>/></td>
+						value="1"<?php checked( $enabled ); ?>/></td>
 			</tr>
 			<tr valign="top">
 				<th scope="row"><label for="excerpt_paragraphs_number"><?php _e( 'Paragraphs Number', 'wut' ); ?></label></th>

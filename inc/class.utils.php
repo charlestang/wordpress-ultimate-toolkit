@@ -76,6 +76,34 @@ class WUT_Utils {
 		return $excerpt . $tips;
 	}
 
+	/**
+	 * The auto excerption method.
+	 *
+	 * This method will hook to `the_content` filter and `the_excerpt` filter.
+	 * I found that some of themes will not use the_excerpt() template tag in
+	 * home page, like `twentyfifteen`. `the_content()` is used instead.
+	 *
+	 * When `the_content()` is used, and no <!-- wp:more --> tag is inserted,
+	 * WordPress will not excerpt your posts on home page. In this situation,
+	 * I'll hook `the_content` filter, try to auto excerpt the content of your
+	 * post.
+	 *
+	 * When `the_excerpt()` is used, and author had not typed in any digest
+	 * manually, $post->post_excerpt will be empty, nothing will be output.
+	 *
+	 * This feature will fix these two situation and give a consistent output.
+	 *
+	 * @see the_excerpt()
+	 * @see the_content()
+	 *
+	 * @param string $content This argument will be the content or post_excerpt.
+	 * @return string
+	 */
+	public function auto_excerption( $content ) {
+		// TODO: force_balance_tags();
+		return $content;
+	}
+
 	protected function _select_code_snippets( $hook ) {
 		$codesnippets = $this->options['customcode'];
 		if ( ! is_array( $codesnippets ) || empty( $codesnippets ) ) {

@@ -150,7 +150,7 @@ class WUT {
 
 		if ( $excerpt['enabled'] ) {
 			// add automatic post excerpt.
-			add_filter( 'get_the_excerpt', array( $this->utils, 'excerpt' ), 9 );
+			add_filter( 'get_the_excerpt', array( $this->utils, 'excerpt' ), 10, 2 );
 		}
 
 		// add custom code.
