@@ -24,6 +24,30 @@ class WUT_Option_Manager {
 	public $options;
 
 	/**
+	 * Default options.
+	 *
+	 * @var array
+	 */
+	public $defaults = array();
+
+	/**
+	 * Singleton handler
+	 *
+	 * @var WUT_Option_Manager
+	 */
+	protected static $me;
+
+	/**
+	 * Get an instance of this class.
+	 */
+	public static function me() {
+		if ( is_null( self::$me ) ) {
+			self::$me = new WUT_Option_Manager();
+		}
+		return self::$me;
+	}
+
+	/**
 	 * Constructor
 	 */
 	public function __construct() {
@@ -105,12 +129,6 @@ class WUT_Option_Manager {
 				),
 
 			),
-			'excerpt'    => array(
-				'enabled'      => true,
-				'paragraphs'   => 3,
-				'words'        => 250,
-				'tip_template' => '<br/><br/><span class="readmore"><a href="%permalink%" title="%title%">Continue Reading--%total_words% words totally</a></span>',
-			),
 			'related'    => array(
 				'enabled' => true,
 			),
@@ -149,6 +167,53 @@ class WUT_Option_Manager {
 	}
 
 	/**
+	 * Retrieve a part of options by key.
+	 *
+	 * @param string $key The option key.
+	 * @return array
+	 */
+	public function get_options_by_key( $key ) {
+		if ( isset( $this->options[ $key ] )
+		&& ! empty( $this->options[ $key ] ) ) {
+			return $this->options[ $key ];
+		} else {
+			return $this->get_defaults( $key );
+		}
+	}
+
+	/**
+	 * Update a part of options by key.
+	 *
+	 * @param string $key The option key.
+	 * @param array  $new New option value.
+	 * @return void
+	 */
+	public function set_options_by_key( $key, $new ) {
+		$this->options[ $key ] = $new;
+	}
+
+	/**
+	 * Get defaults of options by key.
+	 *
+	 * @param string $key The option key.
+	 * @return array
+	 */
+	public function get_defaults( $key ) {
+		return $this->defaults[ $key ];
+	}
+
+	/**
+	 * Register defaults which could be retrieved by get_defaults().
+	 *
+	 * @param string $key The option key.
+	 * @param array  $value The defaults.
+	 * @return void
+	 */
+	public function register_defaults( $key, $value ) {
+		$this->defaults[ $key ] = $value;
+	}
+
+	/**
 	 * Save all options.
 	 *
 	 * @return void
@@ -168,7 +233,7 @@ class WUT_Option_Manager {
 	 *
 	 * @return void
 	 */
-	public function delete_options() {
+	public static function delete_options() {
 		delete_option( 'wordpress-ultimate-toolkit-options' );
 		delete_option( 'wut-widget-recent-posts' );
 		delete_option( 'wut-widget-random-posts' );

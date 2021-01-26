@@ -18,6 +18,22 @@
 class WUT_Admin {
 
 	/**
+	 * Hold the options. This the reference of the options, not the copy of it.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 * @var array
+	 */
+	protected $options;
+
+	/**
+	 * Option tabs
+	 *
+	 * @var WUT_Admin_Panel[]
+	 */
+	protected $tabs = array();
+
+	/**
 	 * Add an entry point of admin panel of this plugin to WordPress admin area,
 	 * or add admin only features to WordPress admin area.
 	 *
@@ -37,6 +53,78 @@ class WUT_Admin {
 					);
 				}
 			);
+
+			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueueu_scripts' ) );
+		}
+	}
+
+	/**
+	 * Enqueue scripts to admin page.
+	 *
+	 * @return void
+	 */
+	public function admin_enqueueu_scripts() {
+		wp_enqueue_script( 'jquery-ui-tabs' );
+	}
+
+	/**
+	 * Register option tabs to option page.
+	 * The whole options page is designed a single page, every part
+	 * of options will be managed by tab.
+	 *
+	 * @return void
+	 */
+	public function register_options_tabs() {
+		$this->tabs[] = new WUT_Admin_Excerption();
+	}
+
+	/**
+	 * Print navigation tabs.
+	 *
+	 * @return void
+	 */
+	public function print_tab_nav() {
+		$html = '';
+		foreach ( $this->tabs as $tab ) {
+			$html .= '<li><a href="' . $tab->get_tab_anchor() . '" class="nav-tab">';
+			$html .= $tab->title;
+			$html .= '</a></li>' . PHP_EOL;
+		}
+		?>
+		<h2 class="nav-tab-wrapper"><ul>
+			<?php echo $html; ?>
+		</ul></h2>
+		<?php
+	}
+
+	/**
+	 * Print tab panels.
+	 *
+	 * @return void
+	 */
+	public function print_tab_panels() {
+		$html = '';
+		foreach ( $this->tabs as $tab ) {
+			?>
+			<div id="<?php echo $tab->id; ?>">
+				<?php $tab->print_form_table(); ?>
+			</div>
+			<?php
+		}
+	}
+
+	public function process_submit_and_save() {
+		if ( isset( $_POST['action'] )
+		&& 'update' == $_POST['action'] ) {
+
+			$nonce = $_POST['_wpnonce'];
+
+			if ( wp_verify_nonce( $nonce ) ) {
+				foreach ( $this->tabs as $tab ) {
+					$tab->process_submit();
+				}
+				WUT_Option_Manager::me()->save_options();
+			}
 		}
 	}
 
@@ -46,18 +134,43 @@ class WUT_Admin {
 	 * @return void
 	 */
 	public function options_page() {
+		$this->register_options_tabs();
+		$this->process_submit_and_save();
+		// TODO: Message tips feature.
 		?>
-		<h1> hello world </h1>
+		<div class="wrap wut-tabs">
+			<h1><?php echo __( 'WordPress Ultimate Toolkit Options', 'wut' ); ?></h1>
+			<div id="message" class="updated notice is-dismissible"><p>Plugin deactivated.</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>
+			<?php $this->print_tab_nav(); ?>
+			<form method="post">
+				<input type="hidden" name="action" value="update">
+				<?php wp_nonce_field(); ?>
+				<?php $this->print_tab_panels(); ?>
+				<p class="submit">
+					<input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
+				</p>
+			</form>
+		</div>
+		<script>
+			(function($) {
+				$(function(){
+					$('.wut-tabs').tabs({
+						active: 0,
+						show: { effect: "fadeIn", duration: 300 },
+						activate: function( event, ui ) {
+							$(ui.newTab).find('a').addClass('nav-tab-active');
+							// This :focus pseudo class of <a> element is ridiculous.
+							// I have to remove box-shadow style mannually.
+							$(ui.newTab).find('a').css('box-shadow', 'none');
+							$(ui.oldTab).find('a').removeClass('nav-tab-active');
+						}
+					});
+					$('a.nav-tab:first').addClass('nav-tab-active');
+				});
+			})(jQuery);
+		</script>
 		<?php
 	}
-	/**
-	 * Hold the options. This the reference of the options, not the copy of it.
-	 *
-	 * @since 1.0.0
-	 * @access private
-	 * @var array
-	 */
-	protected $options;
 
 	/**
 	 * The Constructor.
@@ -96,14 +209,6 @@ class WUT_Admin {
 		);
 		add_submenu_page(
 			'wut_admin_default_page',
-			__( 'Excerpt Options', 'wut' ),
-			__( 'Excerpt Options', 'wut' ),
-			'manage_options',
-			'wut_admin_excerpt_options',
-			array( &$this, 'excerpt_options' )
-		);
-		add_submenu_page(
-			'wut_admin_default_page',
 			__( 'Custom Code', 'wut' ),
 			__( 'Custom Code', 'wut' ),
 			'manage_options',
@@ -117,14 +222,6 @@ class WUT_Admin {
 			'manage_options',
 			'wut_admin_other_options',
 			array( &$this, 'other_options' )
-		);
-		add_submenu_page(
-			'wut_admin_default_page',
-			__( 'Uninstall', 'wut' ),
-			__( 'Uninstall', 'wut' ),
-			'manage_options',
-			'wut_admin_uninstall',
-			array( &$this, 'uninstall' )
 		);
 	}
 
@@ -187,59 +284,6 @@ class WUT_Admin {
 				</table>
 				<input type="hidden" value="save" name="action" />
 				<input type="submit" class="button" value="Load checked Widgets" />
-			</form>
-		</div>
-		<?php
-	}
-
-	public function excerpt_options() {
-		$options = & $this->options['excerpt'];
-		if ( ! isset( $options['enabled'] ) ) {
-			$options['enabled'] = true;
-		}
-
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'wut_admin_excerpt_options' ) {
-			if ( isset( $_REQUEST['submit'] ) ) {
-				$options['enabled']      = isset( $_POST['excerpt_enabled'] ) ? (bool) $_POST['excerpt_enabled'] : false;
-				$options['paragraphs']   = intval( $_POST['excerpt_paragraphs_number'] );
-				$options['words']        = intval( $_POST['excerpt_words_number'] );
-				$options['tip_template'] = stripslashes( $_POST['excerpt_continue_reading_tip_template'] );
-				$this->_save_option();
-			}
-		}
-		?>
-		<div class="wrap">
-			<h2><?php _e( 'Excerpt Options', 'wut' ); ?></h2>
-			<form method="post">
-				<table class="form-table">
-					<tbody>
-						<tr valign="top">
-							<th scope="row"><label for="excerpt_enabled"><?php _e( 'Enable this feature ', 'wut' ); ?></label></th>
-							<td><input id="excerpt_enabled" name="excerpt_enabled" type="checkbox" value="1"<?php checked( $options['enabled'] ); ?>/></td>
-						</tr>
-						<tr valign="top">
-							<th scope="row"><label for="excerpt_paragraphs_number"><?php _e( 'Paragraphs Number', 'wut' ); ?></label></th>
-							<td><input id="excerpt_paragraphs_number" name="excerpt_paragraphs_number" type="text" size="10" value="<?php echo $options['paragraphs']; ?>"/></td>
-						</tr>
-						<tr valign="top">
-							<th scope="row"><label for="excerpt_words_number"><?php _e( 'Words Number', 'wut' ); ?></label></th>
-							<td><input id="excerpt_words_number" name="excerpt_words_number" type="text" size="10" value="<?php echo $options['words']; ?>"/></td>
-						</tr>
-					</tbody>
-				</table>
-				<p><label for="excerpt_continue_reading_tip_template"><?php _e( '"Continue Reading" tip template:', 'wut' ); ?></label></p>
-				<p>Use variables:</p>
-				<ul>
-					<li>%total_words% --- The number of words in the post.</li>
-					<li>%title% --- Post title.</li>
-					<li>%permalink --- The permanent link of the post.</li>
-					<li>\n --- new line.</li>
-				</ul>
-				<p>HTML tags supported.</p>
-				<textarea id="excerpt_continue_reading_tip_template" name="excerpt_continue_reading_tip_template" class="large-text code" rows="3"><?php echo esc_attr( $options['tip_template'] ); ?></textarea>
-				<p class="submit">
-					<input type="submit" value="Save Changes" class="button-primary" name="submit">
-				</p>
 			</form>
 		</div>
 		<?php
@@ -415,24 +459,6 @@ class WUT_Admin {
 					<?php endif; ?>
 					</tbody>
 				</table>
-			</form>
-		</div>
-		<?php
-	}
-
-	public function uninstall() {
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'wut_admin_uninstall' ) {
-			if ( isset( $_REQUEST['action'] ) && 'save' == $_REQUEST['action'] ) {
-				WUT::$me->options->delete_options();
-				deactivate_plugins( 'wordpress-ultimate-toolkit/wordpress-ultimate-toolkit.php' );
-			}
-		}
-		?>
-		<div class="wrap">
-			<h2><?php _e( 'Uninstall', 'wut' ); ?></h2>
-			<form method="post">
-				<input type="hidden" value="save" name="action" />
-				<input type="submit" class="button" value="Uninstall and Delete ALL Options" />
 			</form>
 		</div>
 		<?php

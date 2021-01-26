@@ -99,6 +99,8 @@ class WUT {
 		require $this->root_dir . 'widgets/class-wut-widget-most-viewed-posts.php';
 		require $this->root_dir . 'widgets/class-wut-widget-related-posts.php';
 		if ( is_admin() ) {
+			require $this->root_dir . 'inc/class-wut-admin-panel.php';
+			require $this->root_dir . 'inc/class-wut-admin-excerption.php';
 			require $this->root_dir . 'inc/class-wut-admin.php';
 		}
 	}
@@ -171,6 +173,9 @@ class WUT {
 
 		// Add related posts list to end of a post or page.
 		add_filter( 'wp_link_pages', array( $this->utils, 'display_related_posts' ), 10, 2 );
+
+		// Register uninstall feature.
+		register_uninstall_hook( $this->root_dir . '/wordpress-ultimate-toolkit.php', array( 'WUT_Option_Manager', 'delete_options' ) );
 	}
 
 	/**
