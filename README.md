@@ -5,7 +5,7 @@ Tags: related psots, recent posts, recent comments, popular posts, widgets, auto
 Requires at least: 5.3.0  
 Requires PHP: 5.6  
 Tested up to: 5.6  
-Stable tag: 2.0.2  
+Stable tag: 2.0.4  
 License: GPL v3  
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -23,9 +23,10 @@ Provides a variety of handy little features such as word count, inserting custom
  * Recent comments - You can show the latest comment list, different from the official widget, which can show the content of the comment, and you can freely control the number of words truncated, and whether to show the date of the comment, etc.
 
 ### Tools
- * Generate posts and pages excerpt automatically
- * Show words count for every post(page) on *Eidt Posts(Pages)*
- * Add custom css/js code snippets to your page without edit theme files
+ * Generate posts and pages excerpt automatically.
+ * Show words count for every post(page) on *Eidt Posts(Pages)*.
+ * Add custom css/js code snippets to your page without edit theme files.
+ * At the end of each article, a list of related articles is generated and displayed on the single article page.
 
 ### Template Tags
  * `wut_recent_posts()`
@@ -52,8 +53,9 @@ Provides a variety of handy little features such as word count, inserting custom
  * Hide pages option removed from admin panel.
  * Old version of recent posts widget removed.
  * Old version of recent comments widget removed.
- * Related posts widget rewritten.
+ * `Related Post` widget was completely rewritten.
  * Function switch add to auto excerption feature.
+ * `Uninstall` feature was replaced by using plugin uninstall API.
 
 ### 2.0.2
  * Recent posts widget support date format.

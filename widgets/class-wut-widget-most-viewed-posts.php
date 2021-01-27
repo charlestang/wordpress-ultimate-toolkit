@@ -53,6 +53,7 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 			'password'   => 'hide', // show password protected post or not.
 			'xformat'    => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>',
 			'time_range' => $instance['time_range'] < 0 ? $instance['custom_range'] : $instance['time_range'],
+			'echo'       => 0,
 		);
 
 		if ( $instance['show_view_count'] ) {

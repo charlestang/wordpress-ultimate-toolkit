@@ -149,8 +149,9 @@ class WUT {
 		}
 
 		if ( $excerpt['enabled'] ) {
-			// add automatic post excerpt.
-			add_filter( 'get_the_excerpt', array( $this->utils, 'excerpt' ), 10, 2 );
+			// the priority should be 9, before the official `wp_trim_excerpt` filter.
+			add_filter( 'get_the_excerpt', array( $this->utils, 'auto_excerption' ), 9 );
+			add_filter( 'the_content', array( $this->utils, 'auto_excerption' ), 10 );
 		}
 
 		// add custom code.

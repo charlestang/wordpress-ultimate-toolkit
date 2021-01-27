@@ -45,6 +45,7 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 			return;
 		}
 
+		$title    = $instance['title'];
 		$tag_args = array(
 			'limit'      => $instance['number'],
 			'before'     => '<li>',
@@ -57,6 +58,7 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 			'order'      => 'DESC',
 			'xformat'    => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
 			'none'       => __( 'No related posts.', 'wut' ),
+			'echo'       => 0,
 		);
 
 		$this->helper->print_widget( $args, $title, '<ul>' . wut_related_posts( $tag_args ) . '</ul>' );

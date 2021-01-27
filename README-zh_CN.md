@@ -5,7 +5,7 @@ Tags: related psots, recent posts, recent comments, popular posts, widgets, auto
 Requires at least: 5.3.0  
 Requires PHP: 5.6  
 Tested up to: 5.6  
-Stable tag: 2.0.2  
+Stable tag: 2.0.4  
 License: GPL v3  
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -26,6 +26,7 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Generate posts and pages excerpt automatically
  * Show words count for every post(page) on *Eidt Posts(Pages)*
  * Add custom css/js code snippets to your page without edit theme files
+ * 在每篇文章的末尾，生成一个相关文章的列表，展示在单篇文章页面上。
 
 ### Template Tags
  * `wut_recent_posts()`
@@ -49,11 +50,10 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 ## Changelog
 ### 2.0.3
- * Hide pages option removed from admin panel.
- * Old version of recent posts widget removed.
- * Old version of recent comments widget removed.
- * Related posts widget rewritten.
- * Function switch add to auto excerption feature.
+ * 页面隐藏功能删除。
+ * 老的`最新文章`和`最新评论`挂件删除。
+ * `相关文章`挂件完全重写。
+ * `自动摘要`功能增加开关，允许关闭。
 
 ### 2.0.2
  * Recent posts widget support date format.

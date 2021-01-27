@@ -13,70 +13,6 @@ class WUT_Utils {
 	}
 
 	/**
-	 * Excerpt method.
-	 *
-	 * @param string $text Post content.
-	 * @return string
-	 */
-	public function excerpt( $text ) {
-		global $post;
-
-		remove_filter( 'the_excerpt', 'mul_excerpt' );
-		remove_filter( 'the_excerpt_rss', 'mul_excerpt' );
-
-		// retrieve options.
-		$paragraph_number = $this->options['excerpt']['paragraphs'];
-		$word_number      = $this->options['excerpt']['words'];
-
-		// calculate excerpt.
-		$excerpt = '';
-		if ( '' !== $text ) {
-			$excerpt = $text;
-		} else {
-			if ( ( $pos = strpos( $post->post_content, '<!-- wp:more -->' ) ) !== false ) {
-				$excerpt = substr( $post->post_content, 0, $pos );
-			} else {
-				$content = $post->post_content;
-				$content = apply_filters( 'the_content', $content );
-				$content = str_replace( ']]>', ']]&gt;', $content );
-				$content = wp_strip_all_tags( $content );
-				$content = trim( $content );
-				$lines   = array_values( array_filter( explode( "\n", $content ) ) );
-				$num     = 0;
-				$output  = '';
-				$len     = count( $lines );
-				do {
-					if ( $num < $len ) {
-						$output .= $lines[ $num ] . "\n\n";
-					}
-					$num ++;
-				} while ( ( mb_strlen( $output, 'UTF-8' ) < $word_number ) && ( $num < min( $len, $paragraph_number ) ) );
-
-				$excerpt = substr( $output, 0, -2 );
-			}
-		}
-
-		// add tips.
-		$tips = '';
-		if ( mb_strlen( $excerpt, 'UTF-8' ) < mb_strlen( $post->post_content, 'UTF-8' ) ) {
-			$title     = wp_strip_all_tags( get_the_title() );
-			$total_num = $this->words_count(
-				preg_replace(
-					'/\s/',
-					'',
-					html_entity_decode( strip_tags( $post->post_content ) )
-				)
-			);
-			$tips      = str_replace(
-				array( '%permalink%', '%title%', '%total_words%' ),
-				array( get_permalink(), $title, $total_num ),
-				stripcslashes( $this->options['excerpt']['tip_template'] )
-			);
-		}
-		return $excerpt . $tips;
-	}
-
-	/**
 	 * The auto excerption method.
 	 *
 	 * This method will hook to `the_content` filter and `the_excerpt` filter.
@@ -100,8 +36,64 @@ class WUT_Utils {
 	 * @return string
 	 */
 	public function auto_excerption( $content ) {
-		// TODO: force_balance_tags();
-		return $content;
+		if ( ! is_home() ) {
+			return $content;
+		}
+
+		global $post;
+		$excerpt = '';
+		$options = WUT_Option_Manager::me()->get_options_by_key( 'excerpt' );
+
+		// Custom excerpt will be first priority.
+		if ( ! empty( $post->post_excerpt ) ) {
+			$excerpt = $post->post_excerpt . '<br/>';
+		} else {
+			// If the content contains <!--more--> tag, use 'teaser' as excerpt.
+			if ( preg_match( '/<!--more(.*?)?-->/', $post->post_content, $matches ) ) {
+				// This api will automatic trim the content before more tag.
+				$excerpt = get_the_content( '', false, $post ) . '<br/>';
+			} else { // else, trim content by paragraph and words limit.
+				$text = strip_shortcodes( $post->post_content );
+				if ( has_blocks( $text ) ) {
+					$text = excerpt_remove_blocks( $text );
+				}
+				$text = str_replace( ']]>', ']]&gt;', $text );
+				$p8s  = array_filter( explode( "\n", $text ) );
+
+				$num = 0;
+				$len = count( $p8s );
+				foreach ( $p8s as $p ) {
+					$excerpt .= $p . "\n\n";
+					$num ++;
+					if ( ( mb_strlen( $excerpt, 'UTF-8' ) >= $options['words'] )
+						|| ( $num >= min( $len, $options['paragraphs'] ) ) ) {
+						break;
+					}
+				}
+
+				$excerpt = force_balance_tags( substr( $excerpt, 0, -2 ) );
+			}
+		}
+
+		// add tips.
+		$tips = '';
+		if ( mb_strlen( $excerpt, 'UTF-8' ) < mb_strlen( $post->post_content, 'UTF-8' ) ) {
+			$title     = wp_strip_all_tags( get_the_title() );
+			$total_num = $this->words_count(
+				preg_replace(
+					'/\s/',
+					'',
+					html_entity_decode( wp_strip_all_tags( $post->post_content ) )
+				)
+			);
+			$tips      = str_replace(
+				array( '%permalink%', '%title%', '%total_words%' ),
+				array( get_permalink(), $title, $total_num ),
+				stripcslashes( $options['tip_template'] )
+			);
+		}
+		return $excerpt . $tips;
+
 	}
 
 	protected function _select_code_snippets( $hook ) {

@@ -53,6 +53,7 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 			'none'        => __( 'No comments.', 'wut' ),
 			'password'    => 'hide',
 			'xformat'     => '<a class="commentator" href="%permalink%" >%commentauthor%</a>',
+			'echo'        => 0,
 		);
 
 		$show_avatar = $this->helper->default( $instance, 'show_avatar', 'bool', false );

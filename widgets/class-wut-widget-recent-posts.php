@@ -49,6 +49,7 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 			'limit'       => $instance['number'],
 			'date_format' => $date_format,
 			'xformat'     => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>',
+			'echo'        => 0,
 		);
 
 		$instance['show_date']          = $this->helper->default( $instance, 'show_date', 'bool', false );

@@ -91,10 +91,11 @@ function wut_recent_posts( $args = array() ) {
 		'date_format' => '',
 		'echo'        => 1, // to show all results or just return.
 	);
-	$r        = wp_parse_args( array_filter( $args ), $defaults );
-	$query    = new WP_Query(
+	$r        = wp_parse_args( $args, $defaults );
+
+	$query = new WP_Query(
 		array(
-			'post_per_page'       => $r['limit'],
+			'posts_per_page'      => $r['limit'],
 			'no_found_rows'       => true,
 			'post_status'         => 'publish',
 			'ignore_sticky_posts' => true,
@@ -156,12 +157,12 @@ function wut_most_viewed_posts( $args = array() ) {
 		'xformat'  => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%viewcount%)',
 		'echo'     => 1,
 	);
-	$r        = wp_parse_args( array_filter( $args ), $defaults );
+	$r        = wp_parse_args( $args, $defaults );
 
 	$date  = date_create()->sub( new DateInterval( 'P' . $r['time_range'] . 'D' ) );
 	$query = new WP_Query(
 		array(
-			'post_per_page'       => $r['limit'],
+			'posts_per_page'      => $r['limit'],
 			'offset'              => $r['offset'],
 			'no_found_rows'       => true,
 			'post_status'         => 'publish',
@@ -304,7 +305,7 @@ function wut_related_posts( $args = '' ) {
 
 	$html = '';
 	if ( empty( $items ) ) {
-		$html = $before . $none . $after;
+		$html = $r['before'] . $r['none'] . $r['after'];
 	} else {
 		foreach ( $items as $item ) {
 			$permalink = _wut_get_permalink( $item );
@@ -443,7 +444,7 @@ function wut_recent_comments( $args = array() ) {
 		'xformat'     => '%gravatar%<a class="commentator" href="%permalink%" >%commentauthor%</a> : %commentexcerpt%',
 		'echo'        => 1,
 	);
-	$r        = wp_parse_args( array_filter( $args ), $defaults );
+	$r        = wp_parse_args( $args, $defaults );
 
 	$r['password'] = 'hide' === $r['password'] ? 0 : 1;
 	// TODO: this may be replaced by WP_Comment_Query objcet API.
