@@ -89,6 +89,9 @@ class WUT {
 	 */
 	public function load() {
 		require $this->root_dir . 'inc/class-wut-option-manager.php';
+		require $this->root_dir . 'inc/class-wut-admin-panel.php';
+		require $this->root_dir . 'inc/class-wut-admin-excerption.php';
+		require $this->root_dir . 'inc/class-wut-admin-related-list.php';
 		require $this->root_dir . 'inc/class-wut-query-box.php';
 		require $this->root_dir . 'inc/class.utils.php';
 		require $this->root_dir . 'inc/tags.php';
@@ -99,8 +102,6 @@ class WUT {
 		require $this->root_dir . 'widgets/class-wut-widget-most-viewed-posts.php';
 		require $this->root_dir . 'widgets/class-wut-widget-related-posts.php';
 		if ( is_admin() ) {
-			require $this->root_dir . 'inc/class-wut-admin-panel.php';
-			require $this->root_dir . 'inc/class-wut-admin-excerption.php';
 			require $this->root_dir . 'inc/class-wut-admin.php';
 		}
 	}

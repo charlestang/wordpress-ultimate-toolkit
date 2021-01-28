@@ -11,10 +11,27 @@
  */
 class WUT_Admin_Excerption extends WUT_Admin_Panel {
 
+	/**
+	 * Create the Auto Excerption option page.
+	 */
 	public function __construct() {
 		parent::__construct( __( 'Auto Excerption', 'wut' ), 'excerpt' );
 	}
 
+	/**
+	 * Get an instance.
+	 *
+	 * @return WUT_Admin_Panel
+	 */
+	public static function me() {
+		return new self();
+	}
+
+	/**
+	 * The default options of Auto Excerption are moved from Option Manager to here.
+	 *
+	 * @return array
+	 */
 	public function default_options() {
 		return array(
 			'enabled'      => true,

@@ -5,7 +5,7 @@ Tags: related psots, recent posts, recent comments, popular posts, widgets, auto
 Requires at least: 5.3.0  
 Requires PHP: 5.6  
 Tested up to: 5.6  
-Stable tag: 2.0.4  
+Stable tag: 2.0.5  
 License: GPL v3  
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -49,6 +49,9 @@ Provides a variety of handy little features such as word count, inserting custom
  1. Done :)
 
 ## Changelog
+### 2.0.5
+ * Control options added for related posts list like list title, number of posts, etc.
+
 ### 2.0.3
  * Hide pages option removed from admin panel.
  * Old version of recent posts widget removed.

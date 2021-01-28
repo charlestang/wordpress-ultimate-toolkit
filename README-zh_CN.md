@@ -5,7 +5,7 @@ Tags: related psots, recent posts, recent comments, popular posts, widgets, auto
 Requires at least: 5.3.0  
 Requires PHP: 5.6  
 Tested up to: 5.6  
-Stable tag: 2.0.4  
+Stable tag: 2.0.5  
 License: GPL v3  
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -49,6 +49,9 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
  1. Done :)
 
 ## Changelog
+### 2.0.5
+ * 文章后的“相关阅读”列表，增加了控制选项，可以设置列表标题，列表文章数量等。
+
 ### 2.0.3
  * 页面隐藏功能删除。
  * 老的`最新文章`和`最新评论`挂件删除。

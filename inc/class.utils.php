@@ -201,8 +201,15 @@ class WUT_Utils {
 			return $output;
 		}
 
+		$option_key = WUT_Admin_Related_List::me()->option_name;
+		$options    = WUT_Option_Manager::me()->get_options_by_key( $option_key );
+
+		if ( ! $options['enabled'] ) {
+			return $output;
+		}
+
 		$tag_args = array(
-			'limit'      => 5,
+			'limit'      => $options['number'],
 			'before'     => '<li>',
 			'after'      => '</li>',
 			'type'       => 'post',
@@ -218,6 +225,9 @@ class WUT_Utils {
 
 		// TODO: Add admin option page for this feature.
 		// TODO: Related psots list should support feature image layout.
+		if ( ! empty( $options['title'] ) ) {
+			echo $options['title'];
+		}
 		$html = '<ul>' . wut_related_posts( $tag_args ) . '</ul>';
 		$args = func_get_args();
 		return $output . $html;

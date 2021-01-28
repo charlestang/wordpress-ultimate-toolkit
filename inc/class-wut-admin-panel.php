@@ -66,6 +66,13 @@ abstract class WUT_Admin_Panel {
 	}
 
 	/**
+	 * Template method to get an instance of.
+	 *
+	 * @return WUT_Admin_Panel
+	 */
+	abstract public static function me();
+
+	/**
 	 * This is used to generate the anchor of this tab. The usage
 	 * of it should reference of jQuery UI tabs.
 	 *

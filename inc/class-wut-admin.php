@@ -76,6 +76,7 @@ class WUT_Admin {
 	 */
 	public function register_options_tabs() {
 		$this->tabs[] = new WUT_Admin_Excerption();
+		$this->tabs[] = new WUT_Admin_Related_List();
 	}
 
 	/**
@@ -113,13 +114,18 @@ class WUT_Admin {
 		}
 	}
 
+	/**
+	 * Process user submitted form data.
+	 * This method will dispatch data to each option panel object.
+	 *
+	 * @return void
+	 */
 	public function process_submit_and_save() {
 		if ( isset( $_POST['action'] )
-		&& 'update' == $_POST['action'] ) {
+			&& 'update' === $_POST['action'] ) {
 
-			$nonce = $_POST['_wpnonce'];
-
-			if ( wp_verify_nonce( $nonce ) ) {
+			if ( isset( $_POST['_wpnonce'] )
+				&& wp_verify_nonce( $_POST['_wpnonce'] ) ) {
 				foreach ( $this->tabs as $tab ) {
 					$tab->process_submit();
 				}

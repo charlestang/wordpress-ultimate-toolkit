@@ -215,8 +215,12 @@ class WUT_Option_Manager {
 
 	/**
 	 * Save all options.
+	 * Three ways will cause failure:
+	 *   1. empty options.
+	 *   2. no value changed.
+	 *   3. database error.
 	 *
-	 * @return void
+	 * @return bool Return true if options saved successfully.
 	 */
 	public function save_options() {
 		if ( isset( $this->options['hide-pages'] ) ) {
@@ -225,7 +229,7 @@ class WUT_Option_Manager {
 		delete_option( 'wut-widget-recent-posts' );
 		delete_option( 'wut-widget-recent-comments' );
 		delete_option( 'wut-widget-related-posts' );
-		update_option( 'wordpress-ultimate-toolkit-options', $this->options );
+		return update_option( 'wordpress-ultimate-toolkit-options', $this->options );
 	}
 
 	/**
