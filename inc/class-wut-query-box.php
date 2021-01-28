@@ -30,70 +30,6 @@ class WUT_Query_Box {
 	}
 
 	/**
-	 * SQL query to generate related posts by tags.
-	 *
-	 * @param array $args Control arguments.
-	 * @return Object[]
-	 */
-	public function get_related_posts( $args = array() ) {
-		global $wpdb;
-		$defaults = array(
-			'offset'     => 0,
-			'limit'      => 10,
-			'postid'     => false,
-			'type'       => 'both', // @deprecated, begin from 2.7 page does not have tags or cates
-			'skips'      => '',
-			'leastshare' => 1,
-			'password'   => 0,
-			'orderby'    => 'post_date',
-			'order'      => 'DESC',
-		);
-		$r        = wp_parse_args( $args, $defaults );
-
-		$r['postid'] = (int) $r['postid'];
-		if ( ! $r['postid'] ) {
-			global $post;
-			$r['postid'] = $post->ID;
-		}
-
-		$tags = wp_get_object_terms( $r['postid'], 'post_tag' );
-
-		$tag_ids = '';
-		foreach ( $tags as $tag ) {
-			$tag_ids .= '"' . $tag->term_id . '", ';
-		}
-		$tag_ids = substr( $tag_ids, 0, strlen( $tag_ids ) - 2 );
-		if ( empty( $tag_ids ) ) {
-			return '';
-		}
-
-		$posttype   = $this->post_type_clause( $r['type'] );
-		$skipclause = $this->skip_clause( 'ID', $r['skips'] );
-		$password   = $this->password_clause( $r['password'] );
-
-		$query = "SELECT ID, post_author, post_title, post_date, post_content,
-                        post_name, post_excerpt, post_modified, comment_count,
-                       COUNT(tr.object_id) as max_share
-                   FROM {$wpdb->posts}
-                   INNER JOIN {$wpdb->term_relationships} AS tr
-                              ON (ID = tr.object_id)
-                   INNER JOIN {$wpdb->term_taxonomy} AS tt
-                              ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
-                   WHERE tt.taxonomy = 'post_tag'
-                   AND ID <> {$r['postid']}
-                   {$password}
-                   {$posttype}
-                   {$skipclause}
-                   AND post_status = 'publish'
-                   AND tt.term_id IN ({$tag_ids})
-                   GROUP BY tr.object_id 
-                   ORDER BY max_share DESC, {$r['orderby']} {$r['order']}
-                   LIMIT {$r['offset']}, {$r['limit']}";
-
-		return $wpdb->get_results( $query );
-	}
-
-	/**
 	 * @version 1.0
 	 * @author Charles
 	 */
@@ -194,64 +130,6 @@ class WUT_Query_Box {
                    {$days}
                    ORDER BY comment_count DESC
                    LIMIT {$r['offset']},{$r['limit']}";
-		return $wpdb->get_results( $query );
-	}
-
-	/**
-	 * @version 1.0
-	 * @author Charles
-	 */
-	function get_recent_comments( $args = '' ) {
-		global $wpdb;
-		$defaults       = array(
-			'limit'       => 10,
-			'offset'      => 0,
-			'skipusers'   => '',
-			'password'    => 0,
-			'postid'      => false,
-			'posttype'    => 'both',
-			'commenttype' => 'comment',
-		);
-		$r              = wp_parse_args( $args, $defaults );
-		$skipuserclause = $this->skip_clause( 'comment_author', $r['skipusers'] );
-		$posttype       = $this->post_type_clause( $r['posttype'] );
-		$password       = $this->password_clause( $r['password'] );
-		switch ( $r['commenttype'] ) {
-			case 'comment':
-				$commenttype = "AND comment_type='comment'";
-				break;
-			case 'pingback':
-				$commenttype = "AND comment_type='pingback'";
-				break;
-			case 'trackback':
-				$commenttype = "AND comment_type='trackback'";
-				break;
-			default:
-				$commenttype = '';
-		}
-		if ( $r['postid'] ) {
-			$r['postid'] = (int) $r['postid'];
-			$belongpost  = "AND ID='{$r['postid']}'";
-		} else {
-			$belongpost = '';
-		}
-
-		$query = "SELECT ID, comment_ID, comment_content, comment_author,
-                         comment_author_url, comment_author_email, post_title,
-                         post_date, comment_date, post_name, comment_type
-                  FROM {$wpdb->posts},{$wpdb->comments}
-                  WHERE ID = comment_post_ID
-                  AND (post_status = 'publish' OR post_status = 'static')
-                  {$belongpost}
-                  {$password}
-                  {$posttype}
-                  {$commenttype}
-                  {$skipuserclause}
-                  AND (comment_author != '')
-                  AND comment_approved = '1'
-                  ORDER BY comment_date DESC
-                  LIMIT {$r['offset']}, {$r['limit']}";
-
 		return $wpdb->get_results( $query );
 	}
 

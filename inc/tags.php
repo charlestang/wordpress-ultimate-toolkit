@@ -301,21 +301,56 @@ function wut_related_posts( $args = '' ) {
 	$r        = wp_parse_args( $args, $defaults );
 
 	$r['password'] = 'hide' === $r['password'] ? 0 : 1;
-	$items         = WUT::$me->query->get_related_posts( $r );
+
+	$post_ID = $r['postid'];
+	if ( false === $post_ID ) {
+		global $post;
+		$post_ID = $post->ID;
+	}
+	$r['skips'] .= $post_ID;
+
+	$tag_ids = array_map(
+		function( $tag ) {
+			return $tag->term_taxonomy_id;
+		},
+		wp_get_object_terms( $post_ID, 'post_tag' )
+	);
+
+	$query = new WP_Query(
+		array(
+			'posts_per_page'      => $r['limit'],
+			'no_found_rows'       => true,
+			'post_status'         => 'publish',
+			'ignore_sticky_posts' => true,
+			'post__not_in'        => array_filter( explode( ',', $r['skips'] ) ),
+			'orderby'             => $r['orderby'],
+			'has_password'        => ! 'hide' === $r['password'],
+			'tag__in'             => $tag_ids,
+		)
+	);
 
 	$html = '';
-	if ( empty( $items ) ) {
+	if ( ! $query->have_posts() ) {
 		$html = $r['before'] . $r['none'] . $r['after'];
 	} else {
-		foreach ( $items as $item ) {
-			$permalink = _wut_get_permalink( $item );
-			$html     .= $r['before'] . $r['xformat'];
-			$html      = str_replace( '%permalink%', $permalink, $html );
-			$html      = str_replace( '%title%', $item->post_title, $html );
-			$html      = str_replace( '%postdate%', $item->post_date, $html );
-			$html      = str_replace( '%commentcount%', $item->comment_count, $html );
-			$html      = apply_filters( 'wut_related_post_item', $html, $item );
-			$html     .= $r['after'] . "\n";
+		foreach ( $query->posts as $p ) {
+			$record = str_replace(
+				array(
+					'%permalink%',
+					'%title%',
+					'%postdate%',
+					'%commentcount%',
+				),
+				array(
+					get_the_permalink( $p->ID ),
+					$p->post_title,
+					$p->post_date,
+					$p->comment_count,
+				),
+				$r['xformat']
+			);
+			$record = apply_filters( 'wut_related_post_item', $record, $p );
+			$html  .= $r['before'] . $record . $r['after'] . "\n";
 		}
 	}
 	if ( $r['echo'] ) {
@@ -447,22 +482,44 @@ function wut_recent_comments( $args = array() ) {
 	$r        = wp_parse_args( $args, $defaults );
 
 	$r['password'] = 'hide' === $r['password'] ? 0 : 1;
-	// TODO: this may be replaced by WP_Comment_Query objcet API.
-	$items = WUT::$me->query->get_recent_comments( $r );
 
-	$html = '';
-	foreach ( $items as $item ) {
-		$permalink       = _wut_get_permalink( $item ) . '#comment-' . $item->comment_ID;
-		$comment_content = mb_substr( wp_strip_all_tags( $item->comment_content ), 0, $r['length'] ) . '...';
-		$html           .= $r['before'] . $r['xformat'];
-		$html            = str_replace( '%gravatar%', get_avatar( $item->comment_author_email, $r['avatarsize'] ), $html );
-		$html            = str_replace( '%permalink%', $permalink, $html );
-		$html            = str_replace( '%commentauthor%', $item->comment_author, $html );
-		$html            = str_replace( '%commentexcerpt%', $comment_content, $html );
-		$html            = str_replace( '%posttile%', $item->post_title, $html );
-		$html            = apply_filters( 'wut_recent_comment_item', $html, $item );
-		$html           .= $r['after'] . "\n";
+	$query = new WP_Comment_Query(
+		array(
+			'number'         => $r['limit'],
+			'offset'         => $r['offset'],
+			'author__not_in' => array_filter( explode( ',', $r['skipusers'] ) ),
+			'orderby'        => 'comment_date',
+			'type'           => 'comment',
+		)
+	);
+
+	$comments = $query->get_comments();
+	$html     = '';
+	foreach ( $comments as $comment ) {
+		$permalink = get_the_permalink( $comment->comment_post_ID ) . '#comment-' . $comment->comment_ID;
+		$content   = mb_substr( wp_strip_all_tags( $comment->comment_content ), 0, $r['length'] ) . '...';
+		$record    = $r['before'] . $r['xformat'] . $r['after'];
+		$record    = str_replace(
+			array(
+				'%gravatar%',
+				'%permalink%',
+				'%commentauthor%',
+				'%commentexcerpt%',
+				'%posttitle%',
+			),
+			array(
+				get_avatar( $comment->comment_author_email, $r['avatarsize'] ),
+				$permalink,
+				$comment->comment_author,
+				$content,
+				get_the_title( $comment->comment_post_ID ),
+			),
+			$record
+		);
+		$record    = apply_filters( 'wut_recent_comment_item', $record, $comment );
+		$html     .= $record . "\n";
 	}
+
 	if ( $r['echo'] ) {
 		wut_print_html( $html );
 	} else {
