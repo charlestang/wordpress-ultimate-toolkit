@@ -223,7 +223,6 @@ class WUT_Utils {
 			'echo'       => false,
 		);
 
-		// TODO: Add admin option page for this feature.
 		// TODO: Related psots list should support feature image layout.
 		if ( ! empty( $options['title'] ) ) {
 			echo $options['title'];

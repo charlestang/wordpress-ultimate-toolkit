@@ -99,14 +99,6 @@ Provides a variety of handy little features such as word count, inserting custom
 ### 1.0.3
 Upgrade recommended.
 
-## Frequently Asked Questions
-
-### A question that someone might have
-An answer to that question.
-
-### What about foo bar?
-Answer to foo bar dilemma.
-
 ## Screenshots
 1. Eight widgets in this plugin.
 2. Excerpt settings example.

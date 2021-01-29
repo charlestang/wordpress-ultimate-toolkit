@@ -6,16 +6,6 @@
  */
 
 /**
- * Print a piece of HTML code.
- *
- * @param string $html HTML string.
- * @return void
- */
-function wut_print_html( $html ) {
-	echo $html;
-}
-
-/**
  * Generate a permalink from a post object.
  *
  * @param Object $post The post to calculate the permalink.
@@ -110,25 +100,9 @@ function wut_recent_posts( $args = array() ) {
 		$html = $r['before'] . $r['none'] . $r['after'];
 	} else {
 		foreach ( $query->posts as $post ) {
-			$permalink  = get_the_permalink( $post->ID );
-			$post_title = get_the_title( $post->ID );
-			$record     = str_replace(
-				array(
-					'%permalink%',
-					'%title%',
-					'%postdate%',
-					'%commentcount%',
-				),
-				array(
-					$permalink,
-					( ! empty( $post_title ) ) ? $post_title : __( '(no title)' ),
-					get_the_date( $r['date_format'], $post->ID ),
-					$post->comment_count,
-				),
-				$r['xformat']
-			);
-			$sanitize   = apply_filters( 'wut_recent_post_item', $record, $post );
-			$html      .= $r['before'] . $sanitize . $r['after'] . "\n";
+			$record   = wut_private_render_template_by_post( $r['xformat'], $post, $r['date_format'] );
+			$sanitize = apply_filters( 'wut_recent_post_item', $record, $post );
+			$html    .= $r['before'] . $sanitize . $r['after'] . "\n";
 		}
 	}
 	if ( $r['echo'] ) {
@@ -185,24 +159,20 @@ function wut_most_viewed_posts( $args = array() ) {
 		$html = $r['before'] . $r['none'] . $r['after'];
 	} else {
 		foreach ( $query->posts as $post ) {
-			$permalink = get_the_permalink( $post->ID );
-			$record    = str_replace(
-				array(
-					'%permalink%',
-					'%title%',
-					'%postdate%',
-					'%viewcount%',
-				),
-				array(
-					$permalink,
-					get_the_title( $post->ID ),
-					get_the_date( 'Y-m-d', $post->post_date ),
-					get_post_meta( $post->ID, 'views', true ),
-				),
-				$r['xformat']
+			$record   = wut_private_render_template_by_post(
+				$r['xformat'],
+				$post,
+				'Y-m-d',
+				function( $template ) use ( $post ) {
+					return str_replace(
+						'%viewcount%',
+						get_post_meta( $post->ID, 'views', true ),
+						$template
+					);
+				}
 			);
-			$sanitize  = apply_filters( 'wut_most_viewed_item', $record, $post );
-			$html     .= $r['before'] . $sanitize . $r['after'] . "\n";
+			$sanitize = apply_filters( 'wut_most_viewed_item', $record, $post );
+			$html    .= $r['before'] . $sanitize . $r['after'] . "\n";
 		}
 	}
 	if ( $r['echo'] ) {
@@ -216,64 +186,13 @@ function wut_most_viewed_posts( $args = array() ) {
  * Template tag to output ramdom posts.
  *
  * @param array $args Control info.
+ * @return string
  */
-function wut_random_posts( $args = '' ) {
-	$defaults = array(
-		'limit'    => 5,
-		'before'   => '<li>',
-		'after'    => '</li>',
-		'type'     => 'post',
-		'skips'    => '',
-		'none'     => 'No Posts.',
-		'password' => 'hide',
-		'xformat'  => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
-		'echo'     => 1,
-	);
-	$r        = wp_parse_args( $args, $defaults );
-
-	$query = new WP_Query(
-		array(
-			'post_per_page'       => $r['limit'],
-			'no_found_rows'       => true,
-			'post_status'         => 'publish',
-			'ignore_sticky_posts' => true,
-			'post__not_in'        => array_filter( explode( ',', $r['skips'] ) ),
-			'orderby'             => 'RAND(' . wp_rand() . ')',
-			'has_password'        => ! 'hide' === $r['password'],
-		)
-	);
-
-	$html = '';
-	if ( ! $query->have_posts() ) {
-		$html .= $r['before'] . $r['none'] . $r['after'];
-	} else {
-		foreach ( $query->posts as $post ) {
-			$permalink = get_the_permalink( $post->ID );
-			$record    = str_replace(
-				array(
-					'%permalink%',
-					'%title%',
-					'%postdate%',
-					'%commentcount%',
-				),
-				array(
-					$permalink,
-					get_the_title( $post->ID ),
-					get_the_date( 'Y-m-d', $post->post_date ),
-					$post->comment_count,
-				),
-				$r['xformat']
-			);
-			$record    = apply_filters( 'wut_random_post_item', $record, $post );
-			$html     .= $r['before'] . $record . $r['after'] . "\n";
-		}
+function wut_random_posts( $args = array() ) {
+	if ( ! isset( $args['orderby'] ) || empty( $args['orderby'] ) ) {
+		$args['orderby'] = 'RAND(' . wp_rand() . ')';
 	}
-
-	if ( $r['echo'] ) {
-		wut_print_html( $html );
-	} else {
-		return $html;
-	}
+	return wut_recent_posts( $args );
 }
 
 /**
@@ -334,21 +253,7 @@ function wut_related_posts( $args = '' ) {
 		$html = $r['before'] . $r['none'] . $r['after'];
 	} else {
 		foreach ( $query->posts as $p ) {
-			$record = str_replace(
-				array(
-					'%permalink%',
-					'%title%',
-					'%postdate%',
-					'%commentcount%',
-				),
-				array(
-					get_the_permalink( $p->ID ),
-					$p->post_title,
-					$p->post_date,
-					$p->comment_count,
-				),
-				$r['xformat']
-			);
+			$record = wut_private_render_template_by_post( $r['xformat'], $post );
 			$record = apply_filters( 'wut_related_post_item', $record, $p );
 			$html  .= $r['before'] . $record . $r['after'] . "\n";
 		}
@@ -628,4 +533,46 @@ function wut_recent_commentators( $args = array() ) {
 	} else {
 		return $html;
 	}
+}
+
+/**
+ * Print a piece of HTML code.
+ *
+ * @param string $html HTML string.
+ * @return void
+ */
+function wut_print_html( $html ) {
+	echo $html;
+}
+
+/**
+ * Render a template string by post object.
+ *
+ * @param string   $template Template string.
+ * @param WP_Post  $post Post object.
+ * @param string   $date_format Date format string.
+ * @param Callable $custom Custom render.
+ * @return string
+ */
+function wut_private_render_template_by_post( $template, $post, $date_format = 'Y-m-d', $custom = null ) {
+	$result = str_replace(
+		array(
+			'%title%',
+			'%postdate%',
+			'%commentcount%',
+			'%permalink%',
+		),
+		array(
+			get_the_title( $post ),
+			get_the_date( $date_format, $post->ID ),
+			$post->comment_count,
+			get_the_permalink( $post->ID ),
+		),
+		$template
+	);
+
+	if ( ! is_null( $custom ) && is_callable( $custom ) ) {
+		$result = call_user_func( $custom, $result );
+	}
+	return $result;
 }

@@ -118,9 +118,11 @@ class WUT_Admin {
 	 * Process user submitted form data.
 	 * This method will dispatch data to each option panel object.
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function process_submit_and_save() {
+		$ret = true;
+		$msg = '';
 		if ( isset( $_POST['action'] )
 			&& 'update' === $_POST['action'] ) {
 
@@ -129,8 +131,39 @@ class WUT_Admin {
 				foreach ( $this->tabs as $tab ) {
 					$tab->process_submit();
 				}
-				WUT_Option_Manager::me()->save_options();
+				$ret = WUT_Option_Manager::me()->save_options();
+				if ( ! $ret ) {
+					$msg = __( 'Update failed. Options are not changed or database error occured.', 'wut' );
+				} else {
+					$msg = __( 'Options saved.', 'wut' );
+				}
+			} else {
+				$ret = false;
+				$msg = __( 'Nonce verify failed.', 'wut' );
 			}
+		}
+		return array( $ret, $msg );
+	}
+
+	/**
+	 * Show a dismissible notice or indismissible error message.
+	 *
+	 * @param string  $message The message content.
+	 * @param boolean $notice Show notice or error.
+	 * @return void
+	 */
+	public function print_message( $message, $notice = true ) {
+		if ( $notice ) {
+			$class = 'notice';
+		} else {
+			$class = 'error';
+		}
+		if ( ! empty( $message ) ) {
+			?>
+			<div id="message" class="updated <?php echo $class; ?> is-dismissible">
+				<p><?php echo $message; ?></p>
+			</div>
+			<?php
 		}
 	}
 
@@ -141,12 +174,11 @@ class WUT_Admin {
 	 */
 	public function options_page() {
 		$this->register_options_tabs();
-		$this->process_submit_and_save();
-		// TODO: Message tips feature.
+		list( $ret, $msg) = $this->process_submit_and_save();
 		?>
 		<div class="wrap wut-tabs">
 			<h1><?php echo __( 'WordPress Ultimate Toolkit Options', 'wut' ); ?></h1>
-			<div id="message" class="updated notice is-dismissible"><p>Plugin deactivated.</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>
+			<?php $this->print_message( $msg, $ret ); ?>
 			<?php $this->print_tab_nav(); ?>
 			<form method="post">
 				<input type="hidden" name="action" value="update">
