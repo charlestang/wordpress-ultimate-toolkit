@@ -253,7 +253,7 @@ function wut_related_posts( $args = '' ) {
 		$html = $r['before'] . $r['none'] . $r['after'];
 	} else {
 		foreach ( $query->posts as $p ) {
-			$record = wut_private_render_template_by_post( $r['xformat'], $post );
+			$record = wut_private_render_template_by_post( $r['xformat'], $p );
 			$record = apply_filters( 'wut_related_post_item', $record, $p );
 			$html  .= $r['before'] . $record . $r['after'] . "\n";
 		}
@@ -290,25 +290,47 @@ function wut_posts_by_category( $args = array() ) {
 
 	$r = wp_parse_args( $args, $defaults );
 
-	$r['password'] = 'hide' === $r['password'] ? 0 : 1;
-	$items         = WUT::$me->query->get_posts_by_category( $r );
+	if ( ! isset( $r['postid'] ) || ! $r['postid'] ) {
+		global $post;
+		$r['postid'] = $post->ID;
+	}
+
+	if ( empty( $r['skips'] ) ) {
+		$r['skips'] = $r['postid'];
+	} else {
+		$r['skips'] .= ',' . $r['postid'];
+	}
+
+	$categories   = wp_get_object_terms( $r['postid'], 'category' );
+	$category_ids = array();
+	foreach ( $categories as $category ) {
+		$category_ids[] = $category->term_taxonomy_id;
+	}
+
+	$query = new WP_Query(
+		array(
+			'posts_per_page'      => $r['limit'],
+			'no_found_rows'       => true,
+			'post_status'         => 'publish',
+			'ignore_sticky_posts' => true,
+			'category__in'        => $category_ids,
+			'post__not_in'        => array_filter( explode( ',', $r['skips'] ) ),
+			'orderby'             => $r['orderby'],
+			'has_password'        => ! 'hide' === $r['password'],
+		)
+	);
 
 	$html = '';
-	if ( empty( $items ) ) {
-		$html = $before . $none . $after;
+	if ( ! $query->have_posts() ) {
+		$html = $r['before'] . $r['none'] . $r['after'];
 	} else {
-		foreach ( $items as $item ) {
-			$permalink = _wut_get_permalink( $item );
-			$html     .= $before . $xformat;
-			$html      = str_replace( '%permalink%', $permalink, $html );
-			$html      = str_replace( '%title%', $item->post_title, $html );
-			$html      = str_replace( '%postdate%', $item->post_date, $html );
-			$html      = str_replace( '%commentcount%', $item->comment_count, $html );
-			$html      = apply_filters( 'wut_same_classified_post_item', $html, $item );
-			$html     .= $after . "\n";
+		foreach ( $query->posts as $p ) {
+			$record = wut_private_render_template_by_post( $r['xformat'], $p );
+			$record = apply_filters( 'wut_same_classified_post_item', $record, $p );
+			$html  .= $r['before'] . $record . $r['after'] . "\n";
 		}
 	}
-	if ( $echo ) {
+	if ( $r['echo'] ) {
 		wut_print_html( $html );
 	} else {
 		return $html;
@@ -322,45 +344,10 @@ function wut_posts_by_category( $args = array() ) {
  * @return string
  */
 function wut_most_commented_posts( $args = array() ) {
-	$defaults = array(
-		'limit'    => 5,
-		'offset'   => 0,
-		'days'     => 7,
-		'before'   => '<li>',
-		'after'    => '</li>',
-		'type'     => 'post',
-		'skips'    => '',
-		'days'     => 30, // use -1 to disable the time limit.
-		'password' => 'hide',
-		'none'     => 'No Posts.',
-		'xformat'  => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
-		'echo'     => 1,
-	);
-
-	$r = wp_parse_args( $args, $defaults );
-
-	$r['password'] = 'hide' === $r['password'] ? 0 : 1;
-	$items         = WUT::$me->query->get_most_commented_posts( $r );
-
-	$html = '';
-	if ( empty( $items ) ) {
-		$html = $before . $none . $after;
+	if ( ! isset( $args['orderby'] ) || empty( $args['orderby'] ) ) {
+		$args['orderby'] = 'comment_count';
 	}
-	foreach ( $items as $item ) {
-			$permalink = _wut_get_permalink( $item );
-			$html     .= $r['before'] . $r['xformat'];
-			$html      = str_replace( '%permalink%', $permalink, $html );
-			$html      = str_replace( '%title%', htmlspecialchars( $item->post_title ), $html );
-			$html      = str_replace( '%postdate%', $item->post_date, $html );
-			$html      = str_replace( '%commentcount%', $item->comment_count, $html );
-			$html      = apply_filters( 'wut_most_commented_post_item', $html, $item );
-			$html     .= $r['after'] . "\n";
-	}
-	if ( $r['echo'] ) {
-		wut_print_html( $html );
-	} else {
-		return $html;
-	}
+	return wut_recent_posts( $args );
 }
 
 /**
