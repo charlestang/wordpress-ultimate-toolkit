@@ -69,6 +69,8 @@ class WUT_Option_Manager {
 							'wut_widget_recent_posts_init',
 							'wut_widget_recent_comments_init',
 							'wut_widget_related_posts_init',
+							'wut_widget_active_commentators_init',
+							'wut_widget_recent_commentators_init',
 						),
 						true
 					) ) {
@@ -97,8 +99,6 @@ class WUT_Option_Manager {
 					'wut_widget_random_posts_init',
 					'wut_widget_posts_by_category_init',
 					'wut_widget_most_commented_posts_init',
-					'wut_widget_active_commentators_init',
-					'wut_widget_recent_commentators_init',
 				),
 				'all'  => array(
 					array(
@@ -115,16 +115,6 @@ class WUT_Option_Manager {
 						'name'     => __( 'Most Commented Posts', 'wut' ),
 						'descript' => __( 'Display a list of most commented posts.', 'wut' ),
 						'callback' => 'wut_widget_most_commented_posts_init',
-					),
-					array(
-						'name'     => __( 'Active Commentators', 'wut' ),
-						'descript' => __( 'Display active commentators in a certain days limit.', 'wut' ),
-						'callback' => 'wut_widget_active_commentators_init',
-					),
-					array(
-						'name'     => __( 'Recent Commentators', 'wut' ),
-						'descript' => __( 'Display this week or this month\'s commentators.', 'wut' ),
-						'callback' => 'wut_widget_recent_commentators_init',
 					),
 				),
 
@@ -229,6 +219,8 @@ class WUT_Option_Manager {
 		delete_option( 'wut-widget-recent-posts' );
 		delete_option( 'wut-widget-recent-comments' );
 		delete_option( 'wut-widget-related-posts' );
+		delete_option( 'wut-widget-active-commentators' );
+		delete_option( 'wut-widget-recent-commentators' );
 		return update_option( 'wordpress-ultimate-toolkit-options', $this->options );
 	}
 

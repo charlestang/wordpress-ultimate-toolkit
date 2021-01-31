@@ -426,52 +426,13 @@ function wut_recent_comments( $args = array() ) {
  * @return string
  */
 function wut_active_commentators( $args = array() ) {
-	$defaults = array(
-		'limit'      => 10, // -1 to disable the limit
-		'threshhold' => 2,
-		'avatarsize' => 16,
-		'days'       => -1,
-		'skipusers'  => 'admin', // comma seperated name list.
-		'before'     => '<li class="wkc_most_active">',
-		'after'      => '</li>',
-		'none'       => 'No Results.',
-		'xformat'    => '%avatar%<a href="%url%" rel="nofollow">%author%</a>',
-		'echo'       => 1,
-	);
-
-	$r = wp_parse_args( $args, $defaults );
-
-	$items = WUT::$me->query->get_active_commentators( $r );
-
-	$html = '';
-	if ( empty( $items ) ) {
-		$html = $before . $none . $after;
-	} else {
-		foreach ( $items as $item ) {
-			if ( $item->comment_total < $threshhold ) {
-				if ( empty( $html ) ) {
-					$html = $before . $none . $after;
-				}
-				break;
-			}
-			$html .= $before . $xformat;
-			$html  = str_replace( '%author%', $item->comment_author, $html );
-			$html  = str_replace( '%url%', $item->comment_author_url, $html );
-			$html  = str_replace( '%avatar%', get_avatar( $item->comment_author_email, $avatarsize ), $html );
-			$html  = apply_filters( 'wut_active_commentator_item', $html, $item );
-			$html .= $after;
-		}
-	}
-
-	if ( $echo ) {
-		wut_print_html( $html );
-	} else {
-		return $html;
-	}
+	return wut_recent_commentators( $args );
 }
 
 /**
  * Template tag to display recent commentators list.
+ * This feature was created firstly to display a list of commentators,
+ * who left messages in this blog recently.
  *
  * @param array $args Config.
  * @return string
@@ -481,7 +442,7 @@ function wut_recent_commentators( $args = array() ) {
 		'limit'      => 10, // -1 to disable
 		'offset'     => 0,
 		'threshhold' => -1, // minus one to disable this functionality.
-		'type'       => 'month', // 'month' is the alternative
+		'type'       => 'month', // TODO: use WP_Date_Query to implement this feature. 'month' is the alternative.
 		'skipusers'  => 'admin',
 		'before'     => '<li>',
 		'after'      => '</li>',
@@ -491,31 +452,39 @@ function wut_recent_commentators( $args = array() ) {
 		'echo'       => 1,
 	);
 	$r        = wp_parse_args( $args, $defaults );
-	extract( $r, EXTR_SKIP );
 
-	$query_args = compact( 'limit', 'offset', 'skipusers', 'type' );
-	$items      = WUT::$me->query->get_recent_commentators( $query_args );
+	$query = new WP_Comment_Query(
+		array(
+			'number'         => $r['limit'],
+			'offset'         => $r['offset'],
+			'author__not_in' => array_filter( explode( ',', $r['skipusers'] ) ),
+			'orderby'        => 'comment_date',
+			'type'           => 'comment',
+		)
+	);
 
-	$html = '';
-	if ( empty( $items ) ) {
-		$html = $before . $none . $after;
-	} else {
-		foreach ( $items as $item ) {
-			if ( $item->comment_total < $threshhold ) {
-				if ( empty( $html ) ) {
-					$html = $before . $none . $after;
-				}
-				break;
-			}
-			$html .= $before . $xformat;
-			$html  = str_replace( '%author%', $item->comment_author, $html );
-			$html  = str_replace( '%url%', $item->comment_author_url, $html );
-			$html  = str_replace( '%avatar%', get_avatar( $item->comment_author_email, $avatarsize ), $html );
-			$html  = apply_filters( 'wut_active_commentator_item', $html, $item );
-			$html .= $after;
-		}
+	$comments = $query->get_comments();
+	$html     = '';
+	foreach ( $comments as $comment ) {
+		$record = str_replace(
+			array(
+				'%author%',
+				'%url%',
+				'%avatar%',
+			),
+			array(
+				$comment->comment_author,
+				$comment->comment_author_url,
+				get_avatar( $comment->comment_author_email, $r['avatarsize'] ),
+			),
+			$r['xformat']
+		);
+		$record = $r['before'] . $record . $r['after'];
+		$record = apply_filters( 'wut_active_commentator_item', $record, $comment );
+		$html  .= $record;
 	}
-	if ( $echo ) {
+
+	if ( $r['echo'] ) {
 		wut_print_html( $html );
 	} else {
 		return $html;

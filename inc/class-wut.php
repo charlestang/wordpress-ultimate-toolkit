@@ -19,13 +19,6 @@ class WUT {
 	public $options;
 
 	/**
-	 * The query object instance.
-	 *
-	 * @var WUT_Query_Box
-	 */
-	public $query;
-
-	/**
 	 * Utils functionality instance.
 	 *
 	 * @var WUT_Utils
@@ -92,7 +85,6 @@ class WUT {
 		require $this->root_dir . 'inc/class-wut-admin-panel.php';
 		require $this->root_dir . 'inc/class-wut-admin-excerption.php';
 		require $this->root_dir . 'inc/class-wut-admin-related-list.php';
-		require $this->root_dir . 'inc/class-wut-query-box.php';
 		require $this->root_dir . 'inc/class.utils.php';
 		require $this->root_dir . 'inc/tags.php';
 		require $this->root_dir . 'inc/widgets.php';
@@ -112,7 +104,6 @@ class WUT {
 	public function init() {
 		$this->register();
 		$this->options = new WUT_Option_Manager();
-		$this->query   = new WUT_Query_Box();
 		$this->utils   = new WUT_Utils( $this->options->get_options() );
 
 		// the following lines add all the Widgets.
@@ -124,6 +115,8 @@ class WUT {
 					'wut_widget_recent_posts_init',
 					'wut_widget_recent_comments_init',
 					'wut_widget_related_posts_init',
+					'wut_widget_active_commentators_init',
+					'wut_widget_recent_commentators_init',
 				),
 				true
 			) ) {
