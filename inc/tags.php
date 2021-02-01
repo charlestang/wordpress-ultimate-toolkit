@@ -6,62 +6,6 @@
  */
 
 /**
- * Generate a permalink from a post object.
- *
- * @param Object $post The post to calculate the permalink.
- * @return string The permalink of the post.
- */
-function _wut_get_permalink( $post ) {
-	if ( isset( WUT::$me->options ) ) {
-		$options =& WUT::$me->options->get_options( 'other' );
-		if ( $options['enabled'] ) {
-			if ( $options['perma_struct'] ) : // if the user enabled the permalink feature in wp.
-				$permalink      = $options['perma_struct'];
-				$rewritecode    = array(
-					'%year%',
-					'%monthnum%',
-					'%day%',
-					'%hour%',
-					'%minute%',
-					'%second%',
-					'%postname%',
-					'%post_id%',
-					'%category%',
-					'%author%',
-					'%pagename%',
-				);
-				$date           = explode( ' ', date_create( $post->post_date )->format( 'Y m d H i s' ) );
-				$rewritereplace = array(
-					$date[0],
-					$date[1],
-					$date[2],
-					$date[3],
-					$date[4],
-					$date[5],
-					$post->post_name,
-					$post->ID,
-					'%error%',                     // cannot fetch category info.
-					'%error%',                     // cannot fetch author info.
-					$post->post_name,
-				);
-				$permalink      = $options['wphome'] . str_replace( $rewritecode, $rewritereplace, $permalink );
-				$permalink      = user_trailingslashit( $permalink, 'single' );
-			else :                          // if user use default link structure.
-				$permalink = $options['wphome'] . '/?p=' . $post->ID;
-			endif;
-			if ( strpos( $permalink, '%error%' ) == false ) {
-				return $permalink;
-			}
-		}
-	}
-	if ( function_exists( 'custom_get_permalink' ) ) {
-		return custom_get_permalink( $post );
-	} else {
-		return get_permalink( $post->ID );
-	}
-}
-
-/**
  * Template tag: Recent posts.
  *
  * @param array $args arguments to control the template tag.
