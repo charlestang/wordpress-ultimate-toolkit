@@ -52,6 +52,7 @@ Provides a variety of handy little features such as word count, inserting custom
 ### 2.0.5
  * Control options added for related posts list like list title, number of posts, etc.
  * `Active Commentators` and `Recent Commentators` widgets removed.
+ * `Other` options page removed.
 
 ### 2.0.3
  * Hide pages option removed from admin panel.

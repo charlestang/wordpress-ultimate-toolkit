@@ -77,6 +77,7 @@ class WUT_Admin {
 	public function register_options_tabs() {
 		$this->tabs[] = new WUT_Admin_Excerption();
 		$this->tabs[] = new WUT_Admin_Related_List();
+		$this->tabs[] = new WUT_Admin_Custom_Code();
 	}
 
 	/**
@@ -252,14 +253,6 @@ class WUT_Admin {
 			'manage_options',
 			'wut_admin_custom_code',
 			array( &$this, 'custom_code_snippets' )
-		);
-		add_submenu_page(
-			'wut_admin_default_page',
-			__( 'Other Options', 'wut' ),
-			__( 'Other Options' ),
-			'manage_options',
-			'wut_admin_other_options',
-			array( &$this, 'other_options' )
 		);
 	}
 
@@ -442,62 +435,6 @@ class WUT_Admin {
 			<input type="submit" class="button" name="save-codes" value="<?php _e( 'Save All', 'wut' ); ?>" />
 			<input type="submit" class="button" name="delete-checked" value="<?php _e( 'Delete All Checked', 'wut' ); ?>" />
 		</form>
-		</div>
-		<?php
-	}
-
-	public function other_options() {
-		// Get options
-		$options =& $this->options['other'];
-
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'wut_admin_other_options' ) {
-			if ( isset( $_REQUEST['action'] ) && 'enable' == $_REQUEST['action'] ) {
-				$options['enabled'] = 1;
-			}
-			if ( isset( $_REQUEST['synchronize'] ) ) {
-				$options['wphome']       = get_option( 'home' );
-				$options['perma_struct'] = get_option( 'permalink_structure' );
-			}
-			if ( isset( $_REQUEST['disable'] ) ) {
-				$options['enabled'] = 0;
-			}
-			WUT::$me->options->save_options();
-		}
-		?>
-		<div class="wrap"><h2><?php _e( 'Advanced Options', 'wut' ); ?></h2>
-			<form method="post">
-				<table class="form-table">
-					<tbody>
-					<?php if ( $options['enabled'] ) : ?>
-						<tr valign="top">
-						<th scope="row"><label for="wphome"><?php _e( 'Blog address (URL)' ); ?></label></th>
-						<td><span style="color:red;font-weight:bold"><?php echo $options['wphome']; ?></span><br />
-						<span class="setting-description"><?php _e( 'Enter the address here if you want your blog homepage <a href="http://codex.wordpress.org/Giving_WordPress_Its_Own_Directory">to be different from the directory</a> you installed WordPress.' ); ?></span></td>
-						</tr>
-						<tr valign="top">
-						<th scope="row"><label for="perma_struct"><?php _e( 'Permalink Structure', 'wut' ); ?></label></th>
-						<td><span style="color:red;font-weight:bold"><?php echo $options['perma_struct']; ?></span><br />
-						<span class="setting-description"><?php _e( 'If you change you permalink structure, please change this.', 'wut' ); ?></span></td>
-						</tr>
-						<tr valign="top">
-						<th scope="row"><label for=""></label></th>
-						<td>
-							<input type="submit" class="button" name="synchronize" value="<?php _e( 'Synchronize the Info with WordPress Settings.', 'wut' ); ?>" />
-							<input type="submit" class="button" name="disable" value="<?php _e( 'Disable the Andvanced.', 'wut' ); ?>" />
-						</td>
-						</tr>
-					<?php else : ?>
-						<tr valign="top">
-						<th scope="row"><label for=""></label></th>
-						<td>
-							<input type="hidden" value="enable" name="action" />
-							<input type="submit" class="button" value="<?php _e( 'Enable the Andvanced.', 'wut' ); ?>" />
-						</td>
-						</tr>
-					<?php endif; ?>
-					</tbody>
-				</table>
-			</form>
 		</div>
 		<?php
 	}

@@ -119,14 +119,6 @@ class WUT_Option_Manager {
 				),
 
 			),
-			'related'    => array(
-				'enabled' => true,
-			),
-			'other'      => array(
-				'enabled'      => 1,
-				'wphome'       => get_option( 'home' ),
-				'perma_struct' => get_option( 'permalink_structure' ),
-			),
 			'customcode' => array(),
 		);
 		$defaults['version'] = $this->version;
@@ -221,6 +213,9 @@ class WUT_Option_Manager {
 		delete_option( 'wut-widget-related-posts' );
 		delete_option( 'wut-widget-active-commentators' );
 		delete_option( 'wut-widget-recent-commentators' );
+		if ( isset( $this->options['other'] ) ) {
+			unset( $this->options['other'] );
+		}
 		return update_option( 'wordpress-ultimate-toolkit-options', $this->options );
 	}
 
