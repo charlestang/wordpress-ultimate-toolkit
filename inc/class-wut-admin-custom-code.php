@@ -153,19 +153,52 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 	}
 
 	public function print_custom_form() {
-		$title = '';
+		$title   = '';
+		$remarks = '';
+		wp_enqueue_style( 'colors' );
 		?>
-		<form method="post">
-			<p>
-				<label for="custom-code-title">
-					title
-				</label>
-				<input class="widefat" 
-					id="custom-code-title" 
-					name="<?php echo $this->get_field_name( 'title' ); ?>" 
-					type="text" value="<?php echo $title; ?>" />
-			</p>
-		</form>
+		<html>
+		<head>
+			<?php wp_print_styles(); ?>
+		</head>
+		<body class="wp-core-ui"><div style="padding-left:20px;"><div class="wpbody"><div class="wpbody-content"><div class="wrap">
+			<h1>Create New Custom Code</h1>
+			<hr class="wp-header-end"/>
+			<form method="post"><table class="form-table"><tbody>
+				<tr>
+					<th scope="row"><label for="custom-code-title"> Title: </label></th>
+					<td><input 
+							name="<?php echo $this->get_field_name( 'title' ); ?>" 
+							type="text" id="custom-code-title" 
+							value="<?php echo $title; ?>" class="regular-text"></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="custom-code-remarks"> Remarks: </label></th>
+					<td><input 
+							name="<?php echo $this->get_field_name( 'remarks' ); ?>" 
+							type="text" id="custom-code-remarks" 
+							value="<?php echo $remarks; ?>" class="regular-text"></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="custom-code-hooks"> Hook Position: </label></th>
+					<td><select name="<?php echo $this->get_field_name( 'hooks' ); ?>" 
+							type="text" id="custom-code-hooks">
+							<option value="wp_head" selected="selected">Inject to header part.(wp_head)</option>
+							<option value="wp_footer">Inject to footer part.(wp_footer)</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="custom-code-source"> Source Code: </label></th>
+					<td><textarea
+							name="<?php echo $this->get_field_name( 'source' ); ?>" 
+							type="text" id="custom-code-source"></textarea></td>
+				</tr>
+			</tbody></table>
+			<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="保存更改"></p>
+			</form>
+		</div></div></div></div></body>
+		</html>
 		<?php
 		wp_die();
 	}
