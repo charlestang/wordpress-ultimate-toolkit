@@ -33,6 +33,7 @@ class WUT_Admin {
 	 */
 	protected $tabs = array();
 
+	const MENU_SLUG = 'wut-options-page';
 	/**
 	 * Add an entry point of admin panel of this plugin to WordPress admin area,
 	 * or add admin only features to WordPress admin area.
@@ -40,7 +41,6 @@ class WUT_Admin {
 	 * @return void
 	 */
 	public function register_admin_entry() {
-		if ( is_admin() ) {
 			add_action(
 				'admin_menu',
 				function() {
@@ -48,14 +48,13 @@ class WUT_Admin {
 						__( 'WordPress Ultimate Toolkit', 'wut' ),
 						__( 'WP Ultimate Toolkit', 'wut' ),
 						'activate_plugins',
-						'wut-options-page',
+						self::MENU_SLUG,
 						array( $this, 'options_page' ),
 					);
 				}
 			);
-
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueueu_scripts' ) );
-		}
+			$this->register_options_tabs();
 	}
 
 	/**
@@ -87,8 +86,8 @@ class WUT_Admin {
 	 */
 	public function print_tab_nav() {
 		$html = '';
-		foreach ( $this->tabs as $tab ) {
-			$html .= '<li><a href="' . $tab->get_tab_anchor() . '" class="nav-tab">';
+		foreach ( $this->tabs as $idx => $tab ) {
+			$html .= '<li data-id="' . $idx . '"><a href="' . $tab->get_tab_anchor() . '" class="nav-tab">';
 			$html .= $tab->title;
 			$html .= '</a></li>' . PHP_EOL;
 		}
@@ -174,11 +173,11 @@ class WUT_Admin {
 	 * @return void
 	 */
 	public function options_page() {
-		$this->register_options_tabs();
 		list( $ret, $msg) = $this->process_submit_and_save();
 		?>
 		<div class="wrap wut-tabs">
 			<h1><?php echo __( 'WordPress Ultimate Toolkit Options', 'wut' ); ?></h1>
+			<hr class="wp-header-end" />
 			<?php $this->print_message( $msg, $ret ); ?>
 			<?php $this->print_tab_nav(); ?>
 			<form method="post">
@@ -193,8 +192,12 @@ class WUT_Admin {
 		<script>
 			(function($) {
 				$(function(){
+					var active_num = wpCookies.get('wut_active_tab');
+					if ( typeof active_num == 'undefined' || null == active_num ) {
+						active_num = 0;
+					} 
 					$('.wut-tabs').tabs({
-						active: 0,
+						active: active_num,
 						show: { effect: "fadeIn", duration: 300 },
 						activate: function( event, ui ) {
 							$(ui.newTab).find('a').addClass('nav-tab-active');
@@ -202,9 +205,10 @@ class WUT_Admin {
 							// I have to remove box-shadow style mannually.
 							$(ui.newTab).find('a').css('box-shadow', 'none');
 							$(ui.oldTab).find('a').removeClass('nav-tab-active');
+							wpCookies.set('wut_active_tab', $(ui.newTab).data('id'), 86400 * 30, '/wp-admin');
 						}
 					});
-					$('a.nav-tab:first').addClass('nav-tab-active');
+					$('a.nav-tab:eq(' + active_num + ')').addClass('nav-tab-active');
 				});
 			})(jQuery);
 		</script>
