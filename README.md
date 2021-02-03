@@ -54,6 +54,7 @@ Provides a variety of handy little features such as word count, inserting custom
  * `Active Commentators` and `Recent Commentators` widgets removed.
  * `Other` options page removed.
  * `Posts in category`, `Most commented posts` and `Random posts` widgets are removed.
+ * `Custom code` options page rewritten.
 
 ### 2.0.3
  * Hide pages option removed from admin panel.

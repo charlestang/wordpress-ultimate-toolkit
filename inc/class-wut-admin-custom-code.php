@@ -325,12 +325,16 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 	 */
 	public function print_custom_form( $options = array(), $valid = false, $error = array() ) {
 		$is_error = false;
+		$is_new   = true;
 		if ( ! empty( $options ) ) {
 			if ( ! $valid ) {
 				$is_error = true;
 			}
 		} else {
 			$options = $this->process_edit();
+		}
+		if ( ! empty( $options ) ) {
+			$is_new = false;
 		}
 		$title     = isset( $options['title'] ) ? sanitize_text_field( $options['title'] ) : '';
 		$remark    = isset( $options['remark'] ) ? sanitize_text_field( $options['remark'] ) : '';
@@ -349,7 +353,11 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 			<?php endif; ?>
 		</head>
 		<body class="wp-core-ui"><div style="padding-left:20px;"><div class="wpbody"><div class="wpbody-content"><div class="wrap">
+			<?php if ( $is_new ) : ?>
 			<h1>Create New Custom Code</h1>
+			<?php else : ?>
+			<h1>Edit Custom Code</h1>
+			<?php endif; ?>
 			<hr class="wp-header-end"/>
 			<?php if ( $is_error ) : ?>
 				<div id="message" class="updated error is-dismissible">
