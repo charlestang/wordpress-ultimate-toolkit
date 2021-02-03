@@ -20,6 +20,7 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 		// register an ajax form table.
 		add_action( 'wp_ajax_wut_custom_code', array( $this, 'print_custom_form' ) );
 		add_action( 'wp_ajax_wut_custom_code_submit', array( $this, 'process_submit' ) );
+		add_action( 'wp_ajax_wut_custom_code_delete', array( $this, 'process_delete' ) );
 
 		// add thickbox and its behaviors.
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
@@ -49,6 +50,32 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 		return new self();
 	}
 
+	public function transfer( $options ) {
+		$key = '';
+		foreach ( $options as $k => $v ) {
+			$key = $k;
+			break;
+		}
+		if ( ! empty( $options ) && 0 !== strpos( $key, 'wut_' ) ) {
+			$new_options = array();
+			foreach ( $options as $id => $snippet ) {
+				$new_struct['title']                   = $snippet['name'];
+				$new_struct['source']                  = $snippet['source'];
+				$new_struct['priority']                = $snippet['priority'];
+				$new_struct['date_time']               = date( 'Y-m-d H:i:s' );
+				$new_struct['remark']                  = '';
+				$new_struct['code_id']                 = uniqid( 'wut_' );
+				$new_struct['hook']                    = $snippet['hookto'];
+				$new_options[ $new_struct['code_id'] ] = $new_struct;
+			}
+			$manager = WUT_Option_Manager::me();
+			$manager->set_options_by_key( $this->option_name, $new_options );
+			$manager->save_options();
+			return $new_options;
+		}
+		return $options;
+	}
+
 	/**
 	 * This method must be implemented.
 	 * Print the form of option panel.
@@ -57,7 +84,8 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 	 * @return void
 	 */
 	public function form( $options ) {
-		$length = count( $options );
+		$options = $this->transfer( $options );
+		$length  = count( $options );
 		?>
 		<div class="tablenav top">
 			<a class="button thickbox" href="admin-ajax.php?action=wut_custom_code&KeepThis=true&TB_iframe=true&height=400&width=600"><?php _e( '+ Add New', 'wut' ); ?></a>
@@ -69,6 +97,7 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 					<th scope="col" id="title" class="manage-column column-title column-primary">标题</th>
 					<th scope="col" id="remark" class="manage-column column-remark">备忘</th>
 					<th scope="col" id="hook" class="manage-column column-hook">钩子</th>
+					<th scope="col" id="priority" class="manage-column column-priority">优先级</th>
 					<th scope="col" id="date" class="manage-column column-date">日期</th>
 					<th scope="col" id="action" class="manage-column column-action">操作</th>
 				</tr>
@@ -80,8 +109,12 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 				<td scope="col"><?php echo $snippet['title']; ?></td>
 				<td scope="col"><?php echo $snippet['remark']; ?></td>
 				<td scope="col"><?php echo $snippet['hook']; ?></td>
+				<td scope="col"><?php echo $snippet['priority']; ?></td>
 				<td scope="col"><?php echo $snippet['date_time']; ?></td>
-				<td scope="col">编辑 删除</td>
+				<td scope="col">
+					<a class="thickbox" href="admin-ajax.php?action=wut_custom_code&edit=1&id=<?php echo $id; ?>&KeepThis=true&TB_iframe=true&height=400&width=600">编辑</a>
+					<a class="delete" href="admin-ajax.php?action=wut_custom_code_delete&delete=1&id=<?php echo $id; ?>&KeepThis=true&TB_iframe=true&height=400&width=600">删除</a>
+				</td>
 			</tr>
 			<?php endforeach; ?>
 			</tbody>
@@ -119,7 +152,8 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 		$error    = array();
 		$id       = '';
 		if ( isset( $new_options['code_id'] ) ) {
-			$id = $new_options['code_id'];
+			$id                 = sanitize_text_field( $new_options['code_id'] );
+			$snippet['code_id'] = $id;
 			if ( empty( $new_options['title'] ) ) {
 				$validate       = false;
 				$error['title'] = __( 'Title should not be empty.', 'wut' );
@@ -141,13 +175,22 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 				$validate        = false;
 				$error['source'] = __( 'Source code should not be empty.', 'wut' );
 			} else {
-				if ( false === stripos( $new_options['source'], '</script>' ) || false !== stripos( $new_options['source'], '</style>' ) ) {
+				if ( false === stripos( $new_options['source'], '</script>' ) && false === stripos( $new_options['source'], '</style>' ) ) {
 					$validate        = false;
 					$error['source'] = __( 'Source code should be enclosed by &lt;script&gt; or &lt;style&gt; tag.', 'wut' );
 				} else {
 					$snippet['source'] = $new_options['source'];
 				}
 			}
+
+			if ( empty( $new_options['priority'] ) || 0 === absint( $new_options['priority'] ) ) {
+				$validate          = false;
+				$error['priority'] = __( 'Priority should not be empty.', 'wut' );
+			} else {
+				$snippet['priority'] = absint( $new_options['priority'] );
+			}
+
+			$snippet['date_time'] = date( 'Y-m-d H:i:s', strtotime( $new_options['date_time'] ) );
 		} else {
 			$validate = false;
 		}
@@ -220,9 +263,53 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 				tb_position();
 			});
 
+			$( 'a.delete' ).click(function($e) {
+				$e.preventDefault();
+				$.ajax( $(this).attr('href'), {
+					method: 'POST',
+					success: function( data, status, xhr) {
+						console.log(data);
+						document.location.reload();
+					}
+				} );
+			});
 		} );
 		</script>
 		<?php
+	}
+
+	public function process_edit() {
+		if ( isset( $_GET['edit'] ) && 1 === absint( $_GET['edit'] ) ) {
+			$id      = sanitize_text_field( $_GET['id'] );
+			$manager = WUT_Option_Manager::me();
+			$options = $manager->get_options_by_key( $this->option_name );
+			return $options[ $id ];
+		}
+		return array();
+	}
+
+	public function process_delete() {
+		if ( isset( $_GET['delete'] ) && 1 === absint( $_GET['delete'] ) ) {
+			$id      = sanitize_text_field( $_GET['id'] );
+			$manager = WUT_Option_Manager::me();
+			$options = $manager->get_options_by_key( $this->option_name );
+			if ( ! isset( $options[ $id ] ) ) {
+				echo json_encode( array( 'ret' => true ) );
+				wp_die();
+				return;
+			}
+			unset( $options[ $id ] );
+			$manager->set_options_by_key( $this->option_name, $options );
+			$ret = $manager->save_options();
+			if ( ! $ret ) {
+				echo json_encode( array( 'ret' => false ) );
+				wp_die();
+				return;
+			}
+		}
+		echo json_encode( array( 'ret' => true ) );
+		wp_die();
+		return;
 	}
 
 	/**
@@ -234,8 +321,17 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 	 * @return void
 	 */
 	public function print_custom_form( $options = array(), $valid = false, $error = array() ) {
+		$is_error = false;
+		if ( ! empty( $options ) ) {
+			if ( ! $valid ) {
+				$is_error = true;
+			}
+		} else {
+			$options = $this->process_edit();
+		}
 		$title     = isset( $options['title'] ) ? sanitize_text_field( $options['title'] ) : '';
 		$remark    = isset( $options['remark'] ) ? sanitize_text_field( $options['remark'] ) : '';
+		$priority  = isset( $options['priority'] ) ? absint( $options['priority'] ) : 9;
 		$source    = isset( $options['source'] ) ? $options['source'] : '';
 		$code_id   = isset( $options['code_id'] ) ? sanitize_text_field( $options['code_id'] ) : uniqid( 'wut_' );
 		$date_time = isset( $options['date_time'] ) ? sanitize_text_field( $options['date_time'] ) : date( 'Y-m-d H:i:s' );
@@ -252,10 +348,10 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 		<body class="wp-core-ui"><div style="padding-left:20px;"><div class="wpbody"><div class="wpbody-content"><div class="wrap">
 			<h1>Create New Custom Code</h1>
 			<hr class="wp-header-end"/>
-			<?php if ( ! $valid && ! empty( $options ) ) : ?>
+			<?php if ( $is_error ) : ?>
 				<div id="message" class="updated error is-dismissible">
-				<p><?php echo $message; ?></p>
-			</div
+					<p><?php echo __( 'Some error occured.', 'wut' ); ?></p>
+				</div>
 			<?php endif; ?>
 			<form method="post" action="admin-ajax.php?action=wut_custom_code_submit">
 				<input type="hidden"
@@ -290,6 +386,13 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 					</td>
 				</tr>
 				<tr>
+					<th scope="row"><label for="custom-code-priority"> Priority: </label></th>
+					<td><input 
+							name="<?php echo $this->get_field_name( 'priority' ); ?>"
+							type="text" id="custom-code-priority"
+							value="<?php echo $priority; ?>" class="regular-text"></td>
+				</tr>
+				<tr>
 					<th scope="row"><label for="custom-code-source"> Source Code: </label></th>
 					<td><textarea
 							name="<?php echo $this->get_field_name( 'source' ); ?>" 
@@ -297,7 +400,7 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 							type="text" id="custom-code-source"><?php echo $source; ?></textarea></td>
 				</tr>
 				</tbody></table>
-			<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="保存更改"></p>
+				<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="保存更改"></p>
 			</form>
 		</div></div></div></div></body>
 		</html>
