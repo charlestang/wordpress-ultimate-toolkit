@@ -103,16 +103,18 @@ class WUT_Utils {
 		}
 		$codetoprint = '';
 
-		if ( $hook == 'wp_head' ) :
-			foreach ( $codesnippets as $codesnippet ) {
-				if ( $codesnippet['hookto'] == 'wp_head' ) {
-					$codetoprint .= $codesnippet['source'];
+		if ( 'wp_head' === $hook ) :
+			foreach ( $codesnippets as $cs ) {
+				if ( ( isset( $cs['hookto'] ) && 'wp_head' === $cs['hookto'] )
+					|| ( 'wp_head' === $cs['hook'] ) ) {
+					$codetoprint .= $cs['source'];
 				}
 			}
-		elseif ( $hook == 'wp_footer' ) :
-			foreach ( $codesnippets as $codesnippet ) {
-				if ( $codesnippet['hookto'] == 'wp_footer' ) {
-					$codetoprint .= $codesnippet['source'];
+		elseif ( 'wp_footer' === $hook ) :
+			foreach ( $codesnippets as $cs ) {
+				if ( ( isset( $cs['hookto'] ) && 'wp_footer' === $cs['hookto'] )
+					|| ( 'wp_footer' === $cs['hook'] ) ) {
+					$codetoprint .= $cs['source'];
 				}
 			}
 		endif;
@@ -136,10 +138,16 @@ class WUT_Utils {
 		return $post_columns;
 	}
 
+	/**
+	 * Display a column contains post length.
+	 *
+	 * @param string $column_name The name of control column.
+	 * @return void
+	 */
 	public function display_wordcount( $column_name ) {
 		global $post;
-		if ( $column_name == 'wordcount' ) {
-			$content = strip_tags( $post->post_content );
+		if ( 'wordcount' === $column_name ) {
+			$content = wp_strip_all_tags( $post->post_content );
 			$len     = $this->words_count( $content );
 			$style   = '';
 			if ( $len > 1000 ) {
@@ -148,14 +156,19 @@ class WUT_Utils {
 			if ( $len > 2000 ) {
 				$style = 'color:#f00;font-weight:bold';
 			}
-			echo "<span style=\"$style\">",$len,'</span>';
+			echo '<span style="' , $style , '">' , $len , '</span>';
 		}
 	}
 
+	/**
+	 * Control the column width.
+	 *
+	 * @return void
+	 */
 	public function set_column_width() {
 		?>
 		<style type="text/css">
-		.column-wordcount {width:6%;}
+			.column-wordcount { width:6%; }
 		</style>
 		<?php
 	}
