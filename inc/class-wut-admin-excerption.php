@@ -15,7 +15,7 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 	 * Create the Auto Excerption option page.
 	 */
 	public function __construct() {
-		parent::__construct( __( 'Auto Excerption', 'wut' ), 'excerpt' );
+		parent::__construct( __( 'Auto Excerption', 'wut' ), WUT_Option_Manager::SUBKEY_EXCERPTION );
 	}
 
 	/**

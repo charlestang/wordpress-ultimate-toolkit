@@ -46,9 +46,9 @@ abstract class WUT_Admin_Panel {
 	 * @param string $title The title of option panel tab.
 	 * @param string $option_name The option key of options in this panel. If not provided, it will be generated from title.
 	 */
-	public function __construct( $title, $option_name = '' ) {
-		$this->title = $title;
-		$this->id    = 'admin-' . implode(
+	public function __construct( $title, $option_name ) {
+		$this->title       = $title;
+		$this->id          = 'admin-' . implode(
 			'-',
 			array_map(
 				function( $e ) {
@@ -57,12 +57,7 @@ abstract class WUT_Admin_Panel {
 				explode( ' ', $title )
 			)
 		);
-		if ( empty( $option_name ) ) {
-			$this->option_name = $this->id;
-		} else {
-			$this->option_name = $option_name;
-		}
-		WUT_Option_Manager::me()->register_defaults( $this->option_name, $this->default_options() );
+		$this->option_name = $option_name;
 	}
 
 	/**

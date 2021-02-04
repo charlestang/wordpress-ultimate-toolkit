@@ -44,7 +44,7 @@ class WUT_Utils {
 
 		global $post;
 		$excerpt = '';
-		$options = WUT_Option_Manager::me()->get_options_by_key( 'excerpt' );
+		$options = WUT_Option_Manager::me()->get_options_by_key( WUT_Option_Manager::SUBKEY_EXCERPTION );
 
 		// Custom excerpt will be first priority.
 		if ( ! empty( $post->post_excerpt ) ) {
@@ -99,7 +99,7 @@ class WUT_Utils {
 	}
 
 	protected function _select_code_snippets( $hook ) {
-		$codesnippets = WUT_Option_Manager::me()->get_options_by_key( 'customcode' );
+		$codesnippets = WUT_Option_Manager::me()->get_options_by_key( WUT_Option_Manager::SUBKEY_CUSTOM_CODE );
 		if ( ! is_array( $codesnippets ) || empty( $codesnippets ) ) {
 			return '';
 		}
@@ -216,8 +216,7 @@ class WUT_Utils {
 			return $output;
 		}
 
-		$option_key = WUT_Admin_Related_List::me()->option_name;
-		$options    = WUT_Option_Manager::me()->get_options_by_key( $option_key );
+		$options = WUT_Option_Manager::me()->get_options_by_key( WUT_Option_Manager::SUBKEY_RELATED_LIST );
 
 		if ( ! $options['enabled'] ) {
 			return $output;

@@ -18,15 +18,6 @@
 class WUT_Admin {
 
 	/**
-	 * Hold the options. This the reference of the options, not the copy of it.
-	 *
-	 * @since 1.0.0
-	 * @access private
-	 * @var array
-	 */
-	protected $options;
-
-	/**
 	 * Option tabs
 	 *
 	 * @var WUT_Admin_Panel[]
@@ -220,8 +211,7 @@ class WUT_Admin {
 	 *
 	 * @param array $opt Options of this plugin.
 	 */
-	public function __construct( &$opt ) {
-		$this->options = &$opt;
+	public function __construct() {
 	}
 
 	/**

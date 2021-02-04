@@ -87,10 +87,6 @@ class WUT {
 	 */
 	public function load_files() {
 		require $this->root_dir . 'inc/class-wut-option-manager.php';
-		require $this->root_dir . 'inc/class-wut-admin-panel.php';
-		require $this->root_dir . 'inc/class-wut-admin-excerption.php';
-		require $this->root_dir . 'inc/class-wut-admin-related-list.php';
-		require $this->root_dir . 'inc/class-wut-admin-custom-code.php';
 		require $this->root_dir . 'inc/class-wut-utils.php';
 		require $this->root_dir . 'inc/tags.php';
 		require $this->root_dir . 'inc/class-wut-form-helper.php';
@@ -99,6 +95,10 @@ class WUT {
 		require $this->root_dir . 'widgets/class-wut-widget-most-viewed-posts.php';
 		require $this->root_dir . 'widgets/class-wut-widget-related-posts.php';
 		if ( is_admin() ) {
+			require $this->root_dir . 'inc/class-wut-admin-panel.php';
+			require $this->root_dir . 'inc/class-wut-admin-excerption.php';
+			require $this->root_dir . 'inc/class-wut-admin-related-list.php';
+			require $this->root_dir . 'inc/class-wut-admin-custom-code.php';
 			require $this->root_dir . 'inc/class-wut-admin.php';
 		}
 	}
@@ -107,30 +107,8 @@ class WUT {
 	 * Main hook to WordPress.
 	 */
 	public function register() {
-		$this->options = new WUT_Option_Manager();
+		$this->options = WUT_Option_Manager::me();
 		$this->utils   = new WUT_Utils();
-
-		// the following lines add all the Widgets.
-		$widgets = $this->options->get_options( 'widgets' );
-		foreach ( $widgets['load'] as $callback ) {
-			if ( in_array(
-				$callback,
-				array(
-					'wut_widget_recent_posts_init',
-					'wut_widget_recent_comments_init',
-					'wut_widget_related_posts_init',
-					'wut_widget_active_commentators_init',
-					'wut_widget_recent_commentators_init',
-					'wut_widget_most_commented_posts_init',
-					'wut_widget_posts_by_category_init',
-					'wut_widget_random_posts_init',
-				),
-				true
-			) ) {
-				continue;
-			}
-			add_action( 'widgets_init', $callback );
-		}
 
 		add_action(
 			'widgets_init',
@@ -144,7 +122,7 @@ class WUT {
 			}
 		);
 
-		$excerpt = $this->options->get_options( 'excerpt' );
+		$excerpt = $this->options->get_options_by_key( WUT_Option_Manager::SUBKEY_EXCERPTION );
 		if ( ! isset( $excerpt['enabled'] ) ) {
 			$excerpt['enabled'] = true;
 		}
@@ -161,7 +139,7 @@ class WUT {
 
 		if ( is_admin() ) {
 			// add admin menus.
-			$wut_admin = new WUT_Admin( $this->options->get_options() );
+			$wut_admin = new WUT_Admin();
 			$wut_admin->register_admin_entry();
 
 			// add word count.

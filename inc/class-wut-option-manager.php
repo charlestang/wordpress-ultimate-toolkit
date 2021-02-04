@@ -6,22 +6,27 @@
  */
 
 /**
- * Options manager class.
+ * Option manager.
+ *
+ * This class is used to manage options of this plugin. The class should not
+ * depend on any admin classes because of is will be used in front end of WP.
  */
 class WUT_Option_Manager {
-	/**
-	 * The version of options layout.
-	 *
-	 * @var string Semantic version.
-	 */
-	public $version = '1.0.2';
+
+	const OPTION_KEY = 'wordpress-ultimate-toolkit-options';
+
+	const SUBKEY_EXCERPTION = 'excerpt';
+
+	const SUBKEY_RELATED_LIST = 'admin-related-posts-list';
+
+	const SUBKEY_CUSTOM_CODE = 'customcode';
 
 	/**
 	 * The options array.
 	 *
 	 * @var array Options key value table.
 	 */
-	public $options;
+	public $options = array();
 
 	/**
 	 * Default options.
@@ -39,6 +44,8 @@ class WUT_Option_Manager {
 
 	/**
 	 * Get an instance of this class.
+	 *
+	 * @return WUT_Option_Manager
 	 */
 	public static function me() {
 		if ( is_null( self::$me ) ) {
@@ -51,115 +58,51 @@ class WUT_Option_Manager {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->options = get_option( 'wordpress-ultimate-toolkit-options' );
-
+		$this->options = get_option( self::OPTION_KEY );
 		if ( empty( $this->options ) ) {
-			$this->set_defaults();
-			return;
-		}
-
-		// when the first time install, the options array will be empty.
-		if ( isset( $this->options['widgets'] ) && isset( $this->options['widgets']['all'] ) ) {
-			$this->options['widgets']['all'] = array_filter(
-				$this->options['widgets']['all'],
-				function ( $value ) {
-					if ( in_array(
-						$value['callback'],
-						array(
-							'wut_widget_recent_posts_init',
-							'wut_widget_recent_comments_init',
-							'wut_widget_related_posts_init',
-							'wut_widget_active_commentators_init',
-							'wut_widget_recent_commentators_init',
-							'wut_widget_most_commented_posts_init',
-							'wut_widget_posts_by_category_init',
-							'wut_widget_random_posts_init',
-						),
-						true
-					) ) {
-						return false;
-					}
-					return true;
-				}
-			);
-		}
-
-		// when the plugin updated, this will be true.
-		if ( $this->version > $this->options['version'] ) {
-			$this->set_defaults();
+			$this->options = $this->get_defaults();
 		}
 	}
 
 	/**
-	 * Initialize all options.
+	 * Return default options.
 	 *
-	 * @return void
+	 * @param string $key The sub key of options.
+	 * @return array
 	 */
-	public function set_defaults() {
+	public function get_defaults( $key = '' ) {
 		$defaults = array(
-			'widgets'    => array(
-				'load' => array(
-					'wut_widget_random_posts_init',
-					'wut_widget_posts_by_category_init',
-					'wut_widget_most_commented_posts_init',
-				),
-				'all'  => array(
-					array(
-						'name'     => __( 'Random Posts', 'wut' ),
-						'descript' => __( 'Display a list of random posts.', 'wut' ),
-						'callback' => 'wut_widget_random_posts_init',
-					),
-					array(
-						'name'     => __( 'In Category Posts Widget', 'wut' ),
-						'descript' => __( 'Display a list of posts in a certain category.', 'wuts' ),
-						'callback' => 'wut_widget_posts_by_category_init',
-					),
-					array(
-						'name'     => __( 'Most Commented Posts', 'wut' ),
-						'descript' => __( 'Display a list of most commented posts.', 'wut' ),
-						'callback' => 'wut_widget_most_commented_posts_init',
-					),
-				),
-
+			self::SUBKEY_CUSTOM_CODE  => array(),
+			self::SUBKEY_EXCERPTION   => array(
+				'enabled'      => true,
+				'paragraphs'   => 3,
+				'words'        => 250,
+				'tip_template' => '<br/><br/><span class="readmore"><a href="%permalink%" title="%title%">Continue Reading--%total_words% words totally</a></span>',
 			),
-			'customcode' => array(),
+			self::SUBKEY_RELATED_LIST => array(
+				'enabled'            => false,
+				'title'              => __( 'Related Posts', 'wut' ),
+				'number'             => 5,
+				'show_comment_count' => true,
+			),
 		);
-		$defaults['version'] = $this->version;
-		if ( empty( $this->options ) ) {
-			$this->options = $defaults;
-			$this->save_options();
-			return;
-		}
-	}
 
-	/**
-	 * Retrieve all options.
-	 *
-	 * @param string $key Options key.
-	 * @return mixed
-	 */
-	public function &get_options( $key = '' ) {
-		if ( empty( $key ) ) {
-			return $this->options;
+		if ( ! empty( $key ) ) {
+			return $defaults[ $key ];
 		}
-		$vlaue = null;
-		if ( isset( $this->options[ $key ] ) ) {
-			$value = $this->options[ $key ];
-		} else {
-			$value = false;
-		}
-		return $value;
+		return $defaults;
 	}
 
 	/**
 	 * Retrieve a part of options by key.
+	 * This method will always return value.
 	 *
 	 * @param string $key The option key.
 	 * @return array
 	 */
 	public function get_options_by_key( $key ) {
 		if ( isset( $this->options[ $key ] )
-		&& ! empty( $this->options[ $key ] ) ) {
+			&& ! empty( $this->options[ $key ] ) ) {
 			return $this->options[ $key ];
 		} else {
 			return $this->get_defaults( $key );
@@ -175,16 +118,6 @@ class WUT_Option_Manager {
 	 */
 	public function set_options_by_key( $key, $new ) {
 		$this->options[ $key ] = $new;
-	}
-
-	/**
-	 * Get defaults of options by key.
-	 *
-	 * @param string $key The option key.
-	 * @return array
-	 */
-	public function get_defaults( $key ) {
-		return $this->defaults[ $key ];
 	}
 
 	/**
@@ -218,6 +151,9 @@ class WUT_Option_Manager {
 		delete_option( 'wut-widget-recent-commentators' );
 		if ( isset( $this->options['other'] ) ) {
 			unset( $this->options['other'] );
+		}
+		if ( isset( $this->options['widgets'] ) ) {
+			unset( $this->options['widgets'] );
 		}
 		return update_option( 'wordpress-ultimate-toolkit-options', $this->options );
 	}
