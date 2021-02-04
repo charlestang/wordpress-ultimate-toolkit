@@ -163,7 +163,6 @@ class WUT {
 			// add admin menus.
 			$wut_admin = new WUT_Admin( $this->options->get_options() );
 			$wut_admin->register_admin_entry();
-			add_action( 'admin_menu', array( $wut_admin, 'add_menu_items' ) );
 
 			// add word count.
 			add_filter( 'manage_posts_columns', array( $this->utils, 'add_wordcount_manage_columns' ) );
