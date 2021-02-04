@@ -1,15 +1,39 @@
 <?php
 /**
- * This file is the class
+ * WordPress Ultimate Toolkit
  *
- * @package wut
+ * @package WordPress_Ultimate_Toolkit
  */
 
 /**
- * The plugin entry point class.
+ * Core class of this plugin.
+ *
+ * This is a container object of the whole plugin, it will maintain all
+ * global variables, manage all hooks plugged into WordPress, and register
+ * all source code files.
  */
 class WUT {
 
+	/**
+	 * The plugin entry file path.
+	 *
+	 * @var string The file path of the only entry file.
+	 */
+	public $plugin_file;
+
+	/**
+	 * The root path of the plugin's directory.
+	 *
+	 * @var string The root dir path of this plugin with slash / appended.
+	 */
+	public $root_dir;
+
+	/**
+	 * The root url path of the plugin's directory.
+	 *
+	 * @var string The root url of this plugin base path.
+	 */
+	public $root_url;
 
 	/**
 	 * The option manager instance.
@@ -26,20 +50,6 @@ class WUT {
 	public $utils;
 
 	/**
-	 * The root dir of the plugin.
-	 *
-	 * @var string The root dir path of this plugin with slash / appended.
-	 */
-	public $root_dir;
-
-	/**
-	 * The root url path of the plugin.
-	 *
-	 * @var string The root url of this plugin base path.
-	 */
-	public $root_url;
-
-	/**
 	 * Global object of the plugin.
 	 *
 	 * @var WUT
@@ -49,38 +59,33 @@ class WUT {
 	/**
 	 * The constructor.
 	 *
+	 * @param string $plugin_file The entry file of this plugin.
 	 * @param string $root_dir The plugin root directory.
 	 * @param string $root_url The plugin root path.
 	 */
-	public function __construct( $root_dir, $root_url ) {
-		$this->root_dir = $root_dir;
-		$this->root_url = $root_url;
+	protected function __construct( $plugin_file, $root_dir, $root_url ) {
+		$this->plugin_file = $plugin_file;
+		$this->root_dir    = $root_dir;
+		$this->root_url    = $root_url;
 	}
 
 	/**
-	 * The plugin entry point.
+	 * The main function of this plugin.
 	 *
 	 * @param string $file_path the plugin entry file path.
 	 */
 	public static function run( $file_path ) {
 		$dir      = plugin_dir_path( $file_path );
 		$url      = plugins_url( '', $file_path );
-		self::$me = new WUT( $dir, $url );
-		self::$me->load();
-		self::$me->register();
+		self::$me = new WUT( $file_path, $dir, $url );
+		self::$me->load_files();
+		add_action( 'plugins_loaded', array( self::$me, 'register' ) );
 	}
 
 	/**
-	 * Register the plugin to WordPress.
+	 * Require all files the plugin needed.
 	 */
-	public function register() {
-		add_action( 'plugins_loaded', array( $this, 'init' ) );
-	}
-
-	/**
-	 * Include all the files.
-	 */
-	public function load() {
+	public function load_files() {
 		require $this->root_dir . 'inc/class-wut-option-manager.php';
 		require $this->root_dir . 'inc/class-wut-admin-panel.php';
 		require $this->root_dir . 'inc/class-wut-admin-excerption.php';
@@ -88,7 +93,6 @@ class WUT {
 		require $this->root_dir . 'inc/class-wut-admin-custom-code.php';
 		require $this->root_dir . 'inc/class-wut-utils.php';
 		require $this->root_dir . 'inc/tags.php';
-		require $this->root_dir . 'inc/widgets.php';
 		require $this->root_dir . 'inc/class-wut-form-helper.php';
 		require $this->root_dir . 'widgets/class-wut-widget-recent-posts.php';
 		require $this->root_dir . 'widgets/class-wut-widget-recent-comments.php';
@@ -100,12 +104,11 @@ class WUT {
 	}
 
 	/**
-	 * Register other hooks.
+	 * Main hook to WordPress.
 	 */
-	public function init() {
-		$this->register();
+	public function register() {
 		$this->options = new WUT_Option_Manager();
-		$this->utils   = new WUT_Utils( $this->options->get_options() );
+		$this->utils   = new WUT_Utils();
 
 		// the following lines add all the Widgets.
 		$widgets = $this->options->get_options( 'widgets' );
@@ -118,6 +121,9 @@ class WUT {
 					'wut_widget_related_posts_init',
 					'wut_widget_active_commentators_init',
 					'wut_widget_recent_commentators_init',
+					'wut_widget_most_commented_posts_init',
+					'wut_widget_posts_by_category_init',
+					'wut_widget_random_posts_init',
 				),
 				true
 			) ) {
@@ -175,7 +181,7 @@ class WUT {
 	}
 
 	/**
-	 * Output debug log.
+	 * Global helpers: Output debug log.
 	 *
 	 * @return void
 	 */
@@ -203,7 +209,7 @@ class WUT {
 	}
 
 	/**
-	 * Output backtrace of this method call inserted point.
+	 * Global helpers: Output backtrace.
 	 *
 	 * @return void
 	 */

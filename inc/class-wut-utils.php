@@ -1,15 +1,17 @@
 <?php
+/**
+ * Features other than widgets.
+ */
 
+/**
+ * Utils class.
+ */
 class WUT_Utils {
 
-	protected $options;
 	/**
 	 * Constructor function
-	 *
-	 * @param array $opt Options array.
 	 */
-	public function __construct( $opt ) {
-		$this->options = $opt;
+	public function __construct() {
 	}
 
 	/**
@@ -97,7 +99,7 @@ class WUT_Utils {
 	}
 
 	protected function _select_code_snippets( $hook ) {
-		$codesnippets = $this->options['customcode'];
+		$codesnippets = WUT_Option_Manager::me()->get_options_by_key( 'customcode' );
 		if ( ! is_array( $codesnippets ) || empty( $codesnippets ) ) {
 			return '';
 		}
