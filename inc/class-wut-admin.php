@@ -214,10 +214,4 @@ class WUT_Admin {
 	public function __construct() {
 	}
 
-	/**
-	 * Assist function, used for saving options.
-	 */
-	protected function _save_option() {
-		WUT::$me->options->save_options();
-	}
 }

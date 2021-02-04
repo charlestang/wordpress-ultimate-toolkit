@@ -300,22 +300,19 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 			$manager = WUT_Option_Manager::me();
 			$options = $manager->get_options_by_key( $this->option_name );
 			if ( ! isset( $options[ $id ] ) ) {
-				echo json_encode( array( 'ret' => true ) );
+				echo wp_json_encode( array( 'ret' => true ) );
 				wp_die();
-				return;
 			}
 			unset( $options[ $id ] );
 			$manager->set_options_by_key( $this->option_name, $options );
 			$ret = $manager->save_options();
 			if ( ! $ret ) {
-				echo json_encode( array( 'ret' => false ) );
+				echo wp_json_encode( array( 'ret' => false ) );
 				wp_die();
-				return;
 			}
 		}
-		echo json_encode( array( 'ret' => true ) );
+		echo wp_json_encode( array( 'ret' => true ) );
 		wp_die();
-		return;
 	}
 
 	/**

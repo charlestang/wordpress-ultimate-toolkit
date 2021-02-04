@@ -1,6 +1,8 @@
 <?php
 /**
  * Features other than widgets.
+ *
+ * @package WordPress_Ultimate_Toolkit
  */
 
 /**
