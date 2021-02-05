@@ -4,8 +4,8 @@ Donate link: http://sexywp.com/wut
 Tags: related psots, recent posts, recent comments, popular posts, widgets, auto digest  
 Requires at least: 5.3.0  
 Requires PHP: 5.6  
-Tested up to: 5.6  
-Stable tag: 2.0.5  
+Tested up to: 5.6.1  
+Stable tag: 2.0.6  
 License: GPL v3  
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 

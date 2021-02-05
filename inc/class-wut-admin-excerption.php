@@ -27,20 +27,6 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 		return new self();
 	}
 
-	/**
-	 * The default options of Auto Excerption are moved from Option Manager to here.
-	 *
-	 * @return array
-	 */
-	public function default_options() {
-		return array(
-			'enabled'      => true,
-			'paragraphs'   => 3,
-			'words'        => 250,
-			'tip_template' => '<br/><br/><span class="readmore"><a href="%permalink%" title="%title%">Continue Reading--%total_words% words totally</a></span>',
-		);
-	}
-
 	public function form( $options ) {
 		$enabled = isset( $options['enabled'] ) ? (bool) $options['enabled'] : true;
 		?>

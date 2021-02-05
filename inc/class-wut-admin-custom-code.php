@@ -100,12 +100,12 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 			<thead>
 				<tr>
 					<td id="cb" class="manage-column column-cb check-column"><input id="cb-select-all-1" type="checkbox"/></td>
-					<th scope="col" id="title" class="manage-column column-title column-primary">标题</th>
-					<th scope="col" id="remark" class="manage-column column-remark">备忘</th>
-					<th scope="col" id="hook" class="manage-column column-hook">钩子</th>
-					<th scope="col" id="priority" class="manage-column column-priority">优先级</th>
-					<th scope="col" id="date" class="manage-column column-date">日期</th>
-					<th scope="col" id="action" class="manage-column column-action">操作</th>
+					<th scope="col" id="title" class="manage-column column-title column-primary"><?php _e( 'Title', 'wut' ); ?></th>
+					<th scope="col" id="remark" class="manage-column column-remark"><?php _e( 'Remark', 'wut' ); ?></th>
+					<th scope="col" id="hook" class="manage-column column-hook"><?php _e( 'Hook', 'wut' ); ?></th>
+					<th scope="col" id="priority" class="manage-column column-priority"><?php _e( 'Priority', 'wut' ); ?></th>
+					<th scope="col" id="date" class="manage-column column-date"><?php _e( 'Date', 'wut' ); ?></th>
+					<th scope="col" id="action" class="manage-column column-action"><?php _e( 'Actions', 'wut' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -118,8 +118,8 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 				<td scope="col"><?php echo $snippet['priority']; ?></td>
 				<td scope="col"><?php echo $snippet['date_time']; ?></td>
 				<td scope="col">
-					<a class="thickbox" href="admin-ajax.php?action=wut_custom_code&edit=1&id=<?php echo $id; ?>&KeepThis=true&TB_iframe=true&height=400&width=600">编辑</a>
-					<a class="delete" href="admin-ajax.php?action=wut_custom_code_delete&delete=1&id=<?php echo $id; ?>&KeepThis=true&TB_iframe=true&height=400&width=600">删除</a>
+					<a class="thickbox" href="admin-ajax.php?action=wut_custom_code&edit=1&id=<?php echo $id; ?>&KeepThis=true&TB_iframe=true"><?php _e( 'Edit', 'wut' ); ?></a>
+					<a class="delete" style="color:red;" href="admin-ajax.php?action=wut_custom_code_delete&delete=1&id=<?php echo $id; ?>"><?php _e( 'Delete', 'wut' ); ?></a>
 				</td>
 			</tr>
 			<?php endforeach; ?>
@@ -128,11 +128,11 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 			<tfoot>
 				<tr>
 					<td class="manage-column column-cb check-column"><input id="cb-select-all-1" type="checkbox"/></td>
-					<th scope="col" class="manage-column column-title column-primary">标题</th>
-					<th scope="col" class="manage-column column-remark">备忘</th>
-					<th scope="col" class="manage-column column-hook">钩子</th>
-					<th scope="col" class="manage-column column-date">日期</th>
-					<th scope="col" class="manage-column column-action">操作</th>
+					<th scope="col" class="manage-column column-title column-primary"><?php _e( 'Title', 'wut' ); ?></th>
+					<th scope="col" class="manage-column column-remark"><?php _e( 'Remark', 'wut' ); ?></th>
+					<th scope="col" class="manage-column column-hook"><?php _e( 'Hook', 'wut' ); ?></th>
+					<th scope="col" class="manage-column column-date"><?php _e( 'Date', 'wut' ); ?></th>
+					<th scope="col" class="manage-column column-action"><?php _e( 'Actions', 'wut' ); ?></th>
 				</tr>
 			</tfoot>
 			<?php endif; ?>
@@ -214,15 +214,6 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 	}
 
 	/**
-	 * Defaults of options.
-	 *
-	 * @return array
-	 */
-	public function default_options() {
-		return array();
-	}
-
-	/**
 	 * Dependency javascript code.
 	 *
 	 * @return void
@@ -284,6 +275,13 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 		<?php
 	}
 
+	/**
+	 * After user submitted a form table or clicked EDIT link,
+	 * a thickbox wrapped form table will show up. This method
+	 * is used to fetch the options value used by that form table.
+	 *
+	 * @return array
+	 */
 	public function process_edit() {
 		if ( isset( $_GET['edit'] ) && 1 === absint( $_GET['edit'] ) ) {
 			$id      = sanitize_text_field( $_GET['id'] );
@@ -294,6 +292,11 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 		return array();
 	}
 
+	/**
+	 * This method is used to process the delete action.
+	 *
+	 * @return void
+	 */
 	public function process_delete() {
 		if ( isset( $_GET['delete'] ) && 1 === absint( $_GET['delete'] ) ) {
 			$id      = sanitize_text_field( $_GET['id'] );
@@ -411,7 +414,7 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 							type="text" id="custom-code-source"><?php echo $source; ?></textarea></td>
 				</tr>
 				</tbody></table>
-				<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="保存更改"></p>
+				<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Save', 'wut' ); ?>"></p>
 			</form>
 		</div></div></div></div></body>
 		</html>

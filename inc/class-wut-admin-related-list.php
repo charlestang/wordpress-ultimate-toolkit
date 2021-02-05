@@ -89,18 +89,4 @@ class WUT_Admin_Related_List extends WUT_Admin_Panel {
 	public function update( $new_options, $old_options ) {
 		return $new_options;
 	}
-
-	/**
-	 * Default options of related posts list.
-	 *
-	 * @return array
-	 */
-	public function default_options() {
-		return array(
-			'enabled'            => false,
-			'title'              => __( 'Related Posts', 'wut' ),
-			'number'             => 5,
-			'show_comment_count' => true,
-		);
-	}
 }

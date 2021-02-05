@@ -96,13 +96,6 @@ abstract class WUT_Admin_Panel {
 	abstract public function update( $new_options, $old_options );
 
 	/**
-	 * Defaults of options.
-	 *
-	 * @return void
-	 */
-	abstract public function default_options();
-
-	/**
 	 * Print the form table, this method will be called in
 	 * admin object.
 	 *
