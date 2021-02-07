@@ -105,7 +105,7 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Upgrade recommended.
 
 ## Screenshots
-1. Eight widgets in this plugin.
-2. Excerpt settings example.
-3. Hide pages you don't want to show on your homepage.
-4. Word count column in *Eidt Posts*
+1. 自动摘要功能的选项面板。
+2. 相关文章小挂件。
+3. 热门文章小挂件。
+4. 最新文章小挂件。

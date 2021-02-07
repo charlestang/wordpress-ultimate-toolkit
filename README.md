@@ -107,7 +107,7 @@ Provides a variety of handy little features such as word count, inserting custom
 Upgrade recommended.
 
 ## Screenshots
-1. Eight widgets in this plugin.
-2. Excerpt settings example.
-3. Hide pages you don't want to show on your homepage.
-4. Word count column in *Eidt Posts*
+1. The option page of auto excerption feature.
+2. Related posts list widget.
+3. Most viewed posts list widget.
+4. Recent posts list widget.
