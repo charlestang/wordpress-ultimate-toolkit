@@ -106,7 +106,7 @@ function wut_most_viewed_posts( $args = array() ) {
 			$record   = wut_private_render_template_by_post(
 				$r['xformat'],
 				$post,
-				'Y-m-d',
+				$r['date_format'],
 				function( $template ) use ( $post ) {
 					return str_replace(
 						'%viewcount%',
@@ -174,7 +174,7 @@ function wut_related_posts( $args = '' ) {
 
 	$tag_ids = array_map(
 		function( $tag ) {
-			return $tag->term_taxonomy_id;
+			return $tag->term_id;
 		},
 		wp_get_object_terms( $post_ID, 'post_tag' )
 	);

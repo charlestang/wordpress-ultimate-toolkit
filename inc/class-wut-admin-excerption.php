@@ -27,8 +27,16 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 		return new self();
 	}
 
+	/**
+	 * Print a form table of auto excerption featrue.
+	 *
+	 * @param array $options The options array of this feature.
+	 * @return void
+	 */
 	public function form( $options ) {
-		$enabled = isset( $options['enabled'] ) ? (bool) $options['enabled'] : true;
+		$enabled    = isset( $options['enabled'] ) ? (bool) $options['enabled'] : true;
+		$paragraphs = isset( $options['paragraphs'] ) ? absint( $options['paragraphs'] ) : 3;
+		$words      = isset( $options['words'] ) ? absint( $options['words'] ) : 250;
 		?>
 		<table class="form-table" role="presentation"><tbody>
 			<tr valign="top">
@@ -50,7 +58,7 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 					id="<?php echo $this->get_field_id( 'excerpt_paragraphs_number' ); ?>"
 					name="<?php echo $this->get_field_name( 'paragraphs' ); ?>"
 					type="text" size="10" 
-					value="<?php echo $options['paragraphs']; ?>"/></td>
+					value="<?php echo $paragraphs; ?>"/></td>
 			</tr>
 			<tr valign="top">
 				<th scope="row"><label for="excerpt_words_number"><?php _e( 'Words Number', 'wut' ); ?></label></th>
@@ -58,30 +66,37 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 					id="<?php echo $this->get_field_id( 'excerpt_words_number' ); ?>"
 					name="<?php echo $this->get_field_name( 'words' ); ?>"
 					type="text" size="10" 
-					value="<?php echo $options['words']; ?>"/></td>
+					value="<?php echo $words; ?>"/></td>
 			</tr>
 			<tr>
 				<th scope="row"><label for="excerpt_continue_reading_tip_template"><?php _e( '"Continue Reading" tip template:', 'wut' ); ?></label></th>
 				<td><fieldset>
-					<p>Use variables:</p>
-					<ul>
-						<li>%total_words% --- The number of words in the post.</li>
-						<li>%title% --- Post title.</li>
-						<li>%permalink --- The permanent link of the post.</li>
-						<li><?php echo esc_html( '<br/>' ); ?> --- new line.</li>
-					</ul>
-					<p>HTML tags supported.</p>
 					<p><textarea 
 							id="<?php echo $this->get_field_id( 'excerpt_continue_reading_tip_template' ); ?>"
 							name="<?php echo $this->get_field_name( 'tip_template' ); ?>"
 							class="large-text code" 
 							rows="3"><?php echo esc_attr( $options['tip_template'] ); ?></textarea></p>
+					<p>Use variables:</p>
+					<ul>
+						<li>%total_words% --- The number of words in the post.</li>
+						<li>%title% --- Post title.</li>
+						<li>%permalink% --- The permanent link of the post.</li>
+						<li><?php echo esc_html( '<br/>' ); ?> --- new line.</li>
+					</ul>
+					<p>HTML tags supported.</p>
 				</filedset></td>
 			</tr>
 		</tbody></table>
 		<?php
 	}
 
+	/**
+	 * Filter user submitted options value.
+	 *
+	 * @param array $new_options The new submitted options array.
+	 * @param array $old_options The original options array.
+	 * @return array
+	 */
 	public function update( $new_options, $old_options ) {
 		return $new_options;
 	}

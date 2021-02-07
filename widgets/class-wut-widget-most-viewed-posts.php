@@ -68,6 +68,16 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 			}
 		}
 
+		if ( isset( $instance['date_format'] ) ) {
+			if ( 'custom' === $instance['date_format'] ) {
+				$tag_args['date_format'] = $instance['custom_format'];
+			} else {
+				$tag_args['date_format'] = $instance['date_format'];
+			}
+		} else {
+			$tag_args['date_format'] = get_option( 'date_format' );
+		}
+
 		$this->helper->print_widget( $args, $title, '<ul>' . wut_most_viewed_posts( $tag_args ) . '</ul>' );
 	}
 
@@ -81,12 +91,14 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 		$instance                    = $old_instance;
 		$instance['title']           = sanitize_text_field( $new_instance['title'] );
 		$instance['number']          = intval( $new_instance['number'] );
-		$instance['show_date']       = (bool) $new_instance['show_date'];
-		$instance['date_front']      = (bool) $new_instance['date_front'];
+		$instance['show_date']       = isset( $new_instance['show_date'] ) ? (bool) $new_instance['show_date'] : false;
+		$instance['date_front']      = isset( $new_instance['date_front'] ) ? (bool) $new_instance['date_front'] : false;
 		$instance['excerpt_words']   = intval( $new_instance['excerpt_words'] );
 		$instance['time_range']      = intval( $new_instance['time_range'] );
 		$instance['custom_range']    = intval( $new_instance['custom_range'] );
-		$instance['show_view_count'] = (bool) $new_instance['show_view_count'];
+		$instance['show_view_count'] = isset( $new_instance['show_view_count'] ) ? (bool) $new_instance['show_view_count'] : false;
+		$instance['date_format']     = sanitize_text_field( $new_instance['date_format'] );
+		$instance['custom_format']   = sanitize_text_field( $new_instance['custom_format'] );
 		return $instance;
 	}
 
@@ -96,14 +108,17 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 	 * @param array $instance The settings of this widget instance.
 	 */
 	public function form( $instance ) {
-		$title           = $this->helper->default( $instance, 'title', 'string', '' );
-		$number          = $this->helper->default( $instance, 'number', 'uint', 10 );
-		$show_date       = $this->helper->default( $instance, 'show_date', 'bool', false );
-		$date_front      = $this->helper->default( $instance, 'date_front', 'bool', false );
-		$excerpt_words   = $this->helper->default( $instance, 'excerpt_words', 'uint', 15 );
-		$time_range      = $this->helper->default( $instance, 'time_range', 'int', 365 );
-		$custom_range    = $this->helper->default( $instance, 'custom_range', 'uint', 365 );
-		$show_view_count = $this->helper->default( $instance, 'show_view_count', 'bool', true );
+		$title            = $this->helper->default( $instance, 'title', 'string', '' );
+		$number           = $this->helper->default( $instance, 'number', 'uint', 10 );
+		$show_date        = $this->helper->default( $instance, 'show_date', 'bool', false );
+		$date_front       = $this->helper->default( $instance, 'date_front', 'bool', false );
+		$excerpt_words    = $this->helper->default( $instance, 'excerpt_words', 'uint', 15 );
+		$time_range       = $this->helper->default( $instance, 'time_range', 'int', 365 );
+		$custom_range     = $this->helper->default( $instance, 'custom_range', 'uint', 365 );
+		$show_view_count  = $this->helper->default( $instance, 'show_view_count', 'bool', true );
+		$site_date_format = get_option( 'date_format' );
+		$date_format      = $this->helper->default( $instance, 'date_format', 'string', $site_date_format );
+		$custom_format    = $this->helper->default( $instance, 'custom_format', 'string', $site_date_format );
 
 		$this->helper->text( 'title', $title, __( 'Title:' ) );
 		$this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' );
@@ -132,7 +147,17 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 			</label>
 		</p>
 		<?php
-			$this->helper->checkbox( 'show_view_count', $show_view_count, __( 'Show view count?', 'wut' ) );
-		// TODO: Add date format support for this posts list.
+
+		$this->helper->checkbox( 'show_view_count', $show_view_count, __( 'Show view count?', 'wut' ) );
+
+		$this->helper->date_format_chooser(
+			array(
+				'date_format_property'   => 'date_format',
+				'date_format_value'      => $date_format,
+				'date_format_default'    => $site_date_format,
+				'custom_format_property' => 'custom_format',
+				'custom_format_value'    => $custom_format,
+			)
+		);
 	}
 }

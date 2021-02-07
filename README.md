@@ -49,6 +49,9 @@ Provides a variety of handy little features such as word count, inserting custom
  1. Done :)
 
 ## Changelog
+### 2.0.6
+ * FIXED. Related posts list cannot show correct results.
+
 ### 2.0.5
  * Control options added for related posts list like list title, number of posts, etc.
  * `Active Commentators` and `Recent Commentators` widgets removed.
