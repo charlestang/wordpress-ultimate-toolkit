@@ -208,8 +208,6 @@ class WUT_Admin {
 
 	/**
 	 * The Constructor.
-	 *
-	 * @param array $opt Options of this plugin.
 	 */
 	public function __construct() {
 	}

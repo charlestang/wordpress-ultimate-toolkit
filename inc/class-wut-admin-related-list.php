@@ -45,24 +45,21 @@ class WUT_Admin_Related_List extends WUT_Admin_Panel {
 						id="related_list_enabled"
 						name="<?php echo $this->get_field_name( 'enabled' ); ?>"
 						type="checkbox"
-						value="1"<?php checked( $enabled ); ?>/></td>
-			</tr>
+						value="1"<?php checked( $enabled ); ?>/></td></tr>
 			<tr valign="top">
 				<th scope="row"><label for="related_list_title"><?php _e( 'Related list title', 'wut' ); ?></label></th>
 				<td><input
 					id="related_list_title"
 					name="<?php echo $this->get_field_name( 'title' ); ?>"
 					type="text" class="regular-text"
-					value="<?php echo esc_attr( $title ); ?>"/></td>
-			</tr>
+					value="<?php echo esc_attr( $title ); ?>"/></td></tr>
 			<tr valign="top">
 				<th scope="row"><label for="related_list_number"><?php _e( 'Number of posts', 'wut' ); ?></label></th>
 				<td><input
 					id="related_list_number"
 					name="<?php echo $this->get_field_name( 'number' ); ?>"
 					type="text" size="10"
-					value="<?php echo $number; ?>"/></td>
-			</tr>
+					value="<?php echo $number; ?>"/></td></tr>
 			<tr valign="top">
 				<th scope="row"><label for="related_list_comment_count"><?php _e( 'Show comment count', 'wut' ); ?></label></th>
 				<td><input
@@ -73,8 +70,7 @@ class WUT_Admin_Related_List extends WUT_Admin_Panel {
 						id="related_list_comment_count"
 						name="<?php echo $this->get_field_name( 'show_comment_count' ); ?>"
 						type="checkbox"
-						value="1"<?php checked( $show_comment_count ); ?>/></td>
-			</tr>
+						value="1"<?php checked( $show_comment_count ); ?>/></td></tr>
 		</tbody></table>
 		<?php
 	}

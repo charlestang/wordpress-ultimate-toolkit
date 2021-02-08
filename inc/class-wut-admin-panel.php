@@ -68,16 +68,6 @@ abstract class WUT_Admin_Panel {
 	abstract public static function me();
 
 	/**
-	 * This is used to generate the anchor of this tab. The usage
-	 * of it should reference of jQuery UI tabs.
-	 *
-	 * @return string
-	 */
-	public function get_tab_anchor() {
-		return '#' . $this->id;
-	}
-
-	/**
 	 * This method must be implemented.
 	 * Print the form of option panel.
 	 *
@@ -104,6 +94,16 @@ abstract class WUT_Admin_Panel {
 	public function print_form_table() {
 		$options = WUT_Option_Manager::me()->get_options_by_key( $this->option_name );
 		$this->form( $options );
+	}
+
+	/**
+	 * This is used to generate the anchor of this tab. The usage
+	 * of it should reference of jQuery UI tabs.
+	 *
+	 * @return string
+	 */
+	public function get_tab_anchor() {
+		return '#' . $this->id;
 	}
 
 	/**
