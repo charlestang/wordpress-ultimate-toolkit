@@ -16,14 +16,13 @@ function wut_recent_posts( $args = array() ) {
 		'offset'      => 0,
 		'before'      => '<li>',
 		'after'       => '</li>',
-		'type'        => 'post', // the value of type could be `post`, `page` or `both`.
-		'skips'       => '', // comma seperated post_ID list.
-		'none'        => __( 'No Posts.', 'wut' ), // tips to show when results is empty.
+		'skips'       => '',
+		'none'        => __( 'No Posts.', 'wut' ),
 		'password'    => 'hide',
-		'orderby'     => 'post_date', // 'post_modified' is alternative.
+		'orderby'     => 'post_date',
 		'xformat'     => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
 		'date_format' => '',
-		'echo'        => 1, // to show all results or just return.
+		'echo'        => 1,
 	);
 	$r        = wp_parse_args( $args, $defaults );
 
@@ -68,7 +67,6 @@ function wut_most_viewed_posts( $args = array() ) {
 		'offset'   => 0,
 		'before'   => '<li>',
 		'after'    => '</li>',
-		'type'     => 'post',
 		'skips'    => '',
 		'none'     => __( 'No Posts.', 'wut' ),
 		'password' => 'hide',
@@ -144,21 +142,20 @@ function wut_random_posts( $args = array() ) {
  *
  * @param array $args Control arguments.
  */
-function wut_related_posts( $args = '' ) {
+function wut_related_posts( $args = array() ) {
 	$defaults = array(
 		'postid'     => false,
 		'limit'      => 10,
 		'offset'     => 0,
 		'before'     => '<li>',
 		'after'      => '</li>',
-		'type'       => 'both',
 		'skips'      => '',
 		'leastshare' => 1,
 		'password'   => 'hide',
 		'orderby'    => 'post_date',
 		'order'      => 'DESC',
 		'xformat'    => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
-		'none'       => 'No Related Posts.',
+		'none'       => __( 'No posts.', 'wut' ),
 		'echo'       => 1,
 	);
 	$r        = wp_parse_args( $args, $defaults );

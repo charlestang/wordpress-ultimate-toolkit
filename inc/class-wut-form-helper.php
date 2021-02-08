@@ -2,7 +2,8 @@
 /**
  * The form helper class to generate the widget form easily.
  *
- * @package wut
+ * @package WordPress_Ultimate_Toolkit
+ * @subpackage admin
  */
 
 /**

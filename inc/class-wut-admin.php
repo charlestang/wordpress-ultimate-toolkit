@@ -18,6 +18,12 @@
 class WUT_Admin {
 
 	/**
+	 * The Constructor.
+	 */
+	public function __construct() {
+	}
+
+	/**
 	 * Option tabs
 	 *
 	 * @var WUT_Admin_Panel[]
@@ -204,12 +210,6 @@ class WUT_Admin {
 			})(jQuery);
 		</script>
 		<?php
-	}
-
-	/**
-	 * The Constructor.
-	 */
-	public function __construct() {
 	}
 
 }
