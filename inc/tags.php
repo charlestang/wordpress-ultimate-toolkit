@@ -215,13 +215,12 @@ function wut_related_posts( $args = array() ) {
 function wut_posts_by_category( $args = array() ) {
 	$defaults = array(
 		'postid'   => false,
-		'orderby'  => 'rand', // 'post_date', 'comment_count', 'post_modified'.
-		'order'    => 'asc', // 'desc'
+		'orderby'  => 'rand',
+		'order'    => 'asc',
 		'before'   => '<li>',
 		'after'    => '</li>',
 		'limit'    => 5,
 		'offset'   => 0,
-		'type'     => 'post', // @deprecated
 		'skips'    => '',
 		'password' => 'hide',
 		'none'     => 'No Posts.',
@@ -299,18 +298,15 @@ function wut_most_commented_posts( $args = array() ) {
  */
 function wut_recent_comments( $args = array() ) {
 	$defaults = array(
-		'limit'       => 5,
-		'offset'      => 0,
-		'before'      => '<li>',
-		'after'       => '</li>',
-		'length'      => 50,
-		'skipusers'   => '',
-		'avatarsize'  => 16,
-		'password'    => 'hide',
-		'posttype'    => 'post',
-		'commenttype' => 'comment',
-		'xformat'     => '%gravatar%<a class="commentator" href="%permalink%" >%commentauthor%</a> : %commentexcerpt%',
-		'echo'        => 1,
+		'limit'      => 5,
+		'offset'     => 0,
+		'before'     => '<li>',
+		'after'      => '</li>',
+		'length'     => 50,
+		'skipusers'  => '',
+		'avatarsize' => 16,
+		'xformat'    => '%gravatar%<a class="commentator" href="%permalink%" >%commentauthor%</a> : %commentexcerpt%',
+		'echo'       => 1,
 	);
 	$r        = wp_parse_args( $args, $defaults );
 
@@ -387,7 +383,7 @@ function wut_recent_commentators( $args = array() ) {
 		'skipusers'  => 'admin',
 		'before'     => '<li>',
 		'after'      => '</li>',
-		'none'       => 'No Results.',
+		'none'       => __( 'No Results.', 'wut' ),
 		'avatarsize' => 16,
 		'xformat'    => '%avatar%<a href="%url%" rel="nofollow">%author%</a>',
 		'echo'       => 1,

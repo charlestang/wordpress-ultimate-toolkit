@@ -28,6 +28,36 @@ class WUT_Form_Helper {
 	}
 
 	/**
+	 * Print a field id attr.
+	 *
+	 * @param string $field The field name.
+	 * @return void
+	 */
+	public function print_id( $field ) {
+		$this->print( $this->widget->get_field_id( $field ) );
+	}
+
+	/**
+	 * Print a field name attr.
+	 *
+	 * @param string $field The field name.
+	 * @return void
+	 */
+	public function print_name( $field ) {
+		$this->print( $this->widget->get_field_name( $field ) );
+	}
+
+	/**
+	 * Print a string.
+	 *
+	 * @param string $str The string to print.
+	 * @return void
+	 */
+	public function print( $str ) {
+		echo $str;
+	}
+
+	/**
 	 * Print a checkbox form control on page.
 	 *
 	 * @param string $property The property name.
@@ -38,10 +68,10 @@ class WUT_Form_Helper {
 		?>
 		<p>
 			<input class="checkbox" type="checkbox"<?php checked( $value ); ?> 
-				id="<?php echo $this->widget->get_field_id( $property ); ?>" 
-				name="<?php echo $this->widget->get_field_name( $property ); ?>" />
-			<label for="<?php echo $this->widget->get_field_id( $property ); ?>">
-				<?php echo $label; ?>
+				id="<?php $this->print_id( $property ); ?>"
+				name="<?php $this->print_name( $property ); ?>" />
+			<label for="<?php $this->print_id( $property ); ?>">
+				<?php $this->print( $label ); ?>
 			</label>
 		</p>
 		<?php
@@ -59,13 +89,13 @@ class WUT_Form_Helper {
 	public function text( $property, $value, $label, $type = 'text', $class = 'widefat' ) {
 		?>
 		<p>
-			<label for="<?php echo $this->widget->get_field_id( $property ); ?>">
-				<?php echo $label; ?>
+			<label for="<?php $this->print_id( $property ); ?>">
+				<?php $this->print( $label ); ?>
 			</label>
-			<input class="<?php echo $class; ?>" 
-				id="<?php echo $this->widget->get_field_id( $property ); ?>" 
-				name="<?php echo $this->widget->get_field_name( $property ); ?>" 
-				type="<?php echo $type; ?>" value="<?php echo $value; ?>" />
+			<input class="<?php $this->print( $class ); ?>"
+				id="<?php $this->print_id( $property ); ?>"
+				name="<?php $this->print_name( $property ); ?>"
+				type="<?php $this->print( $type ); ?>" value="<?php $this->print( $value ); ?>" />
 		</p>
 		<?php
 	}
@@ -120,7 +150,7 @@ class WUT_Form_Helper {
 			<span><?php _e( 'Date format:', 'wut' ); ?></span><br/>
 			<label>
 				<input type="radio" 
-					name="<?php echo $this->widget->get_field_name( $config['date_format_property'] ); ?>"
+					name="<?php $this->print_name( $config['date_format_property'] ); ?>"
 					<?php checked( $config['date_format_value'], $config['date_format_default'] ); ?> 
 					value="<?php echo $config['date_format_default']; ?>"/>
 				<span style="display:inline-block;min-width:10em;">
@@ -130,27 +160,27 @@ class WUT_Form_Helper {
 			</label><br/>
 			<label>
 				<input type="radio" 
-					name="<?php echo $this->widget->get_field_name( $config['date_format_property'] ); ?>"
+					name="<?php $this->print_name( $config['date_format_property'] ); ?>"
 					<?php checked( $config['date_format_value'], 'M d' ); ?> value="M d"/>
 				<span style="display:inline-block;min-width:10em;"><?php echo date( 'M d' ); ?></span>
 				<code>M d</code>
 			</label><br/>
 			<label>
 				<input type="radio" 
-					name="<?php echo $this->widget->get_field_name( $config['date_format_property'] ); ?>"
+					name="<?php $this->print_name( $config['date_format_property'] ); ?>"
 					<?php checked( $config['date_format_value'], 'd F y' ); ?> value="d F y"/>
 				<span style="display:inline-block;min-width:10em;"><?php echo date( 'd F y' ); ?></span>
 				<code>d F y</code>
 			</label><br/>
 			<label>
 				<input type="radio" 
-					name="<?php echo $this->widget->get_field_name( $config['date_format_property'] ); ?>"
+					name="<?php $this->print_name( $config['date_format_property'] ); ?>"
 					<?php checked( $config['date_format_value'], 'custom' ); ?> value="custom"/>
 				<span style="display:inline-block;min-width:10em;"><?php _e( 'Custom', 'wut' ); ?></span>
 				<input class="medium-text" 
-					id="<?php echo $this->widget->get_field_id( $config['custom_format_property'] ); ?>" 
-					name="<?php echo $this->widget->get_field_name( $config['custom_format_property'] ); ?>" 
-					type="text" step="1" min="1" value="<?php echo $config['custom_format_value']; ?>" 
+					id="<?php $this->print_id( $config['custom_format_property'] ); ?>"
+					name="<?php $this->print_name( $config['custom_format_property'] ); ?>"
+					type="text" step="1" min="1" value="<?php echo $config['custom_format_value']; ?>"
 					size="6" />
 			</label><br/>
 			<strong><?php _e( 'Preview: ', 'wut' ); ?></strong>
