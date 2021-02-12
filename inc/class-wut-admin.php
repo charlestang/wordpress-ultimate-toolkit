@@ -46,7 +46,7 @@ class WUT_Admin {
 						__( 'WP Ultimate Toolkit', 'wut' ),
 						'activate_plugins',
 						self::MENU_SLUG,
-						array( $this, 'options_page' ),
+						array( $this, 'options_page' )
 					);
 				}
 			);
