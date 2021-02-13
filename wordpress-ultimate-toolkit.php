@@ -4,7 +4,7 @@ Plugin Name: WordPress Ultimate Toolkit
 Plugin URI: http://sexywp.com/wut
 Description: Provide a variety of widgets with rich options, such as recent posts, related articles, latest comments, and popular posts, etc.
 Author: Charles
-Version: 2.0.6
+Version: 2.0.7
 Author URI: http://sexywp.com
  */
 

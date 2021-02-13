@@ -5,7 +5,7 @@ Tags: related psots, recent posts, recent comments, popular posts, widgets, auto
 Requires at least: 5.3.0  
 Requires PHP: 5.6  
 Tested up to: 5.6.1  
-Stable tag: 2.0.6  
+Stable tag: 2.0.7  
 License: GPL v3  
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -49,6 +49,10 @@ Provides a variety of handy little features such as word count, inserting custom
  1. Done :)
 
 ## Changelog
+
+### 2.0.7
+ * FIXED. Syntax error in PHP 7.0.
+
 ### 2.0.6
  * FIXED. Related posts list cannot show correct results.
 
