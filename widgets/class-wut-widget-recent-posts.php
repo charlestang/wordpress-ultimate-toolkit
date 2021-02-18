@@ -26,7 +26,7 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 			'description'                 => __( 'NEW! List the recent posts and provide some advanced options', 'wordpress-ultimate-toolkit' ),
 			'customize_selective_refresh' => true,
 		);
-		parent::__construct( '', __( 'WUT:Recent Posts', 'wordpress-ultimate-toolkit' ), $widget_ops );
+		parent::__construct( '', __( 'WUT-Recent Posts', 'wordpress-ultimate-toolkit' ), $widget_ops );
 		$this->helper = new WUT_Form_Helper( $this );
 	}
 
@@ -103,7 +103,7 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 		$this->helper->text( 'title', $title, __( 'Title:' ) );
 		$this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' );
 		$this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?' ) );
-		$this->helper->checkbox( 'date_before_title', $date_before_title, __( 'Show date before title?' ) );
+		$this->helper->checkbox( 'date_before_title', $date_before_title, __( 'Show date before title?', 'wordpress-ultimate-toolkit' ) );
 		$this->helper->date_format_chooser(
 			array(
 				'date_format_property'   => 'date_format',

@@ -29,7 +29,7 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 			'description'                 => __( 'NEW! List most viewed posts. This need WP Postviews installed first.', 'wordpress-ultimate-toolkit' ),
 			'customize_selective_refresh' => true,
 		);
-		parent::__construct( '', __( 'WUT:Most Viewed Posts', 'wordpress-ultimate-toolkit' ), $widget_ops );
+		parent::__construct( '', __( 'WUT-Most Viewed Posts', 'wordpress-ultimate-toolkit' ), $widget_ops );
 		$this->helper = new WUT_Form_Helper( $this );
 	}
 

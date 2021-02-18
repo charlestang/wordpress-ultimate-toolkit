@@ -50,6 +50,9 @@ Provides a variety of handy little features such as word count, inserting custom
 
 ## Changelog
 
+### 2.0.8
+ * FIXED. Language packs loaded automatically.
+
 ### 2.0.7
  * FIXED. Syntax error in PHP 7.0.
 

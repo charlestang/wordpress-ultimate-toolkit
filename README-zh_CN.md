@@ -49,6 +49,9 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
  1. Done :)
 
 ## Changelog
+### 2.0.8
+ * 自动加载语言包。目前支持中文语言包。
+
 ### 2.0.7
  * 修复 PHP 7.0 下的语法错误。
 

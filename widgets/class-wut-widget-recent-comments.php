@@ -26,7 +26,7 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 			'description'                 => __( 'NEW! List recent comments.', 'wordpress-ultimate-toolkit' ),
 			'customize_selective_refresh' => true,
 		);
-		parent::__construct( '', __( 'WUT:Recent Comments', 'wordpress-ultimate-toolkit' ), $widget_ops );
+		parent::__construct( '', __( 'WUT-Recent Comments', 'wordpress-ultimate-toolkit' ), $widget_ops );
 		$this->helper = new WUT_Form_Helper( $this );
 	}
 

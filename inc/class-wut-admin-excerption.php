@@ -76,14 +76,14 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 							name="<?php echo $this->get_field_name( 'tip_template' ); ?>"
 							class="large-text code" 
 							rows="3"><?php echo esc_attr( $options['tip_template'] ); ?></textarea></p>
-					<p>Use variables:</p>
+					<p><?php _e( 'Use variables:', 'wordpress-ultimate-toolkit' ); ?></p>
 					<ul>
-						<li>%total_words% --- The number of words in the post.</li>
-						<li>%title% --- Post title.</li>
-						<li>%permalink% --- The permanent link of the post.</li>
-						<li><?php echo esc_html( '<br/>' ); ?> --- new line.</li>
+						<li><code>%total_words%</code> --- <?php _e( 'The number of words in the post.', 'wordpress-ultimate-toolkit' ); ?></li>
+						<li><code>%title%</code> --- <?php _e( 'Post title.', 'wordpress-ultimate-toolkit' ); ?></li>
+						<li><code>%permalink%</code> --- <?php _e( 'The permanent link of the post.', 'wordpress-ultimate-toolkit' ); ?></li>
+						<li><code><?php echo esc_html( '<br/>' ); ?></code> --- <?php _e( 'New line.', 'wordpress-ultimate-toolkit' ); ?></li>
 					</ul>
-					<p>HTML tags supported.</p>
+					<p><?php _e( 'HTML tags supported.', 'wordpress-ultimate-toolkit' ); ?></p>
 				</filedset></td>
 			</tr>
 		</tbody></table>

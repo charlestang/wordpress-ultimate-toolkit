@@ -28,7 +28,7 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 			'description'                 => __( 'NEW! List the related posts in SINGLE POST PAGE ONLY.', 'wordpress-ultimate-toolkit' ),
 			'customize_selective_refresh' => true,
 		);
-		parent::__construct( '', __( 'WUT:Related Posts', 'wordpress-ultimate-toolkit' ), $widget_ops );
+		parent::__construct( '', __( 'WUT-Related Posts', 'wordpress-ultimate-toolkit' ), $widget_ops );
 		$this->helper = new WUT_Form_Helper( $this );
 	}
 

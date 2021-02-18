@@ -173,7 +173,7 @@ class WUT_Admin {
 		list( $ret, $msg) = $this->process_submit_and_save();
 		?>
 		<div class="wrap wut-tabs">
-			<h1><?php echo __( 'WordPress Ultimate Toolkit Options', 'wordpress-ultimate-toolkit' ); ?></h1>
+			<h1><?php echo __( 'WordPress Ultimate Toolkit: Options', 'wordpress-ultimate-toolkit' ); ?></h1>
 			<hr class="wp-header-end" />
 			<?php $this->print_message( $msg, $ret ); ?>
 			<?php $this->print_tab_nav(); ?>
@@ -182,7 +182,7 @@ class WUT_Admin {
 				<?php wp_nonce_field(); ?>
 				<?php $this->print_tab_panels(); ?>
 				<p class="submit">
-					<input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
+					<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Save Changes' ); ?>">
 				</p>
 			</form>
 		</div>
