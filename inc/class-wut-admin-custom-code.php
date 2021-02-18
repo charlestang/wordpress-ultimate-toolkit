@@ -15,7 +15,8 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 	 * Constructor.
 	 */
 	public function __construct() {
-		parent::__construct( 'Custom Code', WUT_Option_Manager::SUBKEY_CUSTOM_CODE );
+		parent::__construct( __( 'Custom Code', 'wordpress-ultimate-toolkit' ), WUT_Option_Manager::SUBKEY_CUSTOM_CODE );
+		$this->id = 'admin-custom-code';
 
 		// register an ajax form table.
 		add_action( 'wp_ajax_wut_custom_code', array( $this, 'print_custom_form' ) );

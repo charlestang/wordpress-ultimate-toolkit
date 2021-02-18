@@ -25,6 +25,7 @@ abstract class WUT_Admin_Panel {
 	/**
 	 * The id base of this tab page.
 	 * This is used to generate the form control.
+	 * This must be set in child class.
 	 *
 	 * @var string
 	 */
@@ -47,16 +48,7 @@ abstract class WUT_Admin_Panel {
 	 * @param string $option_name The option key of options in this panel. If not provided, it will be generated from title.
 	 */
 	public function __construct( $title, $option_name ) {
-		$this->title       = __( $title, 'wordpress-ultimate-toolkit' );
-		$this->id          = 'admin-' . implode(
-			'-',
-			array_map(
-				function( $e ) {
-					return strtolower( $e );
-				},
-				explode( ' ', $title )
-			)
-		);
+		$this->title       = $title;
 		$this->option_name = $option_name;
 	}
 

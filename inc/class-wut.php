@@ -57,11 +57,6 @@ class WUT {
 	public static $me;
 
 	/**
-	 * The text domain of the plugin.
-	 */
-	const D = 'wordpress-ultimate-toolkit';
-
-	/**
 	 * The constructor.
 	 *
 	 * @param string $plugin_file The entry file of this plugin.

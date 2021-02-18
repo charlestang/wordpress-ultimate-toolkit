@@ -15,7 +15,8 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 	 * Create the Auto Excerption option page.
 	 */
 	public function __construct() {
-		parent::__construct( 'Auto Excerption', WUT_Option_Manager::SUBKEY_EXCERPTION );
+		parent::__construct( __( 'Auto Excerption', 'wordpress-ultimate-toolkit' ), WUT_Option_Manager::SUBKEY_EXCERPTION );
+		$this->id = 'admin-auto-excerption';
 	}
 
 	/**

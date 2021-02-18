@@ -15,7 +15,8 @@ class WUT_Admin_Related_List extends WUT_Admin_Panel {
 	 * Constructor of Related Posts option panel.
 	 */
 	public function __construct() {
-		parent::__construct( 'Related Posts List', WUT_Option_Manager::SUBKEY_RELATED_LIST );
+		parent::__construct( __( 'Related Posts List', 'wordpress-ultimate-toolkit' ), WUT_Option_Manager::SUBKEY_RELATED_LIST );
+		$this->id = 'admin-related-posts-list';
 	}
 
 	public static function me() {
