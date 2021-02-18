@@ -42,8 +42,8 @@ class WUT_Admin {
 				'admin_menu',
 				function() {
 					add_options_page(
-						__( 'WordPress Ultimate Toolkit', 'wut' ),
-						__( 'WP Ultimate Toolkit', 'wut' ),
+						__( 'WordPress Ultimate Toolkit', 'wordpress-ultimate-toolkit' ),
+						__( 'WP Ultimate Toolkit', 'wordpress-ultimate-toolkit' ),
 						'activate_plugins',
 						self::MENU_SLUG,
 						array( $this, 'options_page' )
@@ -130,13 +130,13 @@ class WUT_Admin {
 				}
 				$ret = WUT_Option_Manager::me()->save_options();
 				if ( ! $ret ) {
-					$msg = __( 'Update failed. Options are not changed or database error occured.', 'wut' );
+					$msg = __( 'Update failed. Options are not changed or database error occured.', 'wordpress-ultimate-toolkit' );
 				} else {
-					$msg = __( 'Options saved.', 'wut' );
+					$msg = __( 'Options saved.', 'wordpress-ultimate-toolkit' );
 				}
 			} else {
 				$ret = false;
-				$msg = __( 'Nonce verify failed.', 'wut' );
+				$msg = __( 'Nonce verify failed.', 'wordpress-ultimate-toolkit' );
 			}
 		}
 		return array( $ret, $msg );
@@ -173,7 +173,7 @@ class WUT_Admin {
 		list( $ret, $msg) = $this->process_submit_and_save();
 		?>
 		<div class="wrap wut-tabs">
-			<h1><?php echo __( 'WordPress Ultimate Toolkit Options', 'wut' ); ?></h1>
+			<h1><?php echo __( 'WordPress Ultimate Toolkit Options', 'wordpress-ultimate-toolkit' ); ?></h1>
 			<hr class="wp-header-end" />
 			<?php $this->print_message( $msg, $ret ); ?>
 			<?php $this->print_tab_nav(); ?>

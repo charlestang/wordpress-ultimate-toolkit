@@ -147,7 +147,7 @@ class WUT_Form_Helper {
 	public function date_format_chooser( $config ) {
 		?>
 		<p>
-			<span><?php _e( 'Date format:', 'wut' ); ?></span><br/>
+			<span><?php _e( 'Date format:', 'wordpress-ultimate-toolkit' ); ?></span><br/>
 			<label>
 				<input type="radio" 
 					name="<?php $this->print_name( $config['date_format_property'] ); ?>"
@@ -176,14 +176,14 @@ class WUT_Form_Helper {
 				<input type="radio" 
 					name="<?php $this->print_name( $config['date_format_property'] ); ?>"
 					<?php checked( $config['date_format_value'], 'custom' ); ?> value="custom"/>
-				<span style="display:inline-block;min-width:10em;"><?php _e( 'Custom', 'wut' ); ?></span>
+				<span style="display:inline-block;min-width:10em;"><?php _e( 'Custom', 'wordpress-ultimate-toolkit' ); ?></span>
 				<input class="medium-text" 
 					id="<?php $this->print_id( $config['custom_format_property'] ); ?>"
 					name="<?php $this->print_name( $config['custom_format_property'] ); ?>"
 					type="text" step="1" min="1" value="<?php echo $config['custom_format_value']; ?>"
 					size="6" />
 			</label><br/>
-			<strong><?php _e( 'Preview: ', 'wut' ); ?></strong>
+			<strong><?php _e( 'Preview: ', 'wordpress-ultimate-toolkit' ); ?></strong>
 			<span><?php echo 'custom' === $config['date_format_value'] ? date( $config['custom_format_value'] ) : date( $config['date_format_value'] ); ?></span>
 		</p>
 		<?php

@@ -138,7 +138,7 @@ class WUT_Utils {
 	}
 
 	public function add_wordcount_manage_columns( $post_columns ) {
-		$post_columns['wordcount'] = __( 'Words', 'wut' );
+		$post_columns['wordcount'] = __( 'Words', 'wordpress-ultimate-toolkit' );
 		return $post_columns;
 	}
 
@@ -235,7 +235,7 @@ class WUT_Utils {
 			'orderby'    => 'post_date',
 			'order'      => 'DESC',
 			'xformat'    => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
-			'none'       => __( 'No related posts.', 'wut' ),
+			'none'       => __( 'No related posts.', 'wordpress-ultimate-toolkit' ),
 			'echo'       => false,
 		);
 

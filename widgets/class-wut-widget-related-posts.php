@@ -25,10 +25,10 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 	 */
 	public function __construct() {
 		$widget_ops = array(
-			'description'                 => __( 'NEW! List the related posts in SINGLE POST PAGE ONLY.', 'wut' ),
+			'description'                 => __( 'NEW! List the related posts in SINGLE POST PAGE ONLY.', 'wordpress-ultimate-toolkit' ),
 			'customize_selective_refresh' => true,
 		);
-		parent::__construct( '', __( 'WUT:Related Posts', 'wut' ), $widget_ops );
+		parent::__construct( '', __( 'WUT:Related Posts', 'wordpress-ultimate-toolkit' ), $widget_ops );
 		$this->helper = new WUT_Form_Helper( $this );
 	}
 
@@ -57,7 +57,7 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 			'orderby'    => 'post_date',
 			'order'      => 'DESC',
 			'xformat'    => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>(%commentcount%)',
-			'none'       => __( 'No related posts.', 'wut' ),
+			'none'       => __( 'No related posts.', 'wordpress-ultimate-toolkit' ),
 			'echo'       => 0,
 		);
 
@@ -102,9 +102,9 @@ class WUT_Widget_Related_Posts extends WP_Widget {
 
 		$this->helper->text( 'title', $title, __( 'Title:' ) );
 		$this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' );
-		$this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Show comment count:', 'wut' ) );
-		$this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?', 'wut' ) );
-		$this->helper->checkbox( 'date_front', $date_front, __( 'Show date before title?', 'wut' ) );
+		$this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Show comment count:', 'wordpress-ultimate-toolkit' ) );
+		$this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?', 'wordpress-ultimate-toolkit' ) );
+		$this->helper->checkbox( 'date_front', $date_front, __( 'Show date before title?', 'wordpress-ultimate-toolkit' ) );
 		$this->helper->date_format_chooser(
 			array(
 				'date_format_property'   => 'date_format',

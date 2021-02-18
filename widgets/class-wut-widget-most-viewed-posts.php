@@ -26,10 +26,10 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 	 */
 	public function __construct() {
 		$widget_ops = array(
-			'description'                 => __( 'NEW! List most viewed posts. This need WP Postviews installed first.', 'wut' ),
+			'description'                 => __( 'NEW! List most viewed posts. This need WP Postviews installed first.', 'wordpress-ultimate-toolkit' ),
 			'customize_selective_refresh' => true,
 		);
-		parent::__construct( '', __( 'WUT:Most Viewed Posts', 'wut' ), $widget_ops );
+		parent::__construct( '', __( 'WUT:Most Viewed Posts', 'wordpress-ultimate-toolkit' ), $widget_ops );
 		$this->helper = new WUT_Form_Helper( $this );
 	}
 
@@ -122,33 +122,33 @@ class WUT_Widget_Most_Viewed_Posts extends WP_Widget {
 
 		$this->helper->text( 'title', $title, __( 'Title:' ) );
 		$this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' );
-		$this->helper->text( 'excerpt_words', $excerpt_words, __( 'Maximum title length:', 'wut' ), 'number', 'tiny-text' );
-		$this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?', 'wut' ) );
-		$this->helper->checkbox( 'date_front', $date_front, __( 'Put date in front of post title?', 'wut' ) );
+		$this->helper->text( 'excerpt_words', $excerpt_words, __( 'Maximum title length:', 'wordpress-ultimate-toolkit' ), 'number', 'tiny-text' );
+		$this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?', 'wordpress-ultimate-toolkit' ) );
+		$this->helper->checkbox( 'date_front', $date_front, __( 'Put date in front of post title?', 'wordpress-ultimate-toolkit' ) );
 		?>
 		<p>
-			<span><?php _e( 'Time frame of posts:', 'wut' ); ?></span><br/>
+			<span><?php _e( 'Time frame of posts:', 'wordpress-ultimate-toolkit' ); ?></span><br/>
 			<label>
 				<input type="radio" name="<?php echo $this->get_field_name( 'time_range' ); ?>"<?php checked( $time_range, 7 ); ?> value="7"/>
-				<span><?php _e( 'Past Week', 'wut' ); ?></span>
+				<span><?php _e( 'Past Week', 'wordpress-ultimate-toolkit' ); ?></span>
 			</label><br/>
 			<label>
 				<input type="radio" name="<?php echo $this->get_field_name( 'time_range' ); ?>"<?php checked( $time_range, 30 ); ?> value="30"/>
-				<span><?php _e( 'Past Month', 'wut' ); ?></span>
+				<span><?php _e( 'Past Month', 'wordpress-ultimate-toolkit' ); ?></span>
 			</label><br/>
 			<label>
 				<input type="radio" name="<?php echo $this->get_field_name( 'time_range' ); ?>"<?php checked( $time_range, 365 ); ?> value="365"/>
-				<span><?php _e( 'Past Year', 'wut' ); ?></span>
+				<span><?php _e( 'Past Year', 'wordpress-ultimate-toolkit' ); ?></span>
 			</label><br/>
 			<label>
 				<input type="radio" name="<?php echo $this->get_field_name( 'time_range' ); ?>"<?php checked( $time_range, -1 ); ?> value="-1"/>
-				<span><?php _e( 'Custom', 'wut' ); ?></span>
+				<span><?php _e( 'Custom', 'wordpress-ultimate-toolkit' ); ?></span>
 				<input class="small-text" id="<?php echo $this->get_field_id( 'custom_range' ); ?>" name="<?php echo $this->get_field_name( 'custom_range' ); ?>" type="number" step="1" min="1" value="<?php echo $custom_range; ?>" size="4" />
 			</label>
 		</p>
 		<?php
 
-		$this->helper->checkbox( 'show_view_count', $show_view_count, __( 'Show view count?', 'wut' ) );
+		$this->helper->checkbox( 'show_view_count', $show_view_count, __( 'Show view count?', 'wordpress-ultimate-toolkit' ) );
 
 		$this->helper->date_format_chooser(
 			array(

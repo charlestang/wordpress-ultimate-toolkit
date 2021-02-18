@@ -81,7 +81,7 @@ class WUT_Option_Manager {
 			),
 			self::SUBKEY_RELATED_LIST => array(
 				'enabled'            => false,
-				'title'              => __( 'Related Posts', 'wut' ),
+				'title'              => __( 'Related Posts', 'wordpress-ultimate-toolkit' ),
 				'number'             => 5,
 				'show_comment_count' => true,
 			),

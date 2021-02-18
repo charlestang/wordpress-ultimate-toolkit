@@ -23,10 +23,10 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 	 */
 	public function __construct() {
 		$widget_ops = array(
-			'description'                 => __( 'NEW! List the recent posts and provide some advanced options', 'wut' ),
+			'description'                 => __( 'NEW! List the recent posts and provide some advanced options', 'wordpress-ultimate-toolkit' ),
 			'customize_selective_refresh' => true,
 		);
-		parent::__construct( '', __( 'WUT:Recent Posts', 'wut' ), $widget_ops );
+		parent::__construct( '', __( 'WUT:Recent Posts', 'wordpress-ultimate-toolkit' ), $widget_ops );
 		$this->helper = new WUT_Form_Helper( $this );
 	}
 
@@ -113,6 +113,6 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 				'custom_format_value'    => $custom_format,
 			)
 		);
-		$this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Display comment count?', 'wut' ) );
+		$this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Display comment count?', 'wordpress-ultimate-toolkit' ) );
 	}
 }

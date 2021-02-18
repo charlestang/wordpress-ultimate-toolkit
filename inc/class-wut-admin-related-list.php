@@ -15,7 +15,7 @@ class WUT_Admin_Related_List extends WUT_Admin_Panel {
 	 * Constructor of Related Posts option panel.
 	 */
 	public function __construct() {
-		parent::__construct( __( 'Related Posts List', 'wut' ), WUT_Option_Manager::SUBKEY_RELATED_LIST );
+		parent::__construct( 'Related Posts List', WUT_Option_Manager::SUBKEY_RELATED_LIST );
 	}
 
 	public static function me() {
@@ -36,7 +36,7 @@ class WUT_Admin_Related_List extends WUT_Admin_Panel {
 		?>
 		<table class="form-table" role="presentation"><tbody>
 			<tr valign="top">
-				<th scope="row"><label for="related_list_enabled"><?php _e( 'Enable this feature', 'wut' ); ?></label></th>
+				<th scope="row"><label for="related_list_enabled"><?php _e( 'Enable this feature', 'wordpress-ultimate-toolkit' ); ?></label></th>
 				<td><input
 						name="<?php echo $this->get_field_name( 'enabled' ); ?>"
 						type="hidden"
@@ -47,21 +47,21 @@ class WUT_Admin_Related_List extends WUT_Admin_Panel {
 						type="checkbox"
 						value="1"<?php checked( $enabled ); ?>/></td></tr>
 			<tr valign="top">
-				<th scope="row"><label for="related_list_title"><?php _e( 'Related list title', 'wut' ); ?></label></th>
+				<th scope="row"><label for="related_list_title"><?php _e( 'Related list title', 'wordpress-ultimate-toolkit' ); ?></label></th>
 				<td><input
 					id="related_list_title"
 					name="<?php echo $this->get_field_name( 'title' ); ?>"
 					type="text" class="regular-text"
 					value="<?php echo esc_attr( $title ); ?>"/></td></tr>
 			<tr valign="top">
-				<th scope="row"><label for="related_list_number"><?php _e( 'Number of posts', 'wut' ); ?></label></th>
+				<th scope="row"><label for="related_list_number"><?php _e( 'Number of posts', 'wordpress-ultimate-toolkit' ); ?></label></th>
 				<td><input
 					id="related_list_number"
 					name="<?php echo $this->get_field_name( 'number' ); ?>"
 					type="text" size="10"
 					value="<?php echo $number; ?>"/></td></tr>
 			<tr valign="top">
-				<th scope="row"><label for="related_list_comment_count"><?php _e( 'Show comment count', 'wut' ); ?></label></th>
+				<th scope="row"><label for="related_list_comment_count"><?php _e( 'Show comment count', 'wordpress-ultimate-toolkit' ); ?></label></th>
 				<td><input
 						name="<?php echo $this->get_field_name( 'show_comment_count' ); ?>"
 						type="hidden"

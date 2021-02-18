@@ -15,7 +15,7 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 	 * Create the Auto Excerption option page.
 	 */
 	public function __construct() {
-		parent::__construct( __( 'Auto Excerption', 'wut' ), WUT_Option_Manager::SUBKEY_EXCERPTION );
+		parent::__construct( 'Auto Excerption', WUT_Option_Manager::SUBKEY_EXCERPTION );
 	}
 
 	/**
@@ -40,7 +40,7 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 		?>
 		<table class="form-table" role="presentation"><tbody>
 			<tr valign="top">
-				<th scope="row"><label for="excerpt_enabled"><?php _e( 'Enable This Feature ', 'wut' ); ?></label></th>
+				<th scope="row"><label for="excerpt_enabled"><?php _e( 'Enable This Feature ', 'wordpress-ultimate-toolkit' ); ?></label></th>
 				<td><input 
 						id="<?php echo $this->get_field_id( 'excerpt_enabled' ); ?>"
 						name="<?php echo $this->get_field_name( 'enabled' ); ?>"
@@ -53,7 +53,7 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 						value="1"<?php checked( $enabled ); ?>/></td>
 			</tr>
 			<tr valign="top">
-				<th scope="row"><label for="excerpt_paragraphs_number"><?php _e( 'Paragraphs Number', 'wut' ); ?></label></th>
+				<th scope="row"><label for="excerpt_paragraphs_number"><?php _e( 'Paragraphs Number', 'wordpress-ultimate-toolkit' ); ?></label></th>
 				<td><input 
 					id="<?php echo $this->get_field_id( 'excerpt_paragraphs_number' ); ?>"
 					name="<?php echo $this->get_field_name( 'paragraphs' ); ?>"
@@ -61,7 +61,7 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 					value="<?php echo $paragraphs; ?>"/></td>
 			</tr>
 			<tr valign="top">
-				<th scope="row"><label for="excerpt_words_number"><?php _e( 'Words Number', 'wut' ); ?></label></th>
+				<th scope="row"><label for="excerpt_words_number"><?php _e( 'Words Number', 'wordpress-ultimate-toolkit' ); ?></label></th>
 				<td><input 
 					id="<?php echo $this->get_field_id( 'excerpt_words_number' ); ?>"
 					name="<?php echo $this->get_field_name( 'words' ); ?>"
@@ -69,7 +69,7 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 					value="<?php echo $words; ?>"/></td>
 			</tr>
 			<tr>
-				<th scope="row"><label for="excerpt_continue_reading_tip_template"><?php _e( '"Continue Reading" tip template:', 'wut' ); ?></label></th>
+				<th scope="row"><label for="excerpt_continue_reading_tip_template"><?php _e( '"Continue Reading" tip template:', 'wordpress-ultimate-toolkit' ); ?></label></th>
 				<td><fieldset>
 					<p><textarea 
 							id="<?php echo $this->get_field_id( 'excerpt_continue_reading_tip_template' ); ?>"

@@ -15,7 +15,7 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 	 * Constructor.
 	 */
 	public function __construct() {
-		parent::__construct( __( 'Custom Code', 'wut' ), WUT_Option_Manager::SUBKEY_CUSTOM_CODE );
+		parent::__construct( 'Custom Code', WUT_Option_Manager::SUBKEY_CUSTOM_CODE );
 
 		// register an ajax form table.
 		add_action( 'wp_ajax_wut_custom_code', array( $this, 'print_custom_form' ) );
@@ -94,18 +94,18 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 		$length  = count( $options );
 		?>
 		<div class="tablenav top">
-			<a class="button thickbox" href="admin-ajax.php?action=wut_custom_code&KeepThis=true&TB_iframe=true&height=400&width=600"><?php _e( '+ Add New', 'wut' ); ?></a>
+			<a class="button thickbox" href="admin-ajax.php?action=wut_custom_code&KeepThis=true&TB_iframe=true&height=400&width=600"><?php _e( '+ Add New', 'wordpress-ultimate-toolkit' ); ?></a>
 		</div>
 		<table class="wp-list-table widefat fixed striped table-view-list">
 			<thead>
 				<tr>
 					<td id="cb" class="manage-column column-cb check-column"><input id="cb-select-all-1" type="checkbox"/></td>
-					<th scope="col" id="title" class="manage-column column-title column-primary"><?php _e( 'Title', 'wut' ); ?></th>
-					<th scope="col" id="remark" class="manage-column column-remark"><?php _e( 'Remark', 'wut' ); ?></th>
-					<th scope="col" id="hook" class="manage-column column-hook"><?php _e( 'Hook', 'wut' ); ?></th>
-					<th scope="col" id="priority" class="manage-column column-priority"><?php _e( 'Priority', 'wut' ); ?></th>
-					<th scope="col" id="date" class="manage-column column-date"><?php _e( 'Date', 'wut' ); ?></th>
-					<th scope="col" id="action" class="manage-column column-action"><?php _e( 'Actions', 'wut' ); ?></th>
+					<th scope="col" id="title" class="manage-column column-title column-primary"><?php _e( 'Title', 'wordpress-ultimate-toolkit' ); ?></th>
+					<th scope="col" id="remark" class="manage-column column-remark"><?php _e( 'Remark', 'wordpress-ultimate-toolkit' ); ?></th>
+					<th scope="col" id="hook" class="manage-column column-hook"><?php _e( 'Hook', 'wordpress-ultimate-toolkit' ); ?></th>
+					<th scope="col" id="priority" class="manage-column column-priority"><?php _e( 'Priority', 'wordpress-ultimate-toolkit' ); ?></th>
+					<th scope="col" id="date" class="manage-column column-date"><?php _e( 'Date', 'wordpress-ultimate-toolkit' ); ?></th>
+					<th scope="col" id="action" class="manage-column column-action"><?php _e( 'Actions', 'wordpress-ultimate-toolkit' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -118,8 +118,8 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 				<td scope="col"><?php echo $snippet['priority']; ?></td>
 				<td scope="col"><?php echo $snippet['date_time']; ?></td>
 				<td scope="col">
-					<a class="thickbox" href="admin-ajax.php?action=wut_custom_code&edit=1&id=<?php echo $id; ?>&KeepThis=true&TB_iframe=true"><?php _e( 'Edit', 'wut' ); ?></a>
-					<a class="delete" style="color:red;" href="admin-ajax.php?action=wut_custom_code_delete&delete=1&id=<?php echo $id; ?>"><?php _e( 'Delete', 'wut' ); ?></a>
+					<a class="thickbox" href="admin-ajax.php?action=wut_custom_code&edit=1&id=<?php echo $id; ?>&KeepThis=true&TB_iframe=true"><?php _e( 'Edit', 'wordpress-ultimate-toolkit' ); ?></a>
+					<a class="delete" style="color:red;" href="admin-ajax.php?action=wut_custom_code_delete&delete=1&id=<?php echo $id; ?>"><?php _e( 'Delete', 'wordpress-ultimate-toolkit' ); ?></a>
 				</td>
 			</tr>
 			<?php endforeach; ?>
@@ -128,11 +128,11 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 			<tfoot>
 				<tr>
 					<td class="manage-column column-cb check-column"><input id="cb-select-all-1" type="checkbox"/></td>
-					<th scope="col" class="manage-column column-title column-primary"><?php _e( 'Title', 'wut' ); ?></th>
-					<th scope="col" class="manage-column column-remark"><?php _e( 'Remark', 'wut' ); ?></th>
-					<th scope="col" class="manage-column column-hook"><?php _e( 'Hook', 'wut' ); ?></th>
-					<th scope="col" class="manage-column column-date"><?php _e( 'Date', 'wut' ); ?></th>
-					<th scope="col" class="manage-column column-action"><?php _e( 'Actions', 'wut' ); ?></th>
+					<th scope="col" class="manage-column column-title column-primary"><?php _e( 'Title', 'wordpress-ultimate-toolkit' ); ?></th>
+					<th scope="col" class="manage-column column-remark"><?php _e( 'Remark', 'wordpress-ultimate-toolkit' ); ?></th>
+					<th scope="col" class="manage-column column-hook"><?php _e( 'Hook', 'wordpress-ultimate-toolkit' ); ?></th>
+					<th scope="col" class="manage-column column-date"><?php _e( 'Date', 'wordpress-ultimate-toolkit' ); ?></th>
+					<th scope="col" class="manage-column column-action"><?php _e( 'Actions', 'wordpress-ultimate-toolkit' ); ?></th>
 				</tr>
 			</tfoot>
 			<?php endif; ?>
@@ -162,7 +162,7 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 			$snippet['code_id'] = $id;
 			if ( empty( $new_options['title'] ) ) {
 				$validate       = false;
-				$error['title'] = __( 'Title should not be empty.', 'wut' );
+				$error['title'] = __( 'Title should not be empty.', 'wordpress-ultimate-toolkit' );
 			} else {
 				$snippet['title'] = sanitize_text_field( $new_options['title'] );
 			}
@@ -179,11 +179,11 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 
 			if ( empty( $new_options['source'] ) ) {
 				$validate        = false;
-				$error['source'] = __( 'Source code should not be empty.', 'wut' );
+				$error['source'] = __( 'Source code should not be empty.', 'wordpress-ultimate-toolkit' );
 			} else {
 				if ( false === stripos( $new_options['source'], '</script>' ) && false === stripos( $new_options['source'], '</style>' ) ) {
 					$validate        = false;
-					$error['source'] = __( 'Source code should be enclosed by &lt;script&gt; or &lt;style&gt; tag.', 'wut' );
+					$error['source'] = __( 'Source code should be enclosed by &lt;script&gt; or &lt;style&gt; tag.', 'wordpress-ultimate-toolkit' );
 				} else {
 					$snippet['source'] = $new_options['source'];
 				}
@@ -191,7 +191,7 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 
 			if ( empty( $new_options['priority'] ) || 0 === absint( $new_options['priority'] ) ) {
 				$validate          = false;
-				$error['priority'] = __( 'Priority should not be empty.', 'wut' );
+				$error['priority'] = __( 'Priority should not be empty.', 'wordpress-ultimate-toolkit' );
 			} else {
 				$snippet['priority'] = absint( $new_options['priority'] );
 			}
@@ -364,7 +364,7 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 			<hr class="wp-header-end"/>
 			<?php if ( $is_error ) : ?>
 				<div id="message" class="updated error is-dismissible">
-					<p><?php echo __( 'Some error occured.', 'wut' ); ?></p>
+					<p><?php echo __( 'Some error occured.', 'wordpress-ultimate-toolkit' ); ?></p>
 				</div>
 			<?php endif; ?>
 			<form method="post" action="admin-ajax.php?action=wut_custom_code_submit">
@@ -414,7 +414,7 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 							type="text" id="custom-code-source"><?php echo $source; ?></textarea></td>
 				</tr>
 				</tbody></table>
-				<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Save', 'wut' ); ?>"></p>
+				<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Save', 'wordpress-ultimate-toolkit' ); ?>"></p>
 			</form>
 		</div></div></div></div></body>
 		</html>

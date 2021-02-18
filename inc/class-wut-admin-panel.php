@@ -47,7 +47,7 @@ abstract class WUT_Admin_Panel {
 	 * @param string $option_name The option key of options in this panel. If not provided, it will be generated from title.
 	 */
 	public function __construct( $title, $option_name ) {
-		$this->title       = $title;
+		$this->title       = __( $title, 'wordpress-ultimate-toolkit' );
 		$this->id          = 'admin-' . implode(
 			'-',
 			array_map(

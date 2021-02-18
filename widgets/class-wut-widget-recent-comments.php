@@ -23,10 +23,10 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 	 */
 	public function __construct() {
 		$widget_ops = array(
-			'description'                 => __( 'NEW! List recent comments.', 'wut' ),
+			'description'                 => __( 'NEW! List recent comments.', 'wordpress-ultimate-toolkit' ),
 			'customize_selective_refresh' => true,
 		);
-		parent::__construct( '', __( 'WUT:Recent Comments', 'wut' ), $widget_ops );
+		parent::__construct( '', __( 'WUT:Recent Comments', 'wordpress-ultimate-toolkit' ), $widget_ops );
 		$this->helper = new WUT_Form_Helper( $this );
 	}
 
@@ -50,7 +50,7 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 			'commenttype' => 'comment',
 			'skipusers'   => '',
 			'avatarsize'  => $avatar_size,
-			'none'        => __( 'No comments.', 'wut' ),
+			'none'        => __( 'No comments.', 'wordpress-ultimate-toolkit' ),
 			'password'    => 'hide',
 			'xformat'     => '<a class="commentator" href="%permalink%" >%commentauthor%</a>',
 			'echo'        => 0,
@@ -65,7 +65,7 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 		if ( $show_content ) {
 			$tag_args['xformat'] .= ' : %commentexcerpt%';
 		} else {
-			$tag_args['xformat'] .= __( ' on ', 'wut' ) . '<<%posttile>>';
+			$tag_args['xformat'] .= __( ' on ', 'wordpress-ultimate-toolkit' ) . '<<%posttile>>';
 		}
 
 		$this->helper->print_widget( $args, $title, '<ul>' . wut_recent_comments( $tag_args ) . '</ul>' );
@@ -99,9 +99,9 @@ class WUT_Widget_Recent_Comments extends WP_Widget {
 		$show_avatar  = $this->helper->default( $instance, 'show_avatar', 'bool', false );
 		$avatar_size  = $this->helper->default( $instance, 'avatar_size', 'uint', 16 );
 		$this->helper->text( 'title', $title, __( 'Title:' ) );
-		$this->helper->text( 'number', $number, __( 'Number of comments to show:', 'wut' ), 'number', 'tiny-text' );
-		$this->helper->checkbox( 'show_content', $show_content, __( 'Display comment content?', 'wut' ) );
-		$this->helper->checkbox( 'show_avatar', $show_avatar, __( 'Display avatar?', 'wut' ) );
-		$this->helper->text( 'avatar_size', $avatar_size, __( 'The size of avatar: ', 'wut' ), 'number', 'tiny-text' );
+		$this->helper->text( 'number', $number, __( 'Number of comments to show:', 'wordpress-ultimate-toolkit' ), 'number', 'tiny-text' );
+		$this->helper->checkbox( 'show_content', $show_content, __( 'Display comment content?', 'wordpress-ultimate-toolkit' ) );
+		$this->helper->checkbox( 'show_avatar', $show_avatar, __( 'Display avatar?', 'wordpress-ultimate-toolkit' ) );
+		$this->helper->text( 'avatar_size', $avatar_size, __( 'The size of avatar: ', 'wordpress-ultimate-toolkit' ), 'number', 'tiny-text' );
 	}
 }
