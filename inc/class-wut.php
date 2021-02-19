@@ -36,25 +36,11 @@ class WUT {
 	public $root_url;
 
 	/**
-	 * The option manager instance.
-	 *
-	 * @var WUT_Option_Manager
-	 */
-	public $options;
-
-	/**
 	 * Utils functionality instance.
 	 *
 	 * @var WUT_Utils
 	 */
 	public $utils;
-
-	/**
-	 * Global object of the plugin.
-	 *
-	 * @var WUT
-	 */
-	public static $me;
 
 	/**
 	 * The constructor.
@@ -75,11 +61,11 @@ class WUT {
 	 * @param string $file_path the plugin entry file path.
 	 */
 	public static function run( $file_path ) {
-		$dir      = plugin_dir_path( $file_path );
-		$url      = plugins_url( '', $file_path );
-		self::$me = new WUT( $file_path, $dir, $url );
-		self::$me->load_files();
-		add_action( 'plugins_loaded', array( self::$me, 'register' ) );
+		$dir = plugin_dir_path( $file_path );
+		$url = plugins_url( '', $file_path );
+		$wut = new WUT( $file_path, $dir, $url );
+		$wut->load_files();
+		add_action( 'plugins_loaded', array( $wut, 'register' ) );
 	}
 
 	/**
@@ -107,8 +93,7 @@ class WUT {
 	 * Main hook to WordPress.
 	 */
 	public function register() {
-		$this->options = WUT_Option_Manager::me();
-		$this->utils   = new WUT_Utils();
+		$this->utils = new WUT_Utils();
 
 		add_action(
 			'widgets_init',
@@ -122,15 +107,15 @@ class WUT {
 			}
 		);
 
-		$excerpt = $this->options->get_options_by_key( WUT_Option_Manager::SUBKEY_EXCERPTION );
+		$excerpt = WUT_Option_Manager::me()->get_options_by_key( WUT_Option_Manager::SUBKEY_EXCERPTION );
 		if ( ! isset( $excerpt['enabled'] ) ) {
 			$excerpt['enabled'] = true;
 		}
 
 		if ( $excerpt['enabled'] ) {
 			// the priority should be 9, before the official `wp_trim_excerpt` filter.
-			add_filter( 'get_the_excerpt', array( $this->utils, 'auto_excerption' ), 9 );
-			add_filter( 'the_content', array( $this->utils, 'auto_excerption' ), 10 );
+			add_filter( 'get_the_excerpt', array( 'WUT_Utils', 'auto_excerption' ), 9 );
+			add_filter( 'the_content', array( 'WUT_Utils', 'auto_excerption' ), 10 );
 		}
 
 		// add custom code.
@@ -151,7 +136,7 @@ class WUT {
 		}
 
 		// Add related posts list to end of a post or page.
-		add_filter( 'wp_link_pages', array( $this->utils, 'display_related_posts' ), 10, 2 );
+		add_filter( 'wp_link_pages', array( 'WUT_Utils', 'display_related_posts' ), 10, 2 );
 
 		// Register uninstall feature.
 		register_uninstall_hook( $this->root_dir . '/wordpress-ultimate-toolkit.php', array( 'WUT_Option_Manager', 'delete_options' ) );

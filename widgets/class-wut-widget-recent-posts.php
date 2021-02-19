@@ -52,6 +52,17 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 			'echo'        => 0,
 		);
 
+		if ( is_singular() ) {
+			$tag_args['skips'] = get_the_ID();
+		}
+
+		if ( 'posts' === get_option( 'show_on_front' ) && is_home() ) {
+			$page = get_query_var( 'paged' );
+			if ( 0 === $page ) {
+				$tag_args['offset'] = get_option( 'posts_per_page' );
+			}
+		}
+
 		$instance['show_date']          = $this->helper->default( $instance, 'show_date', 'bool', false );
 		$instance['show_comment_count'] = $this->helper->default( $instance, 'show_comment_count', 'bool', false );
 		$instance['date_before_title']  = $this->helper->default( $instance, 'date_before_title', 'bool', false );
@@ -93,7 +104,7 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		$title              = $this->helper->default( $instance, 'title', 'string', '' );
-		$number             = $this->helper->default( $instance, 'number', 'uint', 5 );
+		$number             = $this->helper->default( $instance, 'number', 'uint', get_option( 'posts_per_page' ) );
 		$show_date          = $this->helper->default( $instance, 'show_date', 'bool', false );
 		$date_before_title  = $this->helper->default( $instance, 'date_before_title', 'bool', false );
 		$site_date_format   = get_option( 'date_format' );

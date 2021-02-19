@@ -29,6 +29,7 @@ function wut_recent_posts( $args = array() ) {
 	$query = new WP_Query(
 		array(
 			'posts_per_page'      => $r['limit'],
+			'offset'              => $r['offset'],
 			'no_found_rows'       => true,
 			'post_status'         => 'publish',
 			'ignore_sticky_posts' => true,

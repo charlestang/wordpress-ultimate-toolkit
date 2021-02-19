@@ -52,6 +52,8 @@ Provides a variety of handy little features such as word count, inserting custom
 
 ### 2.0.8
  * FIXED. Language packs loaded automatically.
+ * Recent posts widget does not show first page's posts on home page.
+ * Recent posts widget does not show current post on single post page.
 
 ### 2.0.7
  * FIXED. Syntax error in PHP 7.0.

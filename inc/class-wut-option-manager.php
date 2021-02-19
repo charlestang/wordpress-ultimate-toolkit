@@ -26,7 +26,7 @@ class WUT_Option_Manager {
 	 *
 	 * @var array Options key value table.
 	 */
-	public $options = array();
+	protected $options = array();
 
 	/**
 	 * Default options.

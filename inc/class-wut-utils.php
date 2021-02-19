@@ -39,7 +39,7 @@ class WUT_Utils {
 	 * @param string $content This argument will be the content or post_excerpt.
 	 * @return string
 	 */
-	public function auto_excerption( $content ) {
+	public static function auto_excerption( $content ) {
 		if ( ! is_home() ) {
 			return $content;
 		}
@@ -83,7 +83,7 @@ class WUT_Utils {
 		$tips = '';
 		if ( mb_strlen( $excerpt, 'UTF-8' ) < mb_strlen( $post->post_content, 'UTF-8' ) ) {
 			$title     = wp_strip_all_tags( get_the_title() );
-			$total_num = $this->words_count(
+			$total_num = self::words_count(
 				preg_replace(
 					'/\s/',
 					'',
@@ -152,7 +152,7 @@ class WUT_Utils {
 		global $post;
 		if ( 'wordcount' === $column_name ) {
 			$content = wp_strip_all_tags( $post->post_content );
-			$len     = $this->words_count( $content );
+			$len     = self::words_count( $content );
 			$style   = '';
 			if ( $len > 1000 ) {
 				$style = 'color:#00f;font-weight:bold';
@@ -190,7 +190,7 @@ class WUT_Utils {
 	 * @return int the number of words in this string
 	 * @access private
 	 */
-	public function words_count( $content ) {
+	public static function words_count( $content ) {
 		$matches = array();
 		preg_match_all( '~[-a-z0-9,.!?\'":;@/ ()\+\_]+~im', $content, $matches );
 		$content       = preg_replace( '~[-a-z0-9,.!?\'":;@/ ()\+\_]+~im', '', $content );
@@ -213,7 +213,7 @@ class WUT_Utils {
 	 * @param array  $args   An array of arguments.
 	 * @return string
 	 */
-	public function display_related_posts( $output, $args = array() ) {
+	public static function display_related_posts( $output, $args = array() ) {
 		if ( ! is_single() ) {
 			return $output;
 		}

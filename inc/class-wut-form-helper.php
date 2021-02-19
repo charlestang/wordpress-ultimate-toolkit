@@ -154,7 +154,7 @@ class WUT_Form_Helper {
 					<?php checked( $config['date_format_value'], $config['date_format_default'] ); ?> 
 					value="<?php echo $config['date_format_default']; ?>"/>
 				<span style="display:inline-block;min-width:10em;">
-					<?php echo date( $config['date_format_default'] ); ?>
+					<?php echo date_i18n( $config['date_format_default'] ); ?>
 				</span>
 				<code><?php echo $config['date_format_default']; ?></code>
 			</label><br/>
@@ -162,14 +162,14 @@ class WUT_Form_Helper {
 				<input type="radio" 
 					name="<?php $this->print_name( $config['date_format_property'] ); ?>"
 					<?php checked( $config['date_format_value'], 'M d' ); ?> value="M d"/>
-				<span style="display:inline-block;min-width:10em;"><?php echo date( 'M d' ); ?></span>
+				<span style="display:inline-block;min-width:10em;"><?php echo date_i18n( 'M d' ); ?></span>
 				<code>M d</code>
 			</label><br/>
 			<label>
 				<input type="radio" 
 					name="<?php $this->print_name( $config['date_format_property'] ); ?>"
 					<?php checked( $config['date_format_value'], 'd F y' ); ?> value="d F y"/>
-				<span style="display:inline-block;min-width:10em;"><?php echo date( 'd F y' ); ?></span>
+				<span style="display:inline-block;min-width:10em;"><?php echo date_i18n( 'd F y' ); ?></span>
 				<code>d F y</code>
 			</label><br/>
 			<label>
@@ -180,11 +180,11 @@ class WUT_Form_Helper {
 				<input class="medium-text" 
 					id="<?php $this->print_id( $config['custom_format_property'] ); ?>"
 					name="<?php $this->print_name( $config['custom_format_property'] ); ?>"
-					type="text" step="1" min="1" value="<?php echo $config['custom_format_value']; ?>"
+					type="text" step="1" min="1" value="<?php echo esc_attr( $config['custom_format_value'] ); ?>"
 					size="6" />
 			</label><br/>
-			<strong><?php _e( 'Preview: ', 'wordpress-ultimate-toolkit' ); ?></strong>
-			<span><?php echo 'custom' === $config['date_format_value'] ? date( $config['custom_format_value'] ) : date( $config['date_format_value'] ); ?></span>
+			<?php _e( 'Preview: ', 'wordpress-ultimate-toolkit' ); ?>
+			<span><?php echo 'custom' === $config['date_format_value'] ? date_i18n( $config['custom_format_value'] ) : date_i18n( $config['date_format_value'] ); ?></span>
 		</p>
 		<?php
 	}
@@ -198,11 +198,12 @@ class WUT_Form_Helper {
 	 * @return void
 	 */
 	public function print_widget( $args, $title, $content ) {
-		echo $args['before_widget'];
+		$html = $args['before_widget'];
 		if ( $title ) {
-			echo $args['before_title'], $title, $args['after_title'];
+			$html .= $args['before_title'] . $title . $args['after_title'];
 		}
-		echo $content, $args['after_widget'];
+		$html .= $content . $args['after_widget'];
+		$this->print( $html );
 	}
 
 }

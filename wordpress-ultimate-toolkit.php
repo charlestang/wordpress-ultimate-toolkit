@@ -6,6 +6,7 @@ Description: Provide a variety of widgets with rich options, such as recent post
 Author: Charles
 Version: 2.0.7
 Author URI: http://sexywp.com
+Text Domain: wordpress-ultimate-toolkit
  */
 
 /*
