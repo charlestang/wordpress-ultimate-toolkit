@@ -35,8 +35,6 @@ Provides a variety of handy little features such as word count, inserting custom
  * `wut_posts_by_category()`
  * `wut_most_commented_posts()`
  * `wut_recent_comments()`
- * `wut_active_commentators()`
- * `wut_recent_commentators()`
 
 ### Other Features
  * Easy to use, few coding works
@@ -54,6 +52,7 @@ Provides a variety of handy little features such as word count, inserting custom
  * FIXED. Language packs loaded automatically.
  * Recent posts widget does not show first page's posts on home page.
  * Recent posts widget does not show current post on single post page.
+ * wut_recent_commentators() and wut_active_commentators() removed.
 
 ### 2.0.7
  * FIXED. Syntax error in PHP 7.0.

@@ -35,8 +35,6 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * `wut_posts_by_category()`
  * `wut_most_commented_posts()`
  * `wut_recent_comments()`
- * `wut_active_commentators()`
- * `wut_recent_commentators()`
 
 ### Other Features
  * Easy to use, few coding works
@@ -51,6 +49,9 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 ## Changelog
 ### 2.0.8
  * 自动加载语言包。目前支持中文语言包。
+ * 最近更新文章小挂件，不展示博客第一页的章。
+ * 最近更新文章小挂件，在文章单页里，不展示当前文章。
+ * wut_recent_commentators() 和 wut_active_commentators() 两个 API 移除。
 
 ### 2.0.7
  * 修复 PHP 7.0 下的语法错误。
