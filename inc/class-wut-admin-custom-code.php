@@ -43,15 +43,6 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 	}
 
 	/**
-	 * Get an instance of this.
-	 *
-	 * @return WUT_Admin_Panel
-	 */
-	public static function me() {
-		return new self();
-	}
-
-	/**
 	 * This is used to make it compatible with old version of options' format.
 	 *
 	 * @param array $options The old format options.

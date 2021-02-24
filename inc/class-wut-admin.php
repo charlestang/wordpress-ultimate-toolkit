@@ -74,6 +74,7 @@ class WUT_Admin {
 		$this->tabs[] = new WUT_Admin_Excerption();
 		$this->tabs[] = new WUT_Admin_Related_List();
 		$this->tabs[] = new WUT_Admin_Custom_Code();
+		$this->tabs[] = new WUT_Admin_Meta_Info();
 		$this->tabs[] = new WUT_Admin_About();
 	}
 

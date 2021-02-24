@@ -19,10 +19,6 @@ class WUT_Admin_Related_List extends WUT_Admin_Panel {
 		$this->id = 'admin-related-posts-list';
 	}
 
-	public static function me() {
-		return new self();
-	}
-
 	/**
 	 * Option page.
 	 *

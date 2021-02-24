@@ -20,15 +20,6 @@ class WUT_Admin_Excerption extends WUT_Admin_Panel {
 	}
 
 	/**
-	 * Get an instance.
-	 *
-	 * @return WUT_Admin_Panel
-	 */
-	public static function me() {
-		return new self();
-	}
-
-	/**
 	 * Print a form table of auto excerption featrue.
 	 *
 	 * @param array $options The options array of this feature.

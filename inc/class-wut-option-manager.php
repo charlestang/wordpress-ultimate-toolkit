@@ -21,6 +21,8 @@ class WUT_Option_Manager {
 
 	const SUBKEY_CUSTOM_CODE = 'customcode';
 
+	const SUBKEY_META_INFO = 'metainfo';
+
 	/**
 	 * The options array.
 	 *
@@ -84,6 +86,11 @@ class WUT_Option_Manager {
 				'title'              => __( 'Related Posts', 'wordpress-ultimate-toolkit' ),
 				'number'             => 5,
 				'show_comment_count' => true,
+			),
+			self::SUBKEY_META_INFO    => array(
+				'enabled'          => true,
+				'site_description' => '',
+				'site_keywords'    => '',
 			),
 		);
 

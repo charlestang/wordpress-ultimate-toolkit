@@ -53,13 +53,6 @@ abstract class WUT_Admin_Panel {
 	}
 
 	/**
-	 * Template method to get an instance of.
-	 *
-	 * @return WUT_Admin_Panel
-	 */
-	abstract public static function me();
-
-	/**
 	 * This method must be implemented.
 	 * Print the form of option panel.
 	 *
