@@ -85,6 +85,7 @@ class WUT {
 			require $this->root_dir . 'inc/class-wut-admin-excerption.php';
 			require $this->root_dir . 'inc/class-wut-admin-related-list.php';
 			require $this->root_dir . 'inc/class-wut-admin-custom-code.php';
+			require $this->root_dir . 'inc/class-wut-admin-about.php';
 			require $this->root_dir . 'inc/class-wut-admin.php';
 		}
 	}

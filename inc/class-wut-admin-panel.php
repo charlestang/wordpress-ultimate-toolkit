@@ -73,7 +73,7 @@ abstract class WUT_Admin_Panel {
 	 *
 	 * @param array $new_options New options submitted.
 	 * @param array $old_options Old options.
-	 * @return void
+	 * @return array
 	 */
 	abstract public function update( $new_options, $old_options );
 
