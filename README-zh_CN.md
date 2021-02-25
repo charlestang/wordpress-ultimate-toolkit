@@ -4,8 +4,8 @@ Donate link: http://sexywp.com/wut
 Tags: related psots, recent posts, recent comments, popular posts, widgets, auto digest  
 Requires at least: 5.3.0  
 Requires PHP: 5.6  
-Tested up to: 5.6.1  
-Stable tag: 2.0.7  
+Tested up to: 5.6.2  
+Stable tag: 2.1.0  
 License: GPL v3  
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -47,6 +47,11 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
  1. Done :)
 
 ## Changelog
+
+### 2.1.0
+ * 增加了设置站点关键词和站点描述的 SEO 功能。
+ * 修复了相关文章列表的标题和列表分别出现在文章分页器两侧的问题。
+
 ### 2.0.8
  * 自动加载语言包。目前支持中文语言包。
  * 最近更新文章小挂件，不展示博客第一页的章。

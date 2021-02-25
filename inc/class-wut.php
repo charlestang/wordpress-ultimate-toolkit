@@ -123,6 +123,7 @@ class WUT {
 		// add custom code.
 		add_action( 'wp_head', array( $this->utils, 'inject_to_head' ) );
 		add_action( 'wp_footer', array( $this->utils, 'inject_to_footer' ) );
+		add_action( 'wp_head', array( 'WUT_Utils', 'add_meta_info' ) );
 
 		if ( is_admin() ) {
 			// add admin menus.

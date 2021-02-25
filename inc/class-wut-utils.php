@@ -240,12 +240,38 @@ class WUT_Utils {
 		);
 
 		// TODO: Related psots list should support feature image layout.
+
+		$html = '';
 		if ( ! empty( $options['title'] ) ) {
-			echo $options['title'];
+			$html = $options['title'];
 		}
-		$html = '<ul>' . wut_related_posts( $tag_args ) . '</ul>';
-		$args = func_get_args();
+		$html .= '<ul>' . wut_related_posts( $tag_args ) . '</ul>';
 		return $output . $html;
+	}
+
+	public static function add_meta_info() {
+		if ( ! is_home() ) {
+			return;
+		}
+
+		$options = WUT_Option_Manager::me()->get_options_by_key( WUT_Option_Manager::SUBKEY_META_INFO );
+
+		if ( false === $options['enabled'] ) {
+			return;
+		}
+
+		if ( ! empty( $options['site_description'] ) ) {
+			?>
+			<meta name="description" content="<?php echo esc_attr( $options['site_description'] ); ?>"/>
+			<?php
+		}
+
+		if ( ! empty( $options['site_keywords'] ) ) {
+			?>
+			<meta name="keywords" content="<?php echo esc_attr( $options['site_keywords'] ); ?>" />
+			<?php
+		}
+
 	}
 }
 
