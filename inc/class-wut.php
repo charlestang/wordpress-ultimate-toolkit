@@ -75,6 +75,7 @@ class WUT {
 		require $this->root_dir . 'inc/class-wut-option-manager.php';
 		require $this->root_dir . 'inc/class-wut-utils.php';
 		require $this->root_dir . 'inc/tags.php';
+		require $this->root_dir . 'inc/class-wut-html-helper.php';
 		require $this->root_dir . 'inc/class-wut-form-helper.php';
 		require $this->root_dir . 'widgets/class-wut-widget-recent-posts.php';
 		require $this->root_dir . 'widgets/class-wut-widget-recent-comments.php';

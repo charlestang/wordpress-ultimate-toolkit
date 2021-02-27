@@ -28,53 +28,22 @@ class WUT_Form_Helper {
 	}
 
 	/**
-	 * Print a field id attr.
-	 *
-	 * @param string $field The field name.
-	 * @return void
-	 */
-	public function print_id( $field ) {
-		$this->print( $this->widget->get_field_id( $field ) );
-	}
-
-	/**
-	 * Print a field name attr.
-	 *
-	 * @param string $field The field name.
-	 * @return void
-	 */
-	public function print_name( $field ) {
-		$this->print( $this->widget->get_field_name( $field ) );
-	}
-
-	/**
-	 * Print a string.
-	 *
-	 * @param string $str The string to print.
-	 * @return void
-	 */
-	public function print( $str ) {
-		echo $str;
-	}
-
-	/**
 	 * Print a checkbox form control on page.
 	 *
 	 * @param string $property The property name.
-	 * @param string $value The value of the property.
+	 * @param bool   $value The value of the property.
 	 * @param string $label The label tip of the checkbox.
 	 */
 	public function checkbox( $property, $value, $label ) {
-		?>
-		<p>
-			<input class="checkbox" type="checkbox"<?php checked( $value ); ?> 
-				id="<?php $this->print_id( $property ); ?>"
-				name="<?php $this->print_name( $property ); ?>" />
-			<label for="<?php $this->print_id( $property ); ?>">
-				<?php $this->print( $label ); ?>
-			</label>
-		</p>
-		<?php
+		WUT_Html_Helper::open_tag( 'p' );
+			$id = $this->widget->get_field_id( $property );
+			WUT_Html_Helper::checkbox(
+				$id,
+				$this->widget->get_field_name( $property ),
+				$value
+			);
+			WUT_Html_Helper::label( $id, $label );
+		WUT_Html_Helper::close_tag();
 	}
 
 	/**
@@ -87,17 +56,17 @@ class WUT_Form_Helper {
 	 * @param string $class The class of input control.
 	 */
 	public function text( $property, $value, $label, $type = 'text', $class = 'widefat' ) {
-		?>
-		<p>
-			<label for="<?php $this->print_id( $property ); ?>">
-				<?php $this->print( $label ); ?>
-			</label>
-			<input class="<?php $this->print( $class ); ?>"
-				id="<?php $this->print_id( $property ); ?>"
-				name="<?php $this->print_name( $property ); ?>"
-				type="<?php $this->print( $type ); ?>" value="<?php $this->print( $value ); ?>" />
-		</p>
-		<?php
+		WUT_Html_Helper::open_tag( 'p' );
+			$id = $this->widget->get_field_id( $property );
+			WUT_Html_Helper::label( $id, $label );
+			WUT_Html_Helper::input(
+				'text',
+				$id,
+				$this->widget->get_field_name( $property ),
+				$value,
+				array( 'class' => $class )
+			);
+		WUT_Html_Helper::close_tag();
 	}
 
 	/**
@@ -123,7 +92,6 @@ class WUT_Form_Helper {
 				case 'bool':
 					return (bool) $haystack[ $key ];
 				default:
-					trigger_error( 'Dose not support this type check now.' );
 					return $haystack[ $key ];
 			}
 		}
@@ -145,48 +113,70 @@ class WUT_Form_Helper {
 	 * @param array $config The properties and values of this control group.
 	 */
 	public function date_format_chooser( $config ) {
-		?>
-		<p>
-			<span><?php _e( 'Date format:', 'wordpress-ultimate-toolkit' ); ?></span><br/>
-			<label>
-				<input type="radio" 
-					name="<?php $this->print_name( $config['date_format_property'] ); ?>"
-					<?php checked( $config['date_format_value'], $config['date_format_default'] ); ?> 
-					value="<?php echo $config['date_format_default']; ?>"/>
-				<span style="display:inline-block;min-width:10em;">
-					<?php echo date_i18n( $config['date_format_default'] ); ?>
-				</span>
-				<code><?php echo $config['date_format_default']; ?></code>
-			</label><br/>
-			<label>
-				<input type="radio" 
-					name="<?php $this->print_name( $config['date_format_property'] ); ?>"
-					<?php checked( $config['date_format_value'], 'M d' ); ?> value="M d"/>
-				<span style="display:inline-block;min-width:10em;"><?php echo date_i18n( 'M d' ); ?></span>
-				<code>M d</code>
-			</label><br/>
-			<label>
-				<input type="radio" 
-					name="<?php $this->print_name( $config['date_format_property'] ); ?>"
-					<?php checked( $config['date_format_value'], 'd F y' ); ?> value="d F y"/>
-				<span style="display:inline-block;min-width:10em;"><?php echo date_i18n( 'd F y' ); ?></span>
-				<code>d F y</code>
-			</label><br/>
-			<label>
-				<input type="radio" 
-					name="<?php $this->print_name( $config['date_format_property'] ); ?>"
-					<?php checked( $config['date_format_value'], 'custom' ); ?> value="custom"/>
-				<span style="display:inline-block;min-width:10em;"><?php _e( 'Custom', 'wordpress-ultimate-toolkit' ); ?></span>
-				<input class="medium-text" 
-					id="<?php $this->print_id( $config['custom_format_property'] ); ?>"
-					name="<?php $this->print_name( $config['custom_format_property'] ); ?>"
-					type="text" step="1" min="1" value="<?php echo esc_attr( $config['custom_format_value'] ); ?>"
-					size="6" />
-			</label><br/>
-			<?php _e( 'Preview: ', 'wordpress-ultimate-toolkit' ); ?>
-			<span><?php echo 'custom' === $config['date_format_value'] ? date_i18n( $config['custom_format_value'] ) : date_i18n( $config['date_format_value'] ); ?></span>
-		</p>
-		<?php
+		WUT_Html_Helper::open_tag( 'p' );
+			WUT_Html_Helper::tag( 'span', __( 'Date format:', 'wordpress-ultimate-toolkit' ) );
+			WUT_Html_Helper::tag( 'br', '', array(), true );
+
+			$name = $this->widget->get_field_name( $config['date_format_property'] );
+			$this->date_format_option( $name, $config['date_format_value'], $config['date_format_default'] );
+			$this->date_format_option( $name, $config['date_format_value'], 'M d' );
+			$this->date_format_option( $name, $config['date_format_value'], 'd F y' );
+			$this->date_format_option(
+				$name,
+				$config['date_format_value'],
+				'custom',
+				$config['custom_format_property'],
+				$config['custom_format_value']
+			);
+			WUT_Html_Helper::e( __( 'Preview: ', 'wordpress-ultimate-toolkit' ) );
+			WUT_Html_Helper::tag(
+				'span',
+				'custom' === $config['date_format_value'] ? date_i18n( $config['custom_format_value'] ) : date_i18n( $config['date_format_value'] )
+			);
+		WUT_Html_Helper::close_tag();
+	}
+
+	/**
+	 * Print each option of date_format chooser.
+	 *
+	 * @param string $name The name of the control.
+	 * @param string $value The value of the option.
+	 * @param string $option The option to choose.
+	 * @param string $custom_property The custom option name.
+	 * @param string $custom_value  The custom option value.
+	 * @return void
+	 */
+	private function date_format_option( $name, $value, $option, $custom_property = '', $custom_value = '' ) {
+		WUT_Html_Helper::open_tag( 'label' );
+		WUT_Html_Helper::radio( $name, $option, $option === $value );
+		if ( 'custom' === $option ) {
+			WUT_Html_Helper::tag(
+				'span',
+				__( 'Custom', 'wordpress-ultimate-toolkit' ),
+				array( 'style' => 'display:inline-block;min-width:10em;' )
+			);
+			WUT_Html_Helper::input(
+				'text',
+				$this->widget->get_field_id( $custom_property ),
+				$this->widget->get_field_name( $custom_property ),
+				$custom_value,
+				array(
+					'step'  => 1,
+					'min'   => 1,
+					'size'  => 6,
+					'class' => 'medium-text',
+				)
+			);
+		} else {
+			WUT_Html_Helper::tag(
+				'span',
+				date_i18n( $option ),
+				array( 'style' => 'display:inline-block;min-width:10em;' )
+			);
+			WUT_Html_Helper::tag( 'code', $option );
+		}
+		WUT_Html_Helper::close_tag();
+		WUT_Html_Helper::tag( 'br', '', array(), true );
 	}
 
 	/**
@@ -203,7 +193,7 @@ class WUT_Form_Helper {
 			$html .= $args['before_title'] . $title . $args['after_title'];
 		}
 		$html .= $content . $args['after_widget'];
-		$this->print( $html );
+		WUT_Html_Helper::e( $html );
 	}
 
 }
