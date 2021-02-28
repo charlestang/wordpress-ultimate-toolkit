@@ -153,6 +153,15 @@ class WUT_Html_Helper {
 		self::input( 'checkbox', $id, $name, 1, $properties );
 	}
 
+	/**
+	 * Print a radio control.
+	 *
+	 * @param string  $name The property name of this control.
+	 * @param string  $value The value this radio option represent.
+	 * @param boolean $checked If this radio option is checked.
+	 * @param array   $properties Other properties of this option.
+	 * @return void
+	 */
 	public static function radio( $name, $value, $checked = false, $properties = array() ) {
 		if ( $checked ) {
 			$properties['checked'] = 'checked';

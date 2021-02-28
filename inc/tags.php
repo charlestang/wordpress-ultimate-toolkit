@@ -32,6 +32,7 @@ function wut_recent_posts( $args = array() ) {
 			'offset'              => $r['offset'],
 			'no_found_rows'       => true,
 			'post_status'         => 'publish',
+			'category__not_in'    => explode( ',', $r['exclude_categories'] ),
 			'ignore_sticky_posts' => true,
 			'post__not_in'        => array_filter( explode( ',', $r['skips'] ) ),
 			'orderby'             => $r['orderby'],

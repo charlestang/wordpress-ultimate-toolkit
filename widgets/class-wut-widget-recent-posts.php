@@ -46,10 +46,11 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 		}
 
 		$tag_args = array(
-			'limit'       => $instance['number'],
-			'date_format' => $date_format,
-			'xformat'     => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>',
-			'echo'        => 0,
+			'limit'              => $instance['number'],
+			'date_format'        => $date_format,
+			'xformat'            => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>',
+			'exclude_categories' => $instance['exclude_categories'],
+			'echo'               => 0,
 		);
 
 		if ( is_singular() ) {
@@ -94,6 +95,7 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 		$instance['date_format']        = $this->helper->default( $new_instance, 'date_format', 'string', $site_date_format );
 		$instance['custom_format']      = $this->helper->default( $new_instance, 'custom_format', 'string', $site_date_format );
 		$instance['show_comment_count'] = $this->helper->default( $new_instance, 'show_comment_count', 'bool', false );
+		$instance['exclude_categories'] = $this->helper->default( $new_instance, 'exclude_categories', 'string', '' );
 		return $instance;
 	}
 
@@ -111,6 +113,7 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 		$date_format        = $this->helper->default( $instance, 'date_format', 'string', $site_date_format );
 		$custom_format      = $this->helper->default( $instance, 'custom_format', 'string', $site_date_format );
 		$show_comment_count = $this->helper->default( $instance, 'show_comment_count', 'bool', false );
+		$exclude_categories = $this->helper->default( $instance, 'exclude_categories', 'string', '' );
 		$this->helper->text( 'title', $title, __( 'Title:' ) );
 		$this->helper->text( 'number', $number, __( 'Number of posts to show:' ), 'number', 'tiny-text' );
 		$this->helper->checkbox( 'show_date', $show_date, __( 'Display post date?' ) );
@@ -125,5 +128,6 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 			)
 		);
 		$this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Display comment count?', 'wordpress-ultimate-toolkit' ) );
+		$this->helper->text( 'exclude_categories', $exclude_categories, __( 'Category IDs to exclude:', 'wordpress-ultimate-toolkit' ), 'text', 'medium-text' );
 	}
 }
