@@ -15,4 +15,4 @@ branches:
   only:
   - master
 script:
-  - php -l
+  - php -l wordpress-ultimate-toolkit/
