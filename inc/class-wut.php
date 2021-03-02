@@ -151,12 +151,16 @@ class WUT {
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_static_files' ) );
 	}
 
+	/**
+	 * Register new admin component Category Chooser to help choose exclueded categories easily.
+	 *
+	 * @return void
+	 */
 	public function register_static_files() {
 		// Register static files.
 		wp_register_style( 'jstree', $this->root_url . '/static/themes/default/style.min.css', array(), '3.3.11' );
 		wp_register_script( 'jstree', $this->root_url . '/static/jstree.min.js', array( 'jquery' ), '3.3.11', true );
-		wp_register_script( 'wut-category-chooser', $this->root_url . '/static/wut-category-chooser.js', array( 'jstree' ), '1.0.0', true );
-		self::log( 'enqueued!!!' );
+		wp_register_script( 'wut-category-chooser', $this->root_url . '/static/wut-category-chooser.js', array( 'jstree' ), '1.0.2', true );
 	}
 
 	/**

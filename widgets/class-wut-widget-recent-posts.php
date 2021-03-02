@@ -106,7 +106,7 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		$chooser = new WUT_Category_Chooser();
-		$chooser->register_script();
+		$chooser->enqueue_scripts();
 
 		$title              = $this->helper->default( $instance, 'title', 'string', '' );
 		$number             = $this->helper->default( $instance, 'number', 'uint', get_option( 'posts_per_page' ) );
@@ -132,8 +132,6 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 		);
 		$this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Display comment count?', 'wordpress-ultimate-toolkit' ) );
 		$this->helper->text( 'exclude_categories', $exclude_categories, __( 'Category IDs to exclude:', 'wordpress-ultimate-toolkit' ), 'text', 'medium-text' );
-		?>
-		<a href="admin-ajax.php?action=wut_category_chooser&height=300&width=300&modal=true" class="thickbox">Change</a>
-		<?php
+		$chooser->inject_link();
 	}
 }
