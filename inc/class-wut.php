@@ -77,6 +77,7 @@ class WUT {
 		require $this->root_dir . 'inc/tags.php';
 		require $this->root_dir . 'inc/class-wut-html-helper.php';
 		require $this->root_dir . 'inc/class-wut-form-helper.php';
+		require $this->root_dir . 'inc/class-wut-category-chooser.php';
 		require $this->root_dir . 'widgets/class-wut-widget-recent-posts.php';
 		require $this->root_dir . 'widgets/class-wut-widget-recent-comments.php';
 		require $this->root_dir . 'widgets/class-wut-widget-most-viewed-posts.php';
@@ -137,6 +138,9 @@ class WUT {
 			add_action( 'manage_posts_custom_column', array( $this->utils, 'display_wordcount' ) );
 			add_action( 'manage_pages_custom_column', array( $this->utils, 'display_wordcount' ) );
 			add_action( 'admin_head', array( $this->utils, 'set_column_width' ) );
+
+			// register category chooser components.
+			add_action( 'wp_ajax_wut_category_chooser', array( 'WUT_Category_Chooser', 'show_category_tree' ) );
 		}
 
 		// Add related posts list to end of a post or page.
@@ -144,6 +148,15 @@ class WUT {
 
 		// Register uninstall feature.
 		register_uninstall_hook( $this->root_dir . '/wordpress-ultimate-toolkit.php', array( 'WUT_Option_Manager', 'delete_options' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'register_static_files' ) );
+	}
+
+	public function register_static_files() {
+		// Register static files.
+		wp_register_style( 'jstree', $this->root_url . '/static/themes/default/style.min.css', array(), '3.3.11' );
+		wp_register_script( 'jstree', $this->root_url . '/static/jstree.min.js', array( 'jquery' ), '3.3.11', true );
+		wp_register_script( 'wut-category-chooser', $this->root_url . '/static/wut-category-chooser.js', array( 'jstree' ), '1.0.0', true );
+		self::log( 'enqueued!!!' );
 	}
 
 	/**

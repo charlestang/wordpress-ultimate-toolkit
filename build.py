@@ -23,6 +23,7 @@ def copy_file(src_path: str, build_path: str) -> None:
     shutil.copy(join(src_path, 'wordpress-ultimate-toolkit.php'), build_path)
     shutil.copytree(join(src_path, 'inc'), join(build_path, 'inc'))
     shutil.copytree(join(src_path, 'widgets'), join(build_path, 'widgets'))
+    shutil.copytree(join(src_path, 'static'), join(build_path, 'static'))
     print("Done.")
     return
 
