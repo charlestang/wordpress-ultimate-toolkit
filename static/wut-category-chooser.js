@@ -5,7 +5,7 @@
 				'themes' : { 'stripes' : true },
 				'data': wut_tree_data
 			},
-			'plugins': ['checkbox']
+			'plugins': ['checkbox', 'sort']
 		});
 	}
 } )( jQuery, window );

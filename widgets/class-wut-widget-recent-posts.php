@@ -46,11 +46,10 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 		}
 
 		$tag_args = array(
-			'limit'              => $instance['number'],
-			'date_format'        => $date_format,
-			'xformat'            => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>',
-			'exclude_categories' => $instance['exclude_categories'],
-			'echo'               => 0,
+			'limit'       => $instance['number'],
+			'date_format' => $date_format,
+			'xformat'     => '<a href="%permalink%" title="View:%title%(Posted on %postdate%)">%title%</a>',
+			'echo'        => 0,
 		);
 
 		if ( is_singular() ) {
@@ -64,10 +63,12 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 			}
 		}
 
+		$instance['exclude_categories'] = $this->helper->default( $instance, 'exclude_categories', 'string', '' );
 		$instance['show_date']          = $this->helper->default( $instance, 'show_date', 'bool', false );
 		$instance['show_comment_count'] = $this->helper->default( $instance, 'show_comment_count', 'bool', false );
 		$instance['date_before_title']  = $this->helper->default( $instance, 'date_before_title', 'bool', false );
 		$tag_args['xformat']           .= ( $instance['show_comment_count'] ? ' (%commentcount%)' : '' );
+		$tag_args['exclude_categories'] = $instance['exclude_categories'];
 		if ( $instance['show_date'] ) {
 			if ( $instance['date_before_title'] ) {
 				$tag_args['xformat'] = '<span class="post-date">%postdate%</span>&nbsp;' . $tag_args['xformat'];
