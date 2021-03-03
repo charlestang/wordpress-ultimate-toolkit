@@ -160,6 +160,7 @@ class WUT {
 		// Register static files.
 		wp_register_style( 'jstree', $this->root_url . '/static/themes/default/style.min.css', array(), '3.3.11' );
 		wp_register_script( 'jstree', $this->root_url . '/static/jstree.min.js', array( 'jquery' ), '3.3.11', true );
+		wp_register_style( 'wut-category-chooser', $this->root_url . '/static/wut-category-chooser.css', array(), '1.0.2' );
 		wp_register_script( 'wut-category-chooser', $this->root_url . '/static/wut-category-chooser.js', array( 'jstree' ), '1.0.2', true );
 	}
 

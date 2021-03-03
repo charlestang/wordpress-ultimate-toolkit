@@ -33,13 +33,16 @@ class WUT_Admin_Custom_Code extends WUT_Admin_Panel {
 	 * @return void
 	 */
 	public function admin_enqueue_scripts() {
-		add_thickbox();
-		ob_start();
-		$this->javascript();
-		$js = ob_get_contents();
-		ob_end_clean();
-		$js  = trim( preg_replace( '#<script[^>]*>(.*)</script>#is', '$1', $js ) );
-		$ret = wp_add_inline_script( 'thickbox', $js );
+		$screen = get_current_screen();
+		if ( false !== strpos( $screen->base, WUT_Admin::MENU_SLUG ) ) { // TODO: !!! This is too ugly.
+			add_thickbox();
+			ob_start();
+			$this->javascript();
+			$js = ob_get_contents();
+			ob_end_clean();
+			$js  = trim( preg_replace( '#<script[^>]*>(.*)</script>#is', '$1', $js ) );
+			$ret = wp_add_inline_script( 'thickbox', $js );
+		}
 	}
 
 	/**

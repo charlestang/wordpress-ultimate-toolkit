@@ -1,20 +1,46 @@
 <?php
+/**
+ * Component: Category Chooser
+ *
+ * @package WordPress_Ultimate_Toolkit
+ * @subpackage admin
+ */
 
+/**
+ * Category Chooser is a component implementation.
+ *
+ * This class is a child class of Walker which is used for
+ * displaying a category tree to help people finding categories
+ * he or she want include or exclude from.
+ */
 class WUT_Category_Chooser extends Walker {
 	const TREE_BOX_ID = 'jstree_category';
-	public function __construct() {
-	}
 
+	/**
+	 * The static files dependency.
+	 *
+	 * @return void
+	 */
 	public function enqueue_scripts() {
 		add_thickbox();
 		wp_enqueue_style( 'jstree' );
 		wp_enqueue_script( 'jstree' );
+		wp_enqueue_style( 'wut-category-chooser' );
 		wp_enqueue_script( 'wut-category-chooser' );
 	}
 
-	public function inject_link() {
+	/**
+	 * Call this will display a link, which will display a panel with category tree.
+	 *
+	 * @return void
+	 */
+	public function inject_link( $field_id ) {
 		?>
-		<a title="<?php echo __( 'Category Chooser', 'wordpress-ultimate-toolkit' ); ?>" href="admin-ajax.php?action=wut_category_chooser&height=300&width=300" class="thickbox"><?php echo __( 'Choose categories', 'wordpress-ultimate-toolkit' ); ?></a>
+		<a
+			title="<?php esc_attr_e( 'Category Chooser', 'wordpress-ultimate-toolkit' ); ?>"
+			href="admin-ajax.php?action=wut_category_chooser&height=300&width=300"
+			data-target-field="<?php echo esc_attr( $field_id ); ?>"
+			class="thickbox category-chooser-link"><?php esc_html_e( 'Choose categories', 'wordpress-ultimate-toolkit' ); ?></a>
 		<?php
 	}
 
@@ -22,15 +48,6 @@ class WUT_Category_Chooser extends Walker {
 		?>
 		<script>
 			var wut_tree_data = [
-				'Simple root node',
-				{
-					'id' : 'node_2',
-					'text' : 'Root node with options',
-					'state' : { 'opened' : true, 'selected' : true },
-					'children' : [ { 'text' : 'Child 1' }, 'Child 2']
-				}
-			];
-			wut_tree_data = [
 				<?php
 					$categories        = get_categories();
 					$walker            = new WUT_Category_Chooser();
@@ -44,7 +61,7 @@ class WUT_Category_Chooser extends Walker {
 			wut_category_chooser();
 		</script>
 		<p><?php echo __( 'Choose the categories:', 'wordpress-ultimate-toolkit' ); ?></p>
-		<div id="<?php echo self::TREE_BOX_ID; ?>"></div>
+		<div id="<?php echo self::TREE_BOX_ID; ?>" role="tree" class="category-chooser"></div>
 		<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Decide', 'wordpress-ultimate-toolkit' ); ?>"></p
 		<?php
 		wp_die();
@@ -103,7 +120,7 @@ class WUT_Category_Chooser extends Walker {
 	 */
 	public function start_el( &$output, $object, $depth = 0, $args = array(), $current_object_id = 0 ) {
 		$output .= '{';
-		$output .= '"id": ' . $current_object_id . ',';
+		$output .= '"id": ' . $object->term_id . ',';
 		$output .= '"text": "' . $object->name . '",';
 	}
 

@@ -38,20 +38,20 @@ class WUT_Admin {
 	 * @return void
 	 */
 	public function register_admin_entry() {
-			add_action(
-				'admin_menu',
-				function() {
-					add_options_page(
-						__( 'WordPress Ultimate Toolkit', 'wordpress-ultimate-toolkit' ),
-						__( 'WP Ultimate Toolkit', 'wordpress-ultimate-toolkit' ),
-						'activate_plugins',
-						self::MENU_SLUG,
-						array( $this, 'options_page' )
-					);
-				}
-			);
-			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueueu_scripts' ) );
-			$this->register_options_tabs();
+		add_action(
+			'admin_menu',
+			function() {
+				add_options_page(
+					__( 'WordPress Ultimate Toolkit', 'wordpress-ultimate-toolkit' ),
+					__( 'WP Ultimate Toolkit', 'wordpress-ultimate-toolkit' ),
+					'activate_plugins',
+					self::MENU_SLUG,
+					array( $this, 'options_page' )
+				);
+			}
+		);
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueueu_scripts' ) );
+		$this->register_options_tabs();
 	}
 
 	/**

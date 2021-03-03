@@ -133,6 +133,6 @@ class WUT_Widget_Recent_Posts extends WP_Widget {
 		);
 		$this->helper->checkbox( 'show_comment_count', $show_comment_count, __( 'Display comment count?', 'wordpress-ultimate-toolkit' ) );
 		$this->helper->text( 'exclude_categories', $exclude_categories, __( 'Category IDs to exclude:', 'wordpress-ultimate-toolkit' ), 'text', 'medium-text' );
-		$chooser->inject_link();
+		$chooser->inject_link( $this->get_field_id( 'exclude_categories' ) );
 	}
 }
