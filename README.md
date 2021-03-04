@@ -3,8 +3,8 @@ Contributors: charlestang
 Donate link: http://sexywp.com/wut  
 Tags: related psots, recent posts, recent comments, popular posts, widgets, auto digest  
 Requires at least: 5.3.0  
-Requires PHP: 5.6  
 Tested up to: 5.6.2  
+Requires PHP: 5.6  
 Stable tag: 2.1.0  
 License: GPL v3  
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -50,6 +50,7 @@ Provides a variety of handy little features such as word count, inserting custom
 
 ### 2.1.0
  * NEW FEATURE. Set the site description and keywords tag for SEO reasons.
+ * NEW FEATURE. Recent posts widget support to exclude specific categories.
  * FIXED. Related post list title appear before pager in a post.
 
 ### 2.0.8
@@ -104,6 +105,9 @@ Provides a variety of handy little features such as word count, inserting custom
  * Excerpt admin page complete.
 
 ## Upgrade Notice
+### 2.1.0
+ New feature introduced. Upgrade recommended if you are using version >= 2.0.0.
+
 ### 2.0.3
  Upgrade recommended if you are using version >= 2.0.0.
 
