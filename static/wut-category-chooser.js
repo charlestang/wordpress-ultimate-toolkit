@@ -5,7 +5,7 @@
 			var target_id = $(this).data('target-field');
 			if ( ! target_id.includes('__i__') ) {
 				target_field_id = target_id;
-			}	
+			}
 		});
 		var field_val = $("#" + target_field_id).val();
 
@@ -16,14 +16,14 @@
 				if (exclude_cat_ids.includes( obj.id.toString() )) {
 					level[k].state = { 'selected': true };
 				}
-				if ( level.children ) {
-					mark_selected( level.children );
+				if ( obj.children ) {
+					mark_selected( obj.children );
 				}
 			}
 			return level;
 		};
 		wut_tree_data = mark_selected( wut_tree_data );
-		
+
 		// resize ajax content size.
 		tb_position();
 		var url;
@@ -40,12 +40,23 @@
 		$("#TB_ajaxContent")[0].style.height = ajaxContentH +"px"
 		// END: resize ajax content size.
 
-		$('#jstree_category').jstree({
+		var $jstree = $('#jstree_category');
+		$jstree.jstree({
 			'core': {
 				'themes' : { 'stripes' : true },
 				'data': wut_tree_data
 			},
-			'plugins': ['checkbox', 'sort']
+			'plugins': ['checkbox', 'sort'],
+			'checkbox': {
+				'three_state': false
+			}
+		});
+
+		$('#submit').click(function(){
+			var target_field = $('#' + target_field_id);
+			var checked = $jstree.jstree().get_checked();
+			target_field.val(checked.join(','));
+			tb_remove();
 		});
 	}
 } )( jQuery, window );
