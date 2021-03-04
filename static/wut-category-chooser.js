@@ -55,7 +55,8 @@
 		$('#submit').click(function(){
 			var target_field = $('#' + target_field_id);
 			var checked = $jstree.jstree().get_checked();
-			target_field.val(checked.join(','));
+			target_field.attr('value', checked.join(','));
+			target_field.trigger('input');
 			tb_remove();
 		});
 	}
